@@ -1,6 +1,6 @@
 /*
  * Copyright 2024 Marek Kobida
- * Last Updated: 15.07.2024
+ * Last Updated: 17.10.2024
  */
 
 function isFunction(input: unknown): input is Function {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2024 Marek Kobida
- * Last Updated: 08.05.2024
+ * Last Updated: 29.10.2024
  */
 
 function isArray(input: unknown): input is unknown[] {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2024 Marek Kobida
- * Last Updated: 04.03.2024
+ * Last Updated: 17.10.2024
  */
 
 function isError(input: unknown): input is Error {

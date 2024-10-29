@@ -1,6 +1,6 @@
 /*
  * Copyright 2024 Marek Kobida
- * Last Updated: 13.09.2024
+ * Last Updated: 29.10.2024
  */
 
 class InvariantError extends Error {}
