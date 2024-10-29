@@ -1,0 +1,10 @@
+{
+  "name": "common-helpers",
+  "prettier": {
+    "arrowParens": "avoid",
+    "experimentalTernaries": true,
+    "printWidth": 120,
+    "singleQuote": true
+  },
+  "version": "1.0.0"
+}
