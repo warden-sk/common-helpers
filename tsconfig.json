@@ -2,10 +2,10 @@
   "compilerOptions": {
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "jsx": "react",
-    "module": "CommonJS",
+    "module": "esnext",
+    "moduleResolution": "bundler",
     "noUncheckedIndexedAccess": true,
     "strict": true,
-    "target": "ESNext"
+    "target": "esnext"
   }
 }
