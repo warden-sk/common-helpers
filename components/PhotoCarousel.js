@@ -30,7 +30,10 @@ class PhotoCarousel {
          * CSS
          */
         this.element.style.cursor = 'grab';
+        this.element.style.overflow = 'hidden';
         this.element.style.touchAction = 'pan-y';
+        this.rowElement.style.display = 'flex';
+        this.rowElement.style.height = '100%';
     }
     moveCurrent() {
         if (!this.state.isStarted || this.state.isAnimating)
@@ -125,6 +128,7 @@ class PhotoCarousel {
         const img = window.document.createElement('img');
         img.draggable = false;
         img.src = this.photos[j];
+        img.style.minWidth = '100%';
         img.setAttribute('data-index', j.toString());
         return img;
     }

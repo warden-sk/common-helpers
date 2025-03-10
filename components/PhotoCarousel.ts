@@ -52,7 +52,11 @@ class PhotoCarousel {
      * CSS
      */
     this.element.style.cursor = 'grab';
+    this.element.style.overflow = 'hidden';
     this.element.style.touchAction = 'pan-y';
+
+    this.rowElement.style.display = 'flex';
+    this.rowElement.style.height = '100%';
   }
 
   moveCurrent(): void {
@@ -179,6 +183,7 @@ class PhotoCarousel {
 
     img.draggable = false;
     img.src = this.photos[j]!;
+    img.style.minWidth = '100%';
 
     img.setAttribute('data-index', j.toString());
 
