@@ -1,8 +1,8 @@
 /*
  * Copyright 2024 Marek Kobida
  */
-import invariant from './invariant';
-import isString from './isString';
+import invariant from './invariant.js';
+import isString from './isString.js';
 const allowedCharacters = new Set([
     0x010c,
     0x010d,
