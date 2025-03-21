@@ -2,6 +2,8 @@
  * Copyright 2025 Marek Kobida
  * Last Updated: 10.03.2025
  */
+import isNumber from '../validation/isNumber.js';
+import isString from '../validation/isString.js';
 class PhotoCarousel {
     element;
     #photos;
@@ -99,9 +101,9 @@ class PhotoCarousel {
                     currentTranslateX + (translateX - currentTranslateX) * transitionTimingFunction($1);
                 this.#rowElement.style.transform = `translateX(${this.#state.currentTranslateX}%)`;
                 this.#setWhereAmI();
-                $1 < 1 ? requestAnimationFrame(animate) : (onTransitionEnd(), (this.#state.isAnimating = false));
+                $1 < 1 ? window.requestAnimationFrame(animate) : (onTransitionEnd(), (this.#state.isAnimating = false));
             };
-            requestAnimationFrame(animate);
+            window.requestAnimationFrame(animate);
         }
         else {
             this.#state.currentTranslateX = translateX;
@@ -118,10 +120,20 @@ class PhotoCarousel {
     }
     #createHtmlImageElement(i) {
         const j = this.#getIndex(i);
+        const photo = this.#photos[j];
         const img = window.document.createElement('img');
         img.draggable = false;
-        img.src = this.#photos[j];
+        img.src = photo.url;
+        if (isString(photo.brand)) {
+            img.setAttribute('data-brand', photo.brand);
+        }
+        if (isNumber(photo.height)) {
+            img.setAttribute('data-height', photo.height.toString());
+        }
         img.setAttribute('data-index', j.toString());
+        if (isNumber(photo.width)) {
+            img.setAttribute('data-width', photo.width.toString());
+        }
         return img;
     }
     #getIndex(i) {
