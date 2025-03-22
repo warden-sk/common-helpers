@@ -24,6 +24,15 @@ class PhotoCarousel {
     };
     constructor({ id, photos }) {
         this.element = window.document.getElementById(id);
+        // DOKONČIŤ
+        if (this.element instanceof HTMLAnchorElement) {
+            const onClick = (e) => {
+                if (Math.abs(this.#state.mouseDownX - this.#state.mouseUpX) > 5) {
+                    e.preventDefault();
+                }
+            };
+            this.element.addEventListener('click', onClick);
+        }
         this.PhotoCarouselElement = this.element.querySelector('.PhotoCarousel');
         this.PhotoCarouselRowElement = this.PhotoCarouselElement.querySelector('.PhotoCarouselRow');
         this.WhereAmIElement = this.element.querySelector('.WhereAmI');
@@ -58,16 +67,6 @@ class PhotoCarousel {
         if (!this.#state.isStarted)
             return;
         this.stopAnimation();
-        // DOKONČIŤ
-        if (this.element instanceof HTMLAnchorElement) {
-            const onClick = (e) => {
-                if (this.#state.mouseDownX !== this.#state.mouseUpX) {
-                    e.preventDefault();
-                }
-                this.element.removeEventListener('click', onClick, true);
-            };
-            this.element.addEventListener('click', onClick, true);
-        }
         this.PhotoCarouselElement.style.cursor = 'grabbing';
         this.#state.isMouseDown = true;
         this.#state.mouseDownTranslateX = this.#state.currentTranslateX;
