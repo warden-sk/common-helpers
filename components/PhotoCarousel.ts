@@ -3,11 +3,13 @@
  * Last Updated: 22.03.2025
  */
 
+import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';
 import isString from '../validation/isString.js';
 
 type PhotoCarouselPhoto = {
-  brand?: string;
+  backgroundImage?: string;
+  brand?: string; // FIVE STAR LIVING
   height?: number;
   url: string;
   width?: number;
@@ -28,15 +30,15 @@ type PhotoCarouselState = {
 };
 
 class PhotoCarousel {
-  PhotoCarouselElement: HTMLDivElement;
+  readonly PhotoCarouselElement: HTMLDivElement;
 
-  PhotoCarouselRowElement: HTMLDivElement;
+  readonly PhotoCarouselRowElement: HTMLDivElement;
 
-  WhereAmIElement: HTMLDivElement;
+  readonly WhereAmIElement: HTMLDivElement;
 
-  element: HTMLElement;
+  readonly element: HTMLElement;
 
-  #photos: PhotoCarouselPhoto[];
+  readonly photos: PhotoCarouselPhoto[];
 
   #state: PhotoCarouselState = {
     currentIndex: 0,
@@ -69,11 +71,9 @@ class PhotoCarousel {
     this.PhotoCarouselRowElement = this.PhotoCarouselElement.querySelector('.PhotoCarouselRow')!;
     this.WhereAmIElement = this.element.querySelector('.WhereAmI')!;
 
-    this.#photos = photos;
+    this.photos = photos;
 
-    /**
-     * CSS
-     */
+    // CSS
     this.PhotoCarouselElement.style.cursor = 'grab';
     this.PhotoCarouselElement.style.overflow = 'hidden';
     this.PhotoCarouselElement.style.touchAction = 'pan-y';
@@ -82,13 +82,13 @@ class PhotoCarousel {
   moveCurrent(): void {
     if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
 
-    this.setTranslateX(-100, () => {});
+    this.startAnimation(-100, () => {});
   }
 
   moveLeft(): void {
     if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
 
-    this.setTranslateX(0, () => {
+    this.startAnimation(0, () => {
       this.#setCurrentIndex(this.#state.currentIndex - 1);
     });
   }
@@ -96,7 +96,7 @@ class PhotoCarousel {
   moveRight(): void {
     if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
 
-    this.setTranslateX(-200, () => {
+    this.startAnimation(-200, () => {
       this.#setCurrentIndex(this.#state.currentIndex + 1);
     });
   }
@@ -123,7 +123,7 @@ class PhotoCarousel {
 
     const $2 = ($1 * 100) / this.PhotoCarouselElement.clientWidth;
 
-    this.setTranslateX(this.#state.mouseDownTranslateX + $2);
+    this.startAnimation(this.#state.mouseDownTranslateX + $2);
   };
 
   onUp = (e: MouseEvent | TouchEvent): void => {
@@ -144,25 +144,33 @@ class PhotoCarousel {
     }
   };
 
-  setTranslateX(translateX: number, onTransitionEnd?: () => void): void {
-    if (onTransitionEnd) {
+  start(): void {
+    if (this.#state.isStarted) return;
+
+    this.#state.isStarted = true;
+
+    this.#setCurrentIndex(0);
+  }
+
+  startAnimation(translateX: number, onTransitionEnd?: () => void): void {
+    if (isFunction(onTransitionEnd)) {
       const startTime = performance.now();
 
       const { currentTranslateX, transitionDuration, transitionTimingFunction } = this.#state;
 
-      const animate = (currentTime: number): void => {
-        // DOKONČIŤ
-        const $1 = Math.min(1, (currentTime - startTime) / transitionDuration);
+      // DOKONČIŤ
+      const $1 = (currentTime: number): void => {
+        const $2 = Math.min(1, (currentTime - startTime) / transitionDuration);
 
         this.#state.currentTranslateX =
-          currentTranslateX + (translateX - currentTranslateX) * transitionTimingFunction($1);
+          currentTranslateX + (translateX - currentTranslateX) * transitionTimingFunction($2);
 
         this.PhotoCarouselRowElement.style.transform = `translateX(${this.#state.currentTranslateX}%)`;
 
         this.#setWhereAmI();
 
-        if ($1 < 1) {
-          this.#state.animationId = window.requestAnimationFrame(animate);
+        if ($2 < 1) {
+          this.#state.animationId = window.requestAnimationFrame($1);
         } else {
           this.stopAnimation();
 
@@ -170,7 +178,7 @@ class PhotoCarousel {
         }
       };
 
-      this.#state.animationId = window.requestAnimationFrame(animate);
+      this.#state.animationId = window.requestAnimationFrame($1);
     } else {
       this.stopAnimation();
 
@@ -182,31 +190,33 @@ class PhotoCarousel {
     }
   }
 
-  start(): void {
-    if (this.#state.isStarted) return;
-
-    this.#state.isStarted = true;
-
-    this.#setCurrentIndex(0);
-  }
-
   stopAnimation(): void {
     if (isNumber(this.#state.animationId)) {
       window.cancelAnimationFrame(this.#state.animationId);
-    }
 
-    this.#state.animationId = undefined;
+      this.#state.animationId = undefined;
+    }
   }
 
   #createHtmlImageElement(i: number): HTMLImageElement {
     const j = this.#getIndex(i);
 
-    const photo = this.#photos[j]!;
+    const photo = this.photos[j]!;
 
     const img = window.document.createElement('img');
 
+    img.addEventListener('load', function () {
+      this.style.backgroundImage = '';
+      this.style.backgroundSize = '';
+    });
+
     img.draggable = false;
     img.src = photo.url;
+
+    if (isString(photo.backgroundImage)) {
+      img.style.backgroundImage = photo.backgroundImage;
+      img.style.backgroundSize = 'cover';
+    }
 
     if (isString(photo.brand)) {
       img.setAttribute('data-brand', photo.brand);
@@ -214,19 +224,23 @@ class PhotoCarousel {
 
     if (isNumber(photo.height)) {
       img.setAttribute('data-height', photo.height.toString());
+
+      img.style.height = `${photo.height}px`;
     }
 
     img.setAttribute('data-index', j.toString());
 
     if (isNumber(photo.width)) {
       img.setAttribute('data-width', photo.width.toString());
+
+      img.style.width = `${photo.width}px`;
     }
 
     return img;
   }
 
   #getIndex(i: number): number {
-    return (i + this.#photos.length) % this.#photos.length;
+    return (i + this.photos.length) % this.photos.length;
   }
 
   #getMouseX(e: MouseEvent | TouchEvent): number {
@@ -250,13 +264,13 @@ class PhotoCarousel {
       this.#createHtmlImageElement(this.#state.currentIndex + 1),
     );
 
-    this.setTranslateX(-100);
+    this.startAnimation(-100);
   }
 
+  // DOKONČIŤ
   #setWhereAmI(): void {
-    const photoCount = this.#photos.length - 1;
+    const photoCount = this.photos.length - 1;
 
-    // DOKONČIŤ
     const $1 = (this.#state.currentTranslateX + 100) / photoCount;
 
     const $2 = (this.#state.currentIndex * 100) / photoCount;
