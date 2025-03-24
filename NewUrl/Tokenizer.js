@@ -39,8 +39,12 @@ class Tokenizer {
     // ✅
     readHost() {
         let value = '';
-        //                        ↓ PATH                          ↓ PORT
-        while (this.isNotEnd() && this.readCharacter() !== '/' && this.readCharacter() !== ':') {
+        while (this.isNotEnd() &&
+            this.readCharacter() !== '#' &&
+            this.readCharacter() !== '&' &&
+            this.readCharacter() !== '/' && // PATH
+            this.readCharacter() !== ':' && // PORT
+            this.readCharacter() !== '?') {
             const character = this.readCharacter();
             // 127.0.0.1
             invariant(character === '.' || isAllowedCharacter(character, [...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS]), `The character "${character}" is not valid.`);
@@ -52,42 +56,44 @@ class Tokenizer {
     }
     // ✅
     readPath() {
-        while (this.isNotEnd() && this.readCharacter() === '/') {
-            let value = '';
-            this.cursor++;
-            if (this.isNotEnd() && this.readCharacter() === '{') {
+        if (this.readCharacter() === '/') {
+            while (this.isNotEnd() && this.readCharacter() === '/') {
+                let value = '';
                 this.cursor++;
-                //                      ↓ je voliteľný?
-                let parameter = ['', false];
-                while (this.isNotEnd() && this.readCharacter() !== '}') {
-                    const character = this.readCharacter();
-                    if (character === '?' && this.readCharacter(this.cursor + 1) === '}') {
-                        parameter[1] = true;
-                    }
-                    else {
-                        // isAllowedCharacter
-                        parameter[0] += character;
-                    }
+                if (this.readCharacter() === '{') {
                     this.cursor++;
-                }
-                invariant(this.readCharacter() === '}', 'The character "}" does not exist.');
-                this.cursor++;
-                value += `{${parameter[0]}${parameter[1] ? '?' : ''}}`;
-                this.addToken({ parameter, type: 'PARAMETERIZED_PATH', value });
-            }
-            else {
-                while (this.isNotEnd() &&
-                    this.readCharacter() !== '#' &&
-                    this.readCharacter() !== '&' &&
-                    this.readCharacter() !== '/' &&
-                    this.readCharacter() !== '?') {
-                    const character = this.readCharacter();
-                    invariant(isAllowedCharacter(character, ['-', '.', ...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS]), `The character "${character}" is not valid.`);
-                    value += character;
+                    //                      ↓ je voliteľný?
+                    let parameter = ['', false];
+                    while (this.isNotEnd() && this.readCharacter() !== '}') {
+                        const character = this.readCharacter();
+                        if (character === '?' && this.readCharacter(this.cursor + 1) === '}') {
+                            parameter[1] = true;
+                        }
+                        else {
+                            parameter[0] += character;
+                        }
+                        this.cursor++;
+                    }
+                    invariant(parameter[0].length, 'The parameterized path is not valid.');
+                    invariant(this.readCharacter() === '}', 'The character "}" does not exist.');
                     this.cursor++;
+                    value += `{${parameter[0]}${parameter[1] ? '?' : ''}}`;
+                    this.addToken({ parameter, type: 'PARAMETERIZED_PATH', value });
                 }
-                invariant(value.length, 'The path is not valid.');
-                this.addToken({ type: 'PATH', value });
+                else {
+                    while (this.isNotEnd() &&
+                        this.readCharacter() !== '#' &&
+                        this.readCharacter() !== '&' &&
+                        this.readCharacter() !== '/' &&
+                        this.readCharacter() !== '?') {
+                        const character = this.readCharacter();
+                        invariant(isAllowedCharacter(character, ['-', '.', ...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS]), `The character "${character}" is not valid.`);
+                        value += character;
+                        this.cursor++;
+                    }
+                    // invariant(value.length, 'The path is not valid.');
+                    this.addToken({ type: 'PATH', value });
+                }
             }
         }
         return this;
@@ -118,7 +124,7 @@ class Tokenizer {
         invariant(value.length, 'The scheme is not valid.');
         return this.addToken({ type: 'SCHEME', value });
     }
-    // DOKONČIŤ
+    // ✅
     readSearchParameters() {
         if (this.readCharacter() === '?') {
             this.cursor++;

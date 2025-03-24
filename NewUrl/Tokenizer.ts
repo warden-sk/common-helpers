@@ -55,8 +55,14 @@ class Tokenizer {
   readHost(): this {
     let value = '';
 
-    //                        ↓ PATH                          ↓ PORT
-    while (this.isNotEnd() && this.readCharacter() !== '/' && this.readCharacter() !== ':') {
+    while (
+      this.isNotEnd() &&
+      this.readCharacter() !== '#' &&
+      this.readCharacter() !== '&' &&
+      this.readCharacter() !== '/' && // PATH
+      this.readCharacter() !== ':' && // PORT
+      this.readCharacter() !== '?'
+    ) {
       const character = this.readCharacter();
 
       // 127.0.0.1
@@ -77,61 +83,63 @@ class Tokenizer {
 
   // ✅
   readPath(): this {
-    while (this.isNotEnd() && this.readCharacter() === '/') {
-      let value = '';
+    if (this.readCharacter() === '/') {
+      while (this.isNotEnd() && this.readCharacter() === '/') {
+        let value = '';
 
-      this.cursor++;
-
-      if (this.isNotEnd() && this.readCharacter() === '{') {
         this.cursor++;
 
-        //                      ↓ je voliteľný?
-        let parameter: [string, boolean] = ['', false];
+        if (this.readCharacter() === '{') {
+          this.cursor++;
 
-        while (this.isNotEnd() && this.readCharacter() !== '}') {
-          const character = this.readCharacter();
+          //                      ↓ je voliteľný?
+          let parameter: [string, boolean] = ['', false];
 
-          if (character === '?' && this.readCharacter(this.cursor + 1) === '}') {
-            parameter[1] = true;
-          } else {
-            // isAllowedCharacter
+          while (this.isNotEnd() && this.readCharacter() !== '}') {
+            const character = this.readCharacter();
 
-            parameter[0] += character;
+            if (character === '?' && this.readCharacter(this.cursor + 1) === '}') {
+              parameter[1] = true;
+            } else {
+              parameter[0] += character;
+            }
+
+            this.cursor++;
           }
 
-          this.cursor++;
-        }
+          invariant(parameter[0].length, 'The parameterized path is not valid.');
 
-        invariant(this.readCharacter() === '}', 'The character "}" does not exist.');
-
-        this.cursor++;
-
-        value += `{${parameter[0]}${parameter[1] ? '?' : ''}}`;
-
-        this.addToken({ parameter, type: 'PARAMETERIZED_PATH', value });
-      } else {
-        while (
-          this.isNotEnd() &&
-          this.readCharacter() !== '#' &&
-          this.readCharacter() !== '&' &&
-          this.readCharacter() !== '/' &&
-          this.readCharacter() !== '?'
-        ) {
-          const character = this.readCharacter();
-
-          invariant(
-            isAllowedCharacter(character, ['-', '.', ...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS]),
-            `The character "${character}" is not valid.`,
-          );
-
-          value += character;
+          invariant(this.readCharacter() === '}', 'The character "}" does not exist.');
 
           this.cursor++;
+
+          value += `{${parameter[0]}${parameter[1] ? '?' : ''}}`;
+
+          this.addToken({ parameter, type: 'PARAMETERIZED_PATH', value });
+        } else {
+          while (
+            this.isNotEnd() &&
+            this.readCharacter() !== '#' &&
+            this.readCharacter() !== '&' &&
+            this.readCharacter() !== '/' &&
+            this.readCharacter() !== '?'
+          ) {
+            const character = this.readCharacter();
+
+            invariant(
+              isAllowedCharacter(character, ['-', '.', ...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS]),
+              `The character "${character}" is not valid.`,
+            );
+
+            value += character;
+
+            this.cursor++;
+          }
+
+          // invariant(value.length, 'The path is not valid.');
+
+          this.addToken({ type: 'PATH', value });
         }
-
-        invariant(value.length, 'The path is not valid.');
-
-        this.addToken({ type: 'PATH', value });
       }
     }
 
@@ -176,7 +184,7 @@ class Tokenizer {
     return this.addToken({ type: 'SCHEME', value });
   }
 
-  // DOKONČIŤ
+  // ✅
   readSearchParameters(): this {
     if (this.readCharacter() === '?') {
       this.cursor++;
