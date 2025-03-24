@@ -21,20 +21,24 @@ class Tokenizer {
     this.readScheme().readHost().readPort().readPath().readSearchParameters();
   }
 
+  // ✅
   addToken(token: Token): this {
     this.tokens.push(token);
 
     return this;
   }
 
+  // ✅
   isNotEnd(): boolean {
     return this.cursor < this.input.length;
   }
 
+  // ✅
   readCharacter(cursor: number = this.cursor): string {
     return this.input[cursor]!;
   }
 
+  // ✅
   readCharacters(cursor: number, length: number): string {
     let characters = '';
 
@@ -47,6 +51,7 @@ class Tokenizer {
     return characters;
   }
 
+  // ✅
   readHost(): this {
     let value = '';
 
@@ -54,6 +59,7 @@ class Tokenizer {
     while (this.isNotEnd() && this.readCharacter() !== '/' && this.readCharacter() !== ':') {
       const character = this.readCharacter();
 
+      // 127.0.0.1
       invariant(
         character === '.' || isAllowedCharacter(character, [...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS]),
         `The character "${character}" is not valid.`,
@@ -69,6 +75,7 @@ class Tokenizer {
     return this.addToken({ type: 'HOST', value });
   }
 
+  // ✅
   readPath(): this {
     while (this.isNotEnd() && this.readCharacter() === '/') {
       let value = '';
@@ -122,6 +129,8 @@ class Tokenizer {
           this.cursor++;
         }
 
+        invariant(value.length, 'The path is not valid.');
+
         this.addToken({ type: 'PATH', value });
       }
     }
@@ -129,6 +138,7 @@ class Tokenizer {
     return this;
   }
 
+  // ✅
   readPort(): this {
     if (this.readCharacter() === ':') {
       let value = '';
@@ -141,12 +151,15 @@ class Tokenizer {
         this.cursor++;
       }
 
+      invariant(value.length, 'The port is not valid.');
+
       return this.addToken({ type: 'PORT', value });
     }
 
     return this;
   }
 
+  // ✅
   readScheme(): this {
     let value = '';
 

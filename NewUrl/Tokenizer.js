@@ -14,16 +14,20 @@ class Tokenizer {
         this.input = input;
         this.readScheme().readHost().readPort().readPath().readSearchParameters();
     }
+    // ✅
     addToken(token) {
         this.tokens.push(token);
         return this;
     }
+    // ✅
     isNotEnd() {
         return this.cursor < this.input.length;
     }
+    // ✅
     readCharacter(cursor = this.cursor) {
         return this.input[cursor];
     }
+    // ✅
     readCharacters(cursor, length) {
         let characters = '';
         for (let i = cursor; i < length; i++) {
@@ -32,11 +36,13 @@ class Tokenizer {
         }
         return characters;
     }
+    // ✅
     readHost() {
         let value = '';
         //                        ↓ PATH                          ↓ PORT
         while (this.isNotEnd() && this.readCharacter() !== '/' && this.readCharacter() !== ':') {
             const character = this.readCharacter();
+            // 127.0.0.1
             invariant(character === '.' || isAllowedCharacter(character, [...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS]), `The character "${character}" is not valid.`);
             value += character;
             this.cursor++;
@@ -44,6 +50,7 @@ class Tokenizer {
         invariant(value.length, 'The host is not valid.');
         return this.addToken({ type: 'HOST', value });
     }
+    // ✅
     readPath() {
         while (this.isNotEnd() && this.readCharacter() === '/') {
             let value = '';
@@ -79,11 +86,13 @@ class Tokenizer {
                     value += character;
                     this.cursor++;
                 }
+                invariant(value.length, 'The path is not valid.');
                 this.addToken({ type: 'PATH', value });
             }
         }
         return this;
     }
+    // ✅
     readPort() {
         if (this.readCharacter() === ':') {
             let value = '';
@@ -92,10 +101,12 @@ class Tokenizer {
                 value += this.readCharacter();
                 this.cursor++;
             }
+            invariant(value.length, 'The port is not valid.');
             return this.addToken({ type: 'PORT', value });
         }
         return this;
     }
+    // ✅
     readScheme() {
         let value = '';
         for (const scheme of schemes) {
