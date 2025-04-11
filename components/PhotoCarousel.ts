@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 22.03.2025
+ * Last Updated: 11.04.2025
  */
 
 import isFunction from '../validation/isFunction.js';
@@ -21,10 +21,19 @@ type PhotoCarouselState = {
   currentTranslateX: number; // %
   isMouseDown: boolean;
   isStarted: boolean;
+  mouseDown: {
+    x: number;
+    y: number;
+  };
   mouseDownTranslateX: number;
-  mouseDownX: number;
-  mouseMoveX: number;
-  mouseUpX: number;
+  mouseMove: {
+    x: number;
+    y: number;
+  };
+  mouseUp: {
+    x: number;
+    y: number;
+  };
   transitionDuration: number; // ms
   transitionTimingFunction: (n: number) => number;
 };
@@ -34,7 +43,9 @@ class PhotoCarousel {
 
   readonly PhotoCarouselRowElement: HTMLDivElement;
 
-  readonly WhereAmIElement: HTMLDivElement;
+  readonly WhereAmIElement1: HTMLDivElement;
+
+  readonly WhereAmIElement2: HTMLDivElement;
 
   readonly element: HTMLElement;
 
@@ -45,10 +56,19 @@ class PhotoCarousel {
     currentTranslateX: 0,
     isMouseDown: false,
     isStarted: false,
+    mouseDown: {
+      x: 0,
+      y: 0,
+    },
     mouseDownTranslateX: 0,
-    mouseDownX: 0,
-    mouseMoveX: 0,
-    mouseUpX: 0,
+    mouseMove: {
+      x: 0,
+      y: 0,
+    },
+    mouseUp: {
+      x: 0,
+      y: 0,
+    },
     transitionDuration: 500,
     transitionTimingFunction: n => n * (2 - n),
   };
@@ -56,20 +76,10 @@ class PhotoCarousel {
   constructor({ id, photos }: { id: string; photos: PhotoCarouselPhoto[] }) {
     this.element = window.document.getElementById(id)!;
 
-    // DOKONČIŤ
-    if (this.element instanceof HTMLAnchorElement) {
-      const onClick = (e: MouseEvent): void => {
-        if (Math.abs(this.#state.mouseDownX - this.#state.mouseUpX) > 5) {
-          e.preventDefault();
-        }
-      };
-
-      this.element.addEventListener('click', onClick);
-    }
-
     this.PhotoCarouselElement = this.element.querySelector('.PhotoCarousel')!;
     this.PhotoCarouselRowElement = this.PhotoCarouselElement.querySelector('.PhotoCarouselRow')!;
-    this.WhereAmIElement = this.element.querySelector('.WhereAmI')!;
+    this.WhereAmIElement1 = this.element.querySelector('.WhereAmI1')!;
+    this.WhereAmIElement2 = this.element.querySelector('.WhereAmI2')!;
 
     this.photos = photos;
 
@@ -109,17 +119,17 @@ class PhotoCarousel {
     this.PhotoCarouselElement.style.cursor = 'grabbing';
 
     this.#state.isMouseDown = true;
+    this.#state.mouseDown = this.#getMouse(e);
     this.#state.mouseDownTranslateX = this.#state.currentTranslateX;
-    this.#state.mouseDownX = this.#getMouseX(e);
   };
 
   onMove = (e: MouseEvent | TouchEvent): void => {
     if (!this.#state.isMouseDown) return;
 
-    this.#state.mouseMoveX = this.#getMouseX(e);
+    this.#state.mouseMove = this.#getMouse(e);
 
     // DOKONČIŤ
-    const $1 = this.#state.mouseMoveX - this.#state.mouseDownX;
+    const $1 = this.#state.mouseMove.x - this.#state.mouseDown.x;
 
     const $2 = ($1 * 100) / this.PhotoCarouselElement.clientWidth;
 
@@ -132,9 +142,9 @@ class PhotoCarousel {
     this.PhotoCarouselElement.style.cursor = 'grab';
 
     this.#state.isMouseDown = false;
-    this.#state.mouseUpX = this.#getMouseX(e);
+    this.#state.mouseUp = this.#getMouse(e);
 
-    const isLeft = this.#state.mouseUpX > this.#state.mouseDownX;
+    const isLeft = this.#state.mouseUp.x > this.#state.mouseDown.x;
     const shouldMoveLeft = this.#state.currentTranslateX > -100;
 
     if (isLeft) {
@@ -243,16 +253,28 @@ class PhotoCarousel {
     return (i + this.photos.length) % this.photos.length;
   }
 
-  #getMouseX(e: MouseEvent | TouchEvent): number {
+  #getMouse(e: MouseEvent | TouchEvent): {
+    x: number;
+    y: number;
+  } {
     if (e instanceof MouseEvent) {
-      return e.clientX;
+      return {
+        x: e.clientX,
+        y: e.clientY,
+      };
     }
 
     if (e instanceof TouchEvent) {
-      return e.changedTouches[0]!.clientX;
+      return {
+        x: e.changedTouches[0]!.clientX,
+        y: e.changedTouches[0]!.clientY,
+      };
     }
 
-    return 0;
+    return {
+      x: 0,
+      y: 0,
+    };
   }
 
   #setCurrentIndex(i: number): void {
@@ -277,7 +299,21 @@ class PhotoCarousel {
 
     const $3 = Math.min(100, Math.max(0, $2 - $1));
 
-    this.WhereAmIElement.style.width = `${$3}%`;
+    this.WhereAmIElement1.style.width = `${$3}%`;
+
+    if (this.photos.length > 20) return;
+
+    this.WhereAmIElement2.replaceChildren(
+      ...this.photos.map((photo, i) => {
+        const div = window.document.createElement('div');
+
+        div.setAttribute('data-index', i.toString());
+
+        div.style.opacity = i === this.#state.currentIndex ? '1' : '0.5';
+
+        return div;
+      }),
+    );
   }
 }
 
