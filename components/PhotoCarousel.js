@@ -76,6 +76,7 @@ class PhotoCarousel {
     onMove = (e) => {
         if (!this.#state.isMouseDown)
             return;
+        e.stopPropagation();
         this.#state.mouseMove = this.#getMouse(e);
         // DOKONČIŤ
         const $1 = this.#state.mouseMove.x - this.#state.mouseDown.x;

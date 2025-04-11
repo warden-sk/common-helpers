@@ -126,6 +126,8 @@ class PhotoCarousel {
   onMove = (e: MouseEvent | TouchEvent): void => {
     if (!this.#state.isMouseDown) return;
 
+    e.stopPropagation();
+
     this.#state.mouseMove = this.#getMouse(e);
 
     // DOKONČIŤ
