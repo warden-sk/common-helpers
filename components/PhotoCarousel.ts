@@ -144,6 +144,9 @@ class PhotoCarousel {
     this.#state.isMouseDown = false;
     this.#state.mouseUp = this.#getMouse(e);
 
+    // KĽÚČOVÉ
+    if (this.#state.mouseUp.x === this.#state.mouseDown.x) return;
+
     const isLeft = this.#state.mouseUp.x > this.#state.mouseDown.x;
     const shouldMoveLeft = this.#state.currentTranslateX > -100;
 
