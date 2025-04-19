@@ -6,7 +6,6 @@ import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';
 import isString from '../validation/isString.js';
 class PhotoCarousel {
-    element;
     PhotoCarouselElement;
     PhotoCarouselRowElement;
     photos;
@@ -18,10 +17,10 @@ class PhotoCarousel {
         isMouseDown: false,
         isStarted: false,
         mouseDown: {
+            translateX: 0,
             x: 0,
             y: 0,
         },
-        mouseDownTranslateX: 0,
         mouseMove: {
             x: 0,
             y: 0,
@@ -34,11 +33,11 @@ class PhotoCarousel {
         transitionTimingFunction: n => n * (2 - n),
     };
     constructor({ id, photos }) {
-        this.element = window.document.getElementById(id);
-        this.PhotoCarouselElement = this.element.querySelector('.PhotoCarousel');
+        const element = window.document.getElementById(id);
+        this.PhotoCarouselElement = element.querySelector('.PhotoCarousel');
         this.PhotoCarouselRowElement = this.PhotoCarouselElement.querySelector('.PhotoCarouselRow');
-        this.WhereAmIElement1 = this.element.querySelector('.WhereAmI1');
-        this.WhereAmIElement2 = this.element.querySelector('.WhereAmI2');
+        this.WhereAmIElement1 = element.querySelector('.WhereAmI1');
+        this.WhereAmIElement2 = element.querySelector('.WhereAmI2');
         this.photos = photos;
         // CSS
         this.PhotoCarouselElement.style.cursor = 'grab';
@@ -70,8 +69,10 @@ class PhotoCarousel {
         this.stopAnimation();
         this.PhotoCarouselElement.style.cursor = 'grabbing';
         this.#state.isMouseDown = true;
-        this.#state.mouseDown = this.#getMouse(e);
-        this.#state.mouseDownTranslateX = this.#state.currentTranslateX;
+        this.#state.mouseDown = {
+            ...this.#getMouse(e),
+            translateX: this.#state.currentTranslateX,
+        };
     };
     onMove = (e) => {
         if (!this.#state.isMouseDown)
@@ -81,7 +82,7 @@ class PhotoCarousel {
         // DOKONČIŤ
         const $1 = this.#state.mouseMove.x - this.#state.mouseDown.x;
         const $2 = ($1 * 100) / this.PhotoCarouselElement.clientWidth;
-        this.startAnimation(this.#state.mouseDownTranslateX + $2);
+        this.startAnimation(this.#state.mouseDown.translateX + $2);
     };
     onUp = (e) => {
         if (!this.#state.isMouseDown)
@@ -201,15 +202,17 @@ class PhotoCarousel {
         const $1 = (this.#state.currentTranslateX + 100) / photoCount;
         const $2 = (this.#state.currentIndex * 100) / photoCount;
         const $3 = Math.min(100, Math.max(0, $2 - $1));
-        this.WhereAmIElement1.style.width = `${$3}%`;
-        if (this.photos.length > 20)
-            return;
-        this.WhereAmIElement2.replaceChildren(...this.photos.map((photo, i) => {
-            const div = window.document.createElement('div');
-            div.setAttribute('data-index', i.toString());
-            div.style.opacity = i === this.#state.currentIndex ? '1' : '0.5';
-            return div;
-        }));
+        if (this.WhereAmIElement1) {
+            this.WhereAmIElement1.style.width = `${$3}%`;
+        }
+        if (this.WhereAmIElement2) {
+            this.WhereAmIElement2.replaceChildren(...this.photos.map((photo, i) => {
+                const div = window.document.createElement('div');
+                div.setAttribute('data-index', i.toString());
+                div.style.opacity = i === this.#state.currentIndex ? '1' : '0.5';
+                return div;
+            }));
+        }
     }
 }
 export default PhotoCarousel;

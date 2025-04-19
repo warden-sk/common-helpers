@@ -146,16 +146,14 @@ const allowedCharacters = new Set([
 
 function isInputValid(input: unknown): boolean {
   try {
-    const validatedInput = validateInput(input);
-
-    return input === validatedInput;
+    return input === validateInput(input);
   } catch {
     return false;
   }
 }
 
 function validateInput(input: unknown): string {
-  invariant(isString(input), '');
+  invariant(isString(input), 'Vstup nie je platný.');
 
   const $ = input.normalize(); // from a [0x0061] ◌́ [0x0301] to á [0x00E1]
 
