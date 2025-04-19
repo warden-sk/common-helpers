@@ -1,9 +1,9 @@
 /*
- * Copyright 2024 Marek Kobida
- * Last Updated: 17.10.2024
+ * Copyright 2025 Marek Kobida
+ * Last Updated: 19.04.2025
  */
 
-function isObject(input: unknown): input is Record<string, unknown> {
+function isObject(input: unknown): input is { [key: string]: unknown } {
   return Object.prototype.toString.call(input) === '[object Object]';
 }
 

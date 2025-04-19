@@ -1,17 +1,17 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 11.04.2025
+ * Last Updated: 19.04.2025
  */
 import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';
 import isString from '../validation/isString.js';
 class PhotoCarousel {
+    element;
     PhotoCarouselElement;
     PhotoCarouselRowElement;
+    photos;
     WhereAmIElement1;
     WhereAmIElement2;
-    element;
-    photos;
     #state = {
         currentIndex: 0,
         currentTranslateX: 0,
