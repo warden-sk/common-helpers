@@ -1,10 +1,9 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 19.04.2025
+ * Last Updated: 24.03.2025
  */
 
 import { expect, test } from 'bun:test';
-
 import Tokenizer from './Tokenizer.js';
 
 test('[1] SCHEME + HOST', () => {

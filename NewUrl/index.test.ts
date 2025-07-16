@@ -1,11 +1,10 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 19.04.2025
+ * Last Updated: 24.03.2025
  */
 
-import { expect, test } from 'bun:test';
-
 import NewUrl from './index.js';
+import { expect, test } from 'bun:test';
 
 test('[1]', () => {
   const newUrl = new NewUrl('https://kobida.sk:443/test.html');

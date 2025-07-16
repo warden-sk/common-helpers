@@ -1,9 +1,6 @@
 {
-  "dependencies": {
-    "@warden-sk/eslint-config": "github:warden-sk/eslint-config"
-  },
   "devDependencies": {
-    "@types/bun": "^1.2.10"
+    "@types/bun": "^1.2.5"
   },
   "name": "common-helpers",
   "prettier": {

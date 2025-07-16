@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 19.04.2025
+ * Last Updated: 11.04.2025
  */
 
 import isFunction from '../validation/isFunction.js';
@@ -22,10 +22,10 @@ type PhotoCarouselState = {
   isMouseDown: boolean;
   isStarted: boolean;
   mouseDown: {
-    translateX: number;
     x: number;
     y: number;
   };
+  mouseDownTranslateX: number;
   mouseMove: {
     x: number;
     y: number;
@@ -43,11 +43,13 @@ class PhotoCarousel {
 
   readonly PhotoCarouselRowElement: HTMLDivElement;
 
+  readonly WhereAmIElement1: HTMLDivElement;
+
+  readonly WhereAmIElement2: HTMLDivElement;
+
+  readonly element: HTMLElement;
+
   readonly photos: PhotoCarouselPhoto[];
-
-  readonly WhereAmIElement1: HTMLDivElement | null;
-
-  readonly WhereAmIElement2: HTMLDivElement | null;
 
   #state: PhotoCarouselState = {
     currentIndex: 0,
@@ -55,10 +57,10 @@ class PhotoCarousel {
     isMouseDown: false,
     isStarted: false,
     mouseDown: {
-      translateX: 0,
       x: 0,
       y: 0,
     },
+    mouseDownTranslateX: 0,
     mouseMove: {
       x: 0,
       y: 0,
@@ -72,12 +74,12 @@ class PhotoCarousel {
   };
 
   constructor({ id, photos }: { id: string; photos: PhotoCarouselPhoto[] }) {
-    const element = window.document.getElementById(id)!;
+    this.element = window.document.getElementById(id)!;
 
-    this.PhotoCarouselElement = element.querySelector('.PhotoCarousel')!;
+    this.PhotoCarouselElement = this.element.querySelector('.PhotoCarousel')!;
     this.PhotoCarouselRowElement = this.PhotoCarouselElement.querySelector('.PhotoCarouselRow')!;
-    this.WhereAmIElement1 = element.querySelector('.WhereAmI1');
-    this.WhereAmIElement2 = element.querySelector('.WhereAmI2');
+    this.WhereAmIElement1 = this.element.querySelector('.WhereAmI1')!;
+    this.WhereAmIElement2 = this.element.querySelector('.WhereAmI2')!;
 
     this.photos = photos;
 
@@ -117,11 +119,8 @@ class PhotoCarousel {
     this.PhotoCarouselElement.style.cursor = 'grabbing';
 
     this.#state.isMouseDown = true;
-
-    this.#state.mouseDown = {
-      ...this.#getMouse(e),
-      translateX: this.#state.currentTranslateX,
-    };
+    this.#state.mouseDown = this.#getMouse(e);
+    this.#state.mouseDownTranslateX = this.#state.currentTranslateX;
   };
 
   onMove = (e: MouseEvent | TouchEvent): void => {
@@ -136,7 +135,7 @@ class PhotoCarousel {
 
     const $2 = ($1 * 100) / this.PhotoCarouselElement.clientWidth;
 
-    this.startAnimation(this.#state.mouseDown.translateX + $2);
+    this.startAnimation(this.#state.mouseDownTranslateX + $2);
   };
 
   onUp = (e: MouseEvent | TouchEvent): void => {
@@ -305,23 +304,21 @@ class PhotoCarousel {
 
     const $3 = Math.min(100, Math.max(0, $2 - $1));
 
-    if (this.WhereAmIElement1) {
-      this.WhereAmIElement1.style.width = `${$3}%`;
-    }
+    this.WhereAmIElement1.style.width = `${$3}%`;
 
-    if (this.WhereAmIElement2) {
-      this.WhereAmIElement2.replaceChildren(
-        ...this.photos.map((photo, i) => {
-          const div = window.document.createElement('div');
+    if (this.photos.length > 20) return;
 
-          div.setAttribute('data-index', i.toString());
+    this.WhereAmIElement2.replaceChildren(
+      ...this.photos.map((photo, i) => {
+        const div = window.document.createElement('div');
 
-          div.style.opacity = i === this.#state.currentIndex ? '1' : '0.5';
+        div.setAttribute('data-index', i.toString());
 
-          return div;
-        }),
-      );
-    }
+        div.style.opacity = i === this.#state.currentIndex ? '1' : '0.5';
+
+        return div;
+      }),
+    );
   }
 }
 

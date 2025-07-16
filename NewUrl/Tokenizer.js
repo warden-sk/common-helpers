@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 19.04.2025
+ * Last Updated: 24.03.2025
  */
 import invariant from '../validation/invariant.js';
 import isAllowedCharacter, { ALLOWED_CHARACTERS, ALLOWED_NUMBERS } from './isAllowedCharacter.js';
