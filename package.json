@@ -1,6 +1,7 @@
 {
   "devDependencies": {
-    "@types/bun": "^1.2.5"
+    "@types/bun": "^1.2.5",
+    "typescript": "^5.8.3"
   },
   "name": "common-helpers",
   "prettier": {

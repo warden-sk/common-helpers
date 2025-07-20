@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 24.03.2025
+ * Last Updated: 20.07.2025
  */
 
 import Tokenizer from './Tokenizer.js';
@@ -62,7 +62,7 @@ class NewUrl {
       if (token2.type === 'PARAMETERIZED_PATH') {
         //         ↓ je voliteľný?
         if (token2.parameter[1]) {
-          if (token1) {
+          if (token1 && token1.type !== 'SEARCH_PARAMETER') {
             if (token1.type !== 'PATH') {
               return false;
             }
