@@ -77,3 +77,29 @@ test('[4] SCHEME + HOST + PORT + PATH', () => {
         },
     ]);
 });
+test('[4] SCHEME + HOST + PORT + PATH + SEARCH_PARAMETER', () => {
+    const tokenizer = new Tokenizer('https://kobida.sk:443/test?page=1');
+    expect(tokenizer.tokens).toEqual([
+        {
+            type: 'SCHEME',
+            value: 'https://',
+        },
+        {
+            type: 'HOST',
+            value: 'kobida.sk',
+        },
+        {
+            type: 'PORT',
+            value: '443',
+        },
+        {
+            type: 'PATH',
+            value: 'test',
+        },
+        {
+            parameter: ['page', '1'],
+            type: 'SEARCH_PARAMETER',
+            value: 'page=1',
+        },
+    ]);
+});
