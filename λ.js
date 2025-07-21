@@ -1,8 +1,9 @@
 /*
- * Copyright 2024 Marek Kobida
- * Last Updated: 26.10.2024
+ * Copyright 2025 Marek Kobida
+ * Last Updated: 21.07.2025
  */
-export const ID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$/;
-export const decodeJSON = JSON.parse;
-export const encodeJSON = JSON.stringify;
-export const keys = Object.keys;
+const ID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$/;
+const decodeJSON = JSON.parse;
+const encodeJSON = JSON.stringify;
+const keys = Object.keys;
+export { decodeJSON, encodeJSON, ID_PATTERN, keys };

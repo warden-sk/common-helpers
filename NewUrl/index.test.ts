@@ -13,7 +13,7 @@ test('[1]', () => {
   expect(newUrl.host).toBe('https://kobida.sk:443');
   expect(newUrl.path).toBe('/test.html');
 
-  newUrl.test('https://kobida.sk:443/{fileName?}');
+  expect(newUrl.test('https://kobida.sk:443/{fileName?}')).toEqual(true);
 
   expect(newUrl.parameters).toEqual({ fileName: 'test.html' });
 });
