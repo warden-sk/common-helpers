@@ -1,11 +1,11 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 21.07.2025
+ * Last Updated: 22.07.2025
  */
 
 import { expect, test } from 'bun:test';
 
-import Tokenizer from './Tokenizer.js';
+import Tokenizer from '../Tokenizer.js';
 
 test('[1] SCHEME + HOST', () => {
   const tokenizer = new Tokenizer('https://kobida.sk');
