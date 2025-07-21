@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 11.04.2025
+ * Last Updated: 21.07.2025
  */
 
 import isFunction from '../validation/isFunction.js';
@@ -39,17 +39,17 @@ type PhotoCarouselState = {
 };
 
 class PhotoCarousel {
+  readonly element: HTMLElement;
+
   readonly PhotoCarouselElement: HTMLDivElement;
 
   readonly PhotoCarouselRowElement: HTMLDivElement;
 
+  readonly photos: PhotoCarouselPhoto[];
+
   readonly WhereAmIElement1: HTMLDivElement;
 
   readonly WhereAmIElement2: HTMLDivElement;
-
-  readonly element: HTMLElement;
-
-  readonly photos: PhotoCarouselPhoto[];
 
   #state: PhotoCarouselState = {
     currentIndex: 0,

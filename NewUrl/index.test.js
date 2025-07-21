@@ -1,9 +1,9 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 24.03.2025
+ * Last Updated: 21.07.2025
  */
-import NewUrl from './index.js';
 import { expect, test } from 'bun:test';
+import NewUrl from './index.js';
 test('[1]', () => {
     const newUrl = new NewUrl('https://kobida.sk:443/test.html');
     expect(newUrl.host).toBe('https://kobida.sk:443');
