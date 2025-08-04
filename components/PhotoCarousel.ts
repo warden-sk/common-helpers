@@ -1,42 +1,15 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 21.07.2025
+ * Last Updated: 04.08.2025
  */
+
+import type { PhotoCarouselPhoto, PhotoCarouselState } from './types.js';
 
 import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';
-import isString from '../validation/isString.js';
-
-type PhotoCarouselPhoto = {
-  backgroundImage?: string;
-  brand?: string; // FIVE STAR LIVING
-  height?: number;
-  url: string;
-  width?: number;
-};
-
-type PhotoCarouselState = {
-  animationId?: number;
-  currentIndex: number;
-  currentTranslateX: number; // %
-  isMouseDown: boolean;
-  isStarted: boolean;
-  mouseDown: {
-    x: number;
-    y: number;
-  };
-  mouseDownTranslateX: number;
-  mouseMove: {
-    x: number;
-    y: number;
-  };
-  mouseUp: {
-    x: number;
-    y: number;
-  };
-  transitionDuration: number; // ms
-  transitionTimingFunction: (n: number) => number;
-};
+import Σ from '../Σ.js';
+import createHtmlImageElement from './createHtmlImageElement.js';
+import getPointerPosition from './getPointerPosition.js';
 
 class PhotoCarousel {
   readonly element: HTMLElement;
@@ -47,9 +20,9 @@ class PhotoCarousel {
 
   readonly photos: PhotoCarouselPhoto[];
 
-  readonly WhereAmIElement1: HTMLDivElement;
+  readonly WhereAmIElement1: HTMLDivElement | null; // `querySelector` returns `null`
 
-  readonly WhereAmIElement2: HTMLDivElement;
+  readonly WhereAmIElement2: HTMLDivElement | null; // `querySelector` returns `null`
 
   #state: PhotoCarouselState = {
     currentIndex: 0,
@@ -73,15 +46,22 @@ class PhotoCarousel {
     transitionTimingFunction: n => n * (2 - n),
   };
 
+  // ✅
   constructor({ id, photos }: { id: string; photos: PhotoCarouselPhoto[] }) {
+    this.photos = photos;
+
+    // ELEMENT(S)
     this.element = window.document.getElementById(id)!;
+
+    if (this.element instanceof HTMLAnchorElement) {
+      this.element.draggable = false;
+    }
 
     this.PhotoCarouselElement = this.element.querySelector('.PhotoCarousel')!;
     this.PhotoCarouselRowElement = this.PhotoCarouselElement.querySelector('.PhotoCarouselRow')!;
-    this.WhereAmIElement1 = this.element.querySelector('.WhereAmI1')!;
-    this.WhereAmIElement2 = this.element.querySelector('.WhereAmI2')!;
 
-    this.photos = photos;
+    this.WhereAmIElement1 = this.element.querySelector('.WhereAmI1');
+    this.WhereAmIElement2 = this.element.querySelector('.WhereAmI2');
 
     // CSS
     this.PhotoCarouselElement.style.cursor = 'grab';
@@ -89,12 +69,14 @@ class PhotoCarousel {
     this.PhotoCarouselElement.style.touchAction = 'pan-y';
   }
 
+  // ✅
   moveCurrent(): void {
     if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
 
     this.startAnimation(-100, () => {});
   }
 
+  // ✅
   moveLeft(): void {
     if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
 
@@ -103,6 +85,7 @@ class PhotoCarousel {
     });
   }
 
+  // ✅
   moveRight(): void {
     if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
 
@@ -119,7 +102,7 @@ class PhotoCarousel {
     this.PhotoCarouselElement.style.cursor = 'grabbing';
 
     this.#state.isMouseDown = true;
-    this.#state.mouseDown = this.#getMouse(e);
+    this.#state.mouseDown = getPointerPosition(e);
     this.#state.mouseDownTranslateX = this.#state.currentTranslateX;
   };
 
@@ -128,7 +111,7 @@ class PhotoCarousel {
 
     e.stopPropagation();
 
-    this.#state.mouseMove = this.#getMouse(e);
+    this.#state.mouseMove = getPointerPosition(e);
 
     // DOKONČIŤ
     const $1 = this.#state.mouseMove.x - this.#state.mouseDown.x;
@@ -144,7 +127,7 @@ class PhotoCarousel {
     this.PhotoCarouselElement.style.cursor = 'grab';
 
     this.#state.isMouseDown = false;
-    this.#state.mouseUp = this.#getMouse(e);
+    this.#state.mouseUp = getPointerPosition(e);
 
     // KĽÚČOVÉ
     if (this.#state.mouseUp.x === this.#state.mouseDown.x) return;
@@ -159,6 +142,7 @@ class PhotoCarousel {
     }
   };
 
+  // ✅
   start(): void {
     if (this.#state.isStarted) return;
 
@@ -205,90 +189,40 @@ class PhotoCarousel {
     }
   }
 
-  stopAnimation(): void {
-    if (isNumber(this.#state.animationId)) {
-      window.cancelAnimationFrame(this.#state.animationId);
+  stop(): void {
+    if (!this.#state.isStarted) return;
 
-      this.#state.animationId = undefined;
-    }
+    this.#state.isStarted = false;
   }
 
-  #createHtmlImageElement(i: number): HTMLImageElement {
-    const j = this.#getIndex(i);
+  // ✅
+  stopAnimation(): void {
+    if (!isNumber(this.#state.animationId)) return;
 
-    const photo = this.photos[j]!;
+    window.cancelAnimationFrame(this.#state.animationId);
 
-    const img = window.document.createElement('img');
-
-    img.addEventListener('load', function () {
-      this.style.backgroundImage = '';
-      this.style.backgroundSize = '';
-    });
-
-    img.draggable = false;
-    img.src = photo.url;
-
-    if (isString(photo.backgroundImage)) {
-      img.style.backgroundImage = photo.backgroundImage;
-      img.style.backgroundSize = 'cover';
-    }
-
-    if (isString(photo.brand)) {
-      img.setAttribute('data-brand', photo.brand);
-    }
-
-    if (isNumber(photo.height)) {
-      img.setAttribute('data-height', photo.height.toString());
-
-      img.style.height = `${photo.height}px`;
-    }
-
-    img.setAttribute('data-index', j.toString());
-
-    if (isNumber(photo.width)) {
-      img.setAttribute('data-width', photo.width.toString());
-
-      img.style.width = `${photo.width}px`;
-    }
-
-    return img;
+    this.#state.animationId = undefined;
   }
 
   #getIndex(i: number): number {
     return (i + this.photos.length) % this.photos.length;
   }
 
-  #getMouse(e: MouseEvent | TouchEvent): {
-    x: number;
-    y: number;
-  } {
-    if (e instanceof MouseEvent) {
-      return {
-        x: e.clientX,
-        y: e.clientY,
-      };
-    }
-
-    if (e instanceof TouchEvent) {
-      return {
-        x: e.changedTouches[0]!.clientX,
-        y: e.changedTouches[0]!.clientY,
-      };
-    }
-
-    return {
-      x: 0,
-      y: 0,
-    };
-  }
-
   #setCurrentIndex(i: number): void {
     this.#state.currentIndex = this.#getIndex(i);
 
+    // DOKONČIŤ
+    const $ = (j: number): PhotoCarouselPhoto =>
+      Σ(
+        j,
+        j => this.#getIndex(j),
+        j => ({ ...this.photos[j]!, index: j }),
+      );
+
     this.PhotoCarouselRowElement.replaceChildren(
-      this.#createHtmlImageElement(this.#state.currentIndex - 1),
-      this.#createHtmlImageElement(this.#state.currentIndex),
-      this.#createHtmlImageElement(this.#state.currentIndex + 1),
+      createHtmlImageElement($(this.#state.currentIndex - 1)),
+      createHtmlImageElement($(this.#state.currentIndex)),
+      createHtmlImageElement($(this.#state.currentIndex + 1)),
     );
 
     this.startAnimation(-100);

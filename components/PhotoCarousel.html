@@ -1,0 +1,141 @@
+<!--
+  ~ Copyright 2025 Marek Kobida
+  ~ Last Updated: 04.08.2025
+  -->
+
+<!doctype html>
+<html lang="sk">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      .container {
+        margin-left: auto;
+        margin-right: auto;
+        width: 50%;
+      }
+
+      #test {
+        display: block;
+      }
+
+      .PhotoCarousel {
+        aspect-ratio: 4 / 3;
+        background-color: hsl(0, 0%, 50%);
+
+        .PhotoCarouselRow {
+          display: flex;
+          height: 100%;
+          width: 100%;
+
+          img {
+            max-height: 100%;
+            max-width: 100%;
+            min-height: 100%;
+            min-width: 100%;
+            object-fit: contain;
+          }
+        }
+      }
+
+      .WhereAmI1 {
+        background-color: hsl(0, 0%, 0%);
+        margin-top: 16px;
+        min-height: 2px;
+        width: 0;
+      }
+
+      .WhereAmI2 {
+        column-gap: 8px;
+        display: flex;
+        margin-top: 16px;
+
+        > div {
+          background-color: hsl(0, 0%, 0%);
+          height: 0.5rem;
+          width: 0.5rem;
+        }
+      }
+
+      .buttons {
+        column-gap: 8px;
+        display: flex;
+        margin-top: 16px;
+      }
+    </style>
+    <title>PhotoCarousel</title>
+  </head>
+  <body>
+    <div class="container">
+      <a href="https://www.strava.com" id="test">
+        <div class="PhotoCarousel">
+          <div class="PhotoCarouselRow"></div>
+        </div>
+
+        <div class="WhereAmI1"></div>
+
+        <div class="WhereAmI2"></div>
+      </a>
+
+      <div class="buttons">
+        <button id="startButton" type="button">START</button>
+        <button id="stopButton" type="button">STOP</button>
+        <button id="moveLeftButton" type="button">MOVE LEFT</button>
+        <button id="moveRightButton" type="button">MOVE RIGHT</button>
+      </div>
+    </div>
+
+    <script type="module">
+      import PhotoCarousel from './PhotoCarousel.js';
+
+      const photoCarousel = new PhotoCarousel({
+        id: 'test',
+        photos: [
+          {
+            url: 'https://unsplash.com/photos/hc46ZCiKysk/download?ixid=M3wxMjA3fDB8MXxhbGx8NTF8fHx8fHx8fDE3NTMyOTgxOTB8&w=640',
+          },
+          {
+            url: 'https://unsplash.com/photos/T7oueegdnHE/download?ixid=M3wxMjA3fDB8MXxhbGx8NDM2fHx8fHx8fHwxNzUzMjk4MjkzfA&w=640',
+          },
+          {
+            url: 'https://unsplash.com/photos/Ope9Ufn-yrY/download?ixid=M3wxMjA3fDB8MXxhbGx8N3x8fHx8fHx8MTc1MzI5Nzc0Nnw&w=640',
+          },
+          {
+            url: 'https://unsplash.com/photos/rf_slBYKI_0/download?ixid=M3wxMjA3fDB8MXxhbGx8MTU4fHx8fHx8fHwxNzUzMjk4MjE4fA&w=640',
+          },
+        ],
+      });
+
+      if ('ontouchstart' in window) {
+        photoCarousel.element.addEventListener('touchend', photoCarousel.onUp);
+        photoCarousel.element.addEventListener('touchmove', photoCarousel.onMove);
+        photoCarousel.element.addEventListener('touchstart', photoCarousel.onDown);
+      } else {
+        photoCarousel.element.addEventListener('mousedown', photoCarousel.onDown);
+        photoCarousel.element.addEventListener('mouseleave', photoCarousel.onUp);
+        photoCarousel.element.addEventListener('mousemove', photoCarousel.onMove);
+        photoCarousel.element.addEventListener('mouseup', photoCarousel.onUp);
+      }
+
+      photoCarousel.element.addEventListener('click', e => {
+        e.preventDefault();
+      });
+
+      // BUTTON(S)
+      window.document.getElementById('startButton').addEventListener('click', () => {
+        photoCarousel.start();
+      });
+
+      window.document.getElementById('stopButton').addEventListener('click', () => {
+        photoCarousel.stop();
+      });
+
+      window.document.getElementById('moveLeftButton').addEventListener('click', () => {
+        photoCarousel.moveLeft();
+      });
+
+      window.document.getElementById('moveRightButton').addEventListener('click', () => {
+        photoCarousel.moveRight();
+      });
+    </script>
+  </body>
+</html>

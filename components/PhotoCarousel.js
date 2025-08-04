@@ -1,17 +1,19 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 21.07.2025
+ * Last Updated: 04.08.2025
  */
 import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';
-import isString from '../validation/isString.js';
+import Σ from '../Σ.js';
+import createHtmlImageElement from './createHtmlImageElement.js';
+import getPointerPosition from './getPointerPosition.js';
 class PhotoCarousel {
     element;
     PhotoCarouselElement;
     PhotoCarouselRowElement;
     photos;
-    WhereAmIElement1;
-    WhereAmIElement2;
+    WhereAmIElement1; // `querySelector` returns `null`
+    WhereAmIElement2; // `querySelector` returns `null`
     #state = {
         currentIndex: 0,
         currentTranslateX: 0,
@@ -33,23 +35,30 @@ class PhotoCarousel {
         transitionDuration: 500,
         transitionTimingFunction: n => n * (2 - n),
     };
+    // ✅
     constructor({ id, photos }) {
+        this.photos = photos;
+        // ELEMENT(S)
         this.element = window.document.getElementById(id);
+        if (this.element instanceof HTMLAnchorElement) {
+            this.element.draggable = false;
+        }
         this.PhotoCarouselElement = this.element.querySelector('.PhotoCarousel');
         this.PhotoCarouselRowElement = this.PhotoCarouselElement.querySelector('.PhotoCarouselRow');
         this.WhereAmIElement1 = this.element.querySelector('.WhereAmI1');
         this.WhereAmIElement2 = this.element.querySelector('.WhereAmI2');
-        this.photos = photos;
         // CSS
         this.PhotoCarouselElement.style.cursor = 'grab';
         this.PhotoCarouselElement.style.overflow = 'hidden';
         this.PhotoCarouselElement.style.touchAction = 'pan-y';
     }
+    // ✅
     moveCurrent() {
         if (!this.#state.isStarted || isNumber(this.#state.animationId))
             return;
         this.startAnimation(-100, () => { });
     }
+    // ✅
     moveLeft() {
         if (!this.#state.isStarted || isNumber(this.#state.animationId))
             return;
@@ -57,6 +66,7 @@ class PhotoCarousel {
             this.#setCurrentIndex(this.#state.currentIndex - 1);
         });
     }
+    // ✅
     moveRight() {
         if (!this.#state.isStarted || isNumber(this.#state.animationId))
             return;
@@ -70,14 +80,14 @@ class PhotoCarousel {
         this.stopAnimation();
         this.PhotoCarouselElement.style.cursor = 'grabbing';
         this.#state.isMouseDown = true;
-        this.#state.mouseDown = this.#getMouse(e);
+        this.#state.mouseDown = getPointerPosition(e);
         this.#state.mouseDownTranslateX = this.#state.currentTranslateX;
     };
     onMove = (e) => {
         if (!this.#state.isMouseDown)
             return;
         e.stopPropagation();
-        this.#state.mouseMove = this.#getMouse(e);
+        this.#state.mouseMove = getPointerPosition(e);
         // DOKONČIŤ
         const $1 = this.#state.mouseMove.x - this.#state.mouseDown.x;
         const $2 = ($1 * 100) / this.PhotoCarouselElement.clientWidth;
@@ -88,7 +98,7 @@ class PhotoCarousel {
             return;
         this.PhotoCarouselElement.style.cursor = 'grab';
         this.#state.isMouseDown = false;
-        this.#state.mouseUp = this.#getMouse(e);
+        this.#state.mouseUp = getPointerPosition(e);
         // KĽÚČOVÉ
         if (this.#state.mouseUp.x === this.#state.mouseDown.x)
             return;
@@ -101,6 +111,7 @@ class PhotoCarousel {
             shouldMoveLeft ? this.moveCurrent() : this.moveRight();
         }
     };
+    // ✅
     start() {
         if (this.#state.isStarted)
             return;
@@ -135,64 +146,26 @@ class PhotoCarousel {
             this.#setWhereAmI();
         }
     }
-    stopAnimation() {
-        if (isNumber(this.#state.animationId)) {
-            window.cancelAnimationFrame(this.#state.animationId);
-            this.#state.animationId = undefined;
-        }
+    stop() {
+        if (!this.#state.isStarted)
+            return;
+        this.#state.isStarted = false;
     }
-    #createHtmlImageElement(i) {
-        const j = this.#getIndex(i);
-        const photo = this.photos[j];
-        const img = window.document.createElement('img');
-        img.addEventListener('load', function () {
-            this.style.backgroundImage = '';
-            this.style.backgroundSize = '';
-        });
-        img.draggable = false;
-        img.src = photo.url;
-        if (isString(photo.backgroundImage)) {
-            img.style.backgroundImage = photo.backgroundImage;
-            img.style.backgroundSize = 'cover';
-        }
-        if (isString(photo.brand)) {
-            img.setAttribute('data-brand', photo.brand);
-        }
-        if (isNumber(photo.height)) {
-            img.setAttribute('data-height', photo.height.toString());
-            img.style.height = `${photo.height}px`;
-        }
-        img.setAttribute('data-index', j.toString());
-        if (isNumber(photo.width)) {
-            img.setAttribute('data-width', photo.width.toString());
-            img.style.width = `${photo.width}px`;
-        }
-        return img;
+    // ✅
+    stopAnimation() {
+        if (!isNumber(this.#state.animationId))
+            return;
+        window.cancelAnimationFrame(this.#state.animationId);
+        this.#state.animationId = undefined;
     }
     #getIndex(i) {
         return (i + this.photos.length) % this.photos.length;
     }
-    #getMouse(e) {
-        if (e instanceof MouseEvent) {
-            return {
-                x: e.clientX,
-                y: e.clientY,
-            };
-        }
-        if (e instanceof TouchEvent) {
-            return {
-                x: e.changedTouches[0].clientX,
-                y: e.changedTouches[0].clientY,
-            };
-        }
-        return {
-            x: 0,
-            y: 0,
-        };
-    }
     #setCurrentIndex(i) {
         this.#state.currentIndex = this.#getIndex(i);
-        this.PhotoCarouselRowElement.replaceChildren(this.#createHtmlImageElement(this.#state.currentIndex - 1), this.#createHtmlImageElement(this.#state.currentIndex), this.#createHtmlImageElement(this.#state.currentIndex + 1));
+        // DOKONČIŤ
+        const $ = (j) => Σ(j, j => this.#getIndex(j), j => ({ ...this.photos[j], index: j }));
+        this.PhotoCarouselRowElement.replaceChildren(createHtmlImageElement($(this.#state.currentIndex - 1)), createHtmlImageElement($(this.#state.currentIndex)), createHtmlImageElement($(this.#state.currentIndex + 1)));
         this.startAnimation(-100);
     }
     // DOKONČIŤ
