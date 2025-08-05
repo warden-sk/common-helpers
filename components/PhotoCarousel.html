@@ -8,6 +8,10 @@
   <head>
     <meta charset="utf-8" />
     <style>
+      body {
+        margin: 0;
+      }
+
       .container {
         margin-left: auto;
         margin-right: auto;
@@ -16,6 +20,7 @@
 
       #test {
         display: block;
+        position: relative;
       }
 
       .PhotoCarousel {
@@ -39,27 +44,29 @@
 
       .WhereAmI1 {
         background-color: hsl(0, 0%, 0%);
-        margin-top: 16px;
         min-height: 2px;
-        width: 0;
       }
 
       .WhereAmI2 {
+        bottom: 16px;
         column-gap: 8px;
         display: flex;
-        margin-top: 16px;
+        height: 8px;
+        left: 50%;
+        position: absolute;
+        transform: translateX(-50%);
 
         > div {
-          background-color: hsl(0, 0%, 0%);
-          height: 0.5rem;
-          width: 0.5rem;
+          aspect-ratio: 1 / 1;
+          background-color: hsl(0, 0%, 100%);
+          border-radius: 50%;
         }
       }
 
       .buttons {
         column-gap: 8px;
         display: flex;
-        margin-top: 16px;
+        margin-top: 32px;
       }
     </style>
     <title>PhotoCarousel</title>
@@ -77,16 +84,19 @@
       </a>
 
       <div class="buttons">
-        <button id="startButton" type="button">START</button>
-        <button id="stopButton" type="button">STOP</button>
-        <button id="moveLeftButton" type="button">MOVE LEFT</button>
-        <button id="moveRightButton" type="button">MOVE RIGHT</button>
+        <button id="startButton" type="button">Start</button>
+        <button id="stopButton" type="button">Stop</button>
+        <button id="moveLeftButton" type="button">Move Left</button>
+        <button id="moveRightButton" type="button">Move Right</button>
       </div>
+
+      <!-- <div style="background-color: hsl(0, 0%, 50%); height: 1000px; margin-top: 32px"></div> -->
     </div>
 
     <script type="module">
       import PhotoCarousel from './PhotoCarousel.js';
 
+      // [1/3]
       const photoCarousel = new PhotoCarousel({
         id: 'test',
         photos: [
@@ -105,6 +115,7 @@
         ],
       });
 
+      // [2/3]
       if ('ontouchstart' in window) {
         photoCarousel.element.addEventListener('touchend', photoCarousel.onUp);
         photoCarousel.element.addEventListener('touchmove', photoCarousel.onMove);
@@ -116,11 +127,7 @@
         photoCarousel.element.addEventListener('mouseup', photoCarousel.onUp);
       }
 
-      photoCarousel.element.addEventListener('click', e => {
-        e.preventDefault();
-      });
-
-      // BUTTON(S)
+      // [3/3]
       window.document.getElementById('startButton').addEventListener('click', () => {
         photoCarousel.start();
       });

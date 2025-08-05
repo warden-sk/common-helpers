@@ -7,11 +7,15 @@ type PhotoCarouselPhoto = {
   backgroundImage?: string;
   brand?: string; // FIVE STAR LIVING
   height?: number;
-  index?: number; // DOKONČIŤ
-  url: string;
+  index?: number;
+  url: string; // KĽÚČOVÉ
   width?: number;
 };
 
+/**
+ * DOKONČIŤ
+ * `mouse` → `pointer`
+ */
 type PhotoCarouselState = {
   animationId?: number;
   currentIndex: number;
