@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 05.08.2025
+ * Last Updated: 07.08.2025
  */
 
 import type PhotoCarousel from './PhotoCarousel.js';
@@ -70,7 +70,9 @@ class PhotoCarouselAnimation {
         // LINEÁRNA INTERPOLÁCIA
         const newTranslateX = currentTranslateX + (translateX - currentTranslateX) * transitionTimingFunction(t);
 
-        this.$test({ translateX: newTranslateX });
+        this.$test({
+          translateX: newTranslateX,
+        });
 
         if (t < 1) {
           this.state.animationId = window.requestAnimationFrame($1);
@@ -85,7 +87,9 @@ class PhotoCarouselAnimation {
     } else {
       this.stop();
 
-      this.$test({ translateX });
+      this.$test({
+        translateX,
+      });
     }
   }
 

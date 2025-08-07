@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 04.08.2025
+ * Last Updated: 07.08.2025
  */
 
 import type { PhotoCarouselPhoto } from './types.js';

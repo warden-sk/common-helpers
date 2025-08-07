@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 05.08.2025
+ * Last Updated: 07.08.2025
  */
 
 import type { PhotoCarouselPhoto, PhotoCarouselState } from './types.js';
@@ -151,7 +151,10 @@ class PhotoCarousel {
       this.state.mouseMove.x - this.state.mouseDown.x,
       n => (n * 100) / this.PhotoCarouselElement.clientWidth,
       n => n + this.state.mouseDownTranslateX,
-      n => this.animation.start({ translateX: n }),
+      n =>
+        this.animation.start({
+          translateX: n,
+        }),
     );
   };
 
@@ -212,7 +215,10 @@ class PhotoCarousel {
   #getPhotoAtIndex(i: number): PhotoCarouselPhoto {
     const j = this.#getIndex(i);
 
-    return { ...this.state.photos[j]!, index: j };
+    return {
+      ...this.state.photos[j]!,
+      index: j,
+    };
   }
 
   // ✅
@@ -228,7 +234,9 @@ class PhotoCarousel {
     );
 
     // [3/3]
-    this.animation.start({ translateX: -100 });
+    this.animation.start({
+      translateX: -100,
+    });
   }
 }
 
