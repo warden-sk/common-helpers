@@ -36,9 +36,10 @@ class PhotoCarousel {
     };
     WhereAmIElement1;
     WhereAmIElement2;
+    // 🟢
     constructor({ id, photos }) {
         // ELEMENT(S)
-        this.element = window.document.getElementById(id);
+        this.element = document.getElementById(id);
         if (this.element instanceof HTMLAnchorElement) {
             this.element.addEventListener('click', e => {
                 e.preventDefault();
@@ -67,10 +68,11 @@ class PhotoCarousel {
             }
         });
         __TEST__1__.observe(this.element);
+        // PHOTO(S) & ANIMATION
         this.state.photos = photos;
         this.animation = new PhotoCarouselAnimation(this);
     }
-    // ✅
+    // 🟢
     moveCurrent() {
         if (!this.state.isStarted || isNumber(this.state.animationId))
             return;
@@ -79,7 +81,7 @@ class PhotoCarousel {
             translateX: -100,
         });
     }
-    // ✅
+    // 🟢
     moveLeft() {
         if (!this.state.isStarted || isNumber(this.state.animationId))
             return;
@@ -90,7 +92,7 @@ class PhotoCarousel {
             translateX: 0,
         });
     }
-    // ✅
+    // 🟢
     moveRight() {
         if (!this.state.isStarted || isNumber(this.state.animationId))
             return;
@@ -101,7 +103,7 @@ class PhotoCarousel {
             translateX: -200,
         });
     }
-    // ✅
+    // 🟢
     onDown = (e) => {
         if (!this.state.isStarted)
             return;
@@ -111,18 +113,18 @@ class PhotoCarousel {
         this.state.mouseDown = getPointerPosition(e);
         this.state.mouseDownTranslateX = this.state.currentTranslateX;
     };
-    // ✅
+    // 🟢
     onMove = (e) => {
         if (!this.state.isMouseDown)
             return;
-        e.stopPropagation();
+        e.stopPropagation(); // DOKONČIŤ
         this.state.mouseMove = getPointerPosition(e);
         // ANIMÁCIA
         Σ(this.state.mouseMove.x - this.state.mouseDown.x, n => (n * 100) / this.PhotoCarouselElement.clientWidth, n => n + this.state.mouseDownTranslateX, n => this.animation.start({
             translateX: n,
         }));
     };
-    // ✅
+    // 🟢
     onUp = (e) => {
         if (!this.state.isMouseDown)
             return;
@@ -142,7 +144,7 @@ class PhotoCarousel {
             shouldMoveLeft ? this.moveCurrent() : this.moveRight();
         }
     };
-    // ✅
+    // 🟢
     start() {
         // [1/2]
         if (this.state.isStarted)
@@ -151,7 +153,7 @@ class PhotoCarousel {
         // [2/2]
         this.#setCurrentIndex(0);
     }
-    // ✅
+    // 🟢
     stop() {
         // [1/2]
         if (!this.state.isStarted)
@@ -162,11 +164,11 @@ class PhotoCarousel {
         this.WhereAmIElement1.style.width = '0';
         this.WhereAmIElement2.replaceChildren();
     }
-    // ✅
+    // 🟢
     #getIndex(i) {
         return (i + this.state.photos.length) % this.state.photos.length;
     }
-    // ✅
+    // 🟢
     #getPhotoAtIndex(i) {
         const j = this.#getIndex(i);
         return {
@@ -174,7 +176,7 @@ class PhotoCarousel {
             index: j,
         };
     }
-    // ✅
+    // 🟢
     #setCurrentIndex(i) {
         // [1/3]
         this.state.currentIndex = this.#getIndex(i);

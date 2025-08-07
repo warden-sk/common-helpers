@@ -12,7 +12,7 @@ import getPointerPosition from './getPointerPosition.js';
 import PhotoCarouselAnimation from './PhotoCarouselAnimation.js';
 
 class PhotoCarousel {
-  readonly animation: PhotoCarouselAnimation;
+  animation: PhotoCarouselAnimation;
 
   readonly element: HTMLElement;
 
@@ -47,9 +47,10 @@ class PhotoCarousel {
 
   readonly WhereAmIElement2: HTMLDivElement;
 
+  // 🟢
   constructor({ id, photos }: { id: string; photos: PhotoCarouselPhoto[] }) {
     // ELEMENT(S)
-    this.element = window.document.getElementById(id)!;
+    this.element = document.getElementById(id)!;
 
     if (this.element instanceof HTMLAnchorElement) {
       this.element.addEventListener('click', e => {
@@ -86,12 +87,13 @@ class PhotoCarousel {
 
     __TEST__1__.observe(this.element);
 
+    // PHOTO(S) & ANIMATION
     this.state.photos = photos;
 
     this.animation = new PhotoCarouselAnimation(this);
   }
 
-  // ✅
+  // 🟢
   moveCurrent(): void {
     if (!this.state.isStarted || isNumber(this.state.animationId)) return;
 
@@ -101,7 +103,7 @@ class PhotoCarousel {
     });
   }
 
-  // ✅
+  // 🟢
   moveLeft(): void {
     if (!this.state.isStarted || isNumber(this.state.animationId)) return;
 
@@ -113,7 +115,7 @@ class PhotoCarousel {
     });
   }
 
-  // ✅
+  // 🟢
   moveRight(): void {
     if (!this.state.isStarted || isNumber(this.state.animationId)) return;
 
@@ -125,7 +127,7 @@ class PhotoCarousel {
     });
   }
 
-  // ✅
+  // 🟢
   onDown = (e: MouseEvent | TouchEvent): void => {
     if (!this.state.isStarted) return;
 
@@ -138,11 +140,11 @@ class PhotoCarousel {
     this.state.mouseDownTranslateX = this.state.currentTranslateX;
   };
 
-  // ✅
+  // 🟢
   onMove = (e: MouseEvent | TouchEvent): void => {
     if (!this.state.isMouseDown) return;
 
-    e.stopPropagation();
+    e.stopPropagation(); // DOKONČIŤ
 
     this.state.mouseMove = getPointerPosition(e);
 
@@ -158,7 +160,7 @@ class PhotoCarousel {
     );
   };
 
-  // ✅
+  // 🟢
   onUp = (e: MouseEvent | TouchEvent): void => {
     if (!this.state.isMouseDown) return;
 
@@ -181,7 +183,7 @@ class PhotoCarousel {
     }
   };
 
-  // ✅
+  // 🟢
   start(): void {
     // [1/2]
     if (this.state.isStarted) return;
@@ -192,7 +194,7 @@ class PhotoCarousel {
     this.#setCurrentIndex(0);
   }
 
-  // ✅
+  // 🟢
   stop(): void {
     // [1/2]
     if (!this.state.isStarted) return;
@@ -206,12 +208,12 @@ class PhotoCarousel {
     this.WhereAmIElement2.replaceChildren();
   }
 
-  // ✅
+  // 🟢
   #getIndex(i: number): number {
     return (i + this.state.photos.length) % this.state.photos.length;
   }
 
-  // ✅
+  // 🟢
   #getPhotoAtIndex(i: number): PhotoCarouselPhoto {
     const j = this.#getIndex(i);
 
@@ -221,7 +223,7 @@ class PhotoCarousel {
     };
   }
 
-  // ✅
+  // 🟢
   #setCurrentIndex(i: number): void {
     // [1/3]
     this.state.currentIndex = this.#getIndex(i);
