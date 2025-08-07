@@ -25,6 +25,8 @@ class PhotoCarouselAnimation {
         const $2 = (this.state.currentIndex * 100) / photoCount;
         const $3 = Math.min(100, Math.max(0, $2 - $1));
         this.WhereAmIElement1.style.width = `${$3}%`;
+        if (this.state.photos.length > 20)
+            return;
         this.WhereAmIElement2.replaceChildren(...this.state.photos.map((photo, i) => {
             const div = window.document.createElement('div');
             div.style.opacity = i === this.state.currentIndex ? '1' : '0.5';
