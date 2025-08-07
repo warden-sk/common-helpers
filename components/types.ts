@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 04.08.2025
+ * Last Updated: 05.08.2025
  */
 
 type PhotoCarouselPhoto = {
@@ -35,6 +35,7 @@ type PhotoCarouselState = {
     x: number;
     y: number;
   };
+  photos: PhotoCarouselPhoto[];
   transitionDuration: number; // ms
   transitionTimingFunction: (n: number) => number;
 };

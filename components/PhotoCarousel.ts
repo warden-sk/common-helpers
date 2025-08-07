@@ -1,30 +1,26 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 04.08.2025
+ * Last Updated: 05.08.2025
  */
 
 import type { PhotoCarouselPhoto, PhotoCarouselState } from './types.js';
 
-import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';
 import Σ from '../Σ.js';
 import createHtmlImageElement from './createHtmlImageElement.js';
 import getPointerPosition from './getPointerPosition.js';
+import PhotoCarouselAnimation from './PhotoCarouselAnimation.js';
 
 class PhotoCarousel {
+  readonly animation: PhotoCarouselAnimation;
+
   readonly element: HTMLElement;
 
   readonly PhotoCarouselElement: HTMLDivElement;
 
   readonly PhotoCarouselRowElement: HTMLDivElement;
 
-  readonly photos: PhotoCarouselPhoto[];
-
-  readonly WhereAmIElement1: HTMLDivElement;
-
-  readonly WhereAmIElement2: HTMLDivElement;
-
-  #state: PhotoCarouselState = {
+  state: PhotoCarouselState = {
     currentIndex: 0,
     currentTranslateX: 0,
     isMouseDown: false,
@@ -42,14 +38,16 @@ class PhotoCarousel {
       x: 0,
       y: 0,
     },
+    photos: [],
     transitionDuration: 500,
     transitionTimingFunction: n => n * (2 - n),
   };
 
-  // ✅
-  constructor({ id, photos }: { id: string; photos: PhotoCarouselPhoto[] }) {
-    this.photos = photos;
+  readonly WhereAmIElement1: HTMLDivElement;
 
+  readonly WhereAmIElement2: HTMLDivElement;
+
+  constructor({ id, photos }: { id: string; photos: PhotoCarouselPhoto[] }) {
     // ELEMENT(S)
     this.element = window.document.getElementById(id)!;
 
@@ -87,78 +85,91 @@ class PhotoCarousel {
     });
 
     __TEST__1__.observe(this.element);
+
+    this.state.photos = photos;
+
+    this.animation = new PhotoCarouselAnimation(this);
   }
 
   // ✅
   moveCurrent(): void {
-    if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
+    if (!this.state.isStarted || isNumber(this.state.animationId)) return;
 
-    this.startAnimation(-100, () => {});
+    this.animation.start({
+      onTransitionEnd: () => {},
+      translateX: -100,
+    });
   }
 
   // ✅
   moveLeft(): void {
-    if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
+    if (!this.state.isStarted || isNumber(this.state.animationId)) return;
 
-    this.startAnimation(0, () => {
-      this.#setCurrentIndex(this.#state.currentIndex - 1);
+    this.animation.start({
+      onTransitionEnd: () => {
+        this.#setCurrentIndex(this.state.currentIndex - 1);
+      },
+      translateX: 0,
     });
   }
 
   // ✅
   moveRight(): void {
-    if (!this.#state.isStarted || isNumber(this.#state.animationId)) return;
+    if (!this.state.isStarted || isNumber(this.state.animationId)) return;
 
-    this.startAnimation(-200, () => {
-      this.#setCurrentIndex(this.#state.currentIndex + 1);
+    this.animation.start({
+      onTransitionEnd: () => {
+        this.#setCurrentIndex(this.state.currentIndex + 1);
+      },
+      translateX: -200,
     });
   }
 
   // ✅
   onDown = (e: MouseEvent | TouchEvent): void => {
-    if (!this.#state.isStarted) return;
+    if (!this.state.isStarted) return;
 
-    this.stopAnimation();
+    this.animation.stop();
 
     this.PhotoCarouselElement.style.cursor = 'grabbing';
 
-    this.#state.isMouseDown = true;
-    this.#state.mouseDown = getPointerPosition(e);
-    this.#state.mouseDownTranslateX = this.#state.currentTranslateX;
+    this.state.isMouseDown = true;
+    this.state.mouseDown = getPointerPosition(e);
+    this.state.mouseDownTranslateX = this.state.currentTranslateX;
   };
 
   // ✅
   onMove = (e: MouseEvent | TouchEvent): void => {
-    if (!this.#state.isMouseDown) return;
+    if (!this.state.isMouseDown) return;
 
     e.stopPropagation();
 
-    this.#state.mouseMove = getPointerPosition(e);
+    this.state.mouseMove = getPointerPosition(e);
 
     // ANIMÁCIA
     Σ(
-      this.#state.mouseMove.x - this.#state.mouseDown.x,
+      this.state.mouseMove.x - this.state.mouseDown.x,
       n => (n * 100) / this.PhotoCarouselElement.clientWidth,
-      n => n + this.#state.mouseDownTranslateX,
-      n => this.startAnimation(n),
+      n => n + this.state.mouseDownTranslateX,
+      n => this.animation.start({ translateX: n }),
     );
   };
 
   // ✅
   onUp = (e: MouseEvent | TouchEvent): void => {
-    if (!this.#state.isMouseDown) return;
+    if (!this.state.isMouseDown) return;
 
     this.PhotoCarouselElement.style.cursor = 'grab';
 
-    this.#state.isMouseDown = false;
-    this.#state.mouseUp = getPointerPosition(e);
+    this.state.isMouseDown = false;
+    this.state.mouseUp = getPointerPosition(e);
 
     // KĽÚČOVÉ
-    if (this.#state.mouseUp.x === this.#state.mouseDown.x) return;
+    if (this.state.mouseUp.x === this.state.mouseDown.x) return;
 
     // ANIMÁCIA
-    const isLeft = this.#state.mouseUp.x > this.#state.mouseDown.x;
-    const shouldMoveLeft = this.#state.currentTranslateX > -100;
+    const isLeft = this.state.mouseUp.x > this.state.mouseDown.x;
+    const shouldMoveLeft = this.state.currentTranslateX > -100;
 
     if (isLeft) {
       shouldMoveLeft ? this.moveLeft() : this.moveCurrent();
@@ -170,58 +181,20 @@ class PhotoCarousel {
   // ✅
   start(): void {
     // [1/2]
-    if (this.#state.isStarted) return;
+    if (this.state.isStarted) return;
 
-    this.#state.isStarted = true;
+    this.state.isStarted = true;
 
     // [2/2]
     this.#setCurrentIndex(0);
   }
 
-  // DOKONČIŤ
-  startAnimation(translateX: number, onTransitionEnd?: () => void): void {
-    if (isFunction(onTransitionEnd)) {
-      const startTime = performance.now();
-
-      const { currentTranslateX, transitionDuration, transitionTimingFunction } = this.#state;
-
-      const $1 = (currentTime: number): void => {
-        const $2 = Math.min(1, (currentTime - startTime) / transitionDuration);
-
-        this.#state.currentTranslateX =
-          currentTranslateX + (translateX - currentTranslateX) * transitionTimingFunction($2);
-
-        this.PhotoCarouselRowElement.style.transform = `translateX(${this.#state.currentTranslateX}%)`;
-
-        this.#setWhereAmI();
-
-        if ($2 < 1) {
-          this.#state.animationId = window.requestAnimationFrame($1);
-        } else {
-          this.stopAnimation();
-
-          onTransitionEnd();
-        }
-      };
-
-      this.#state.animationId = window.requestAnimationFrame($1);
-    } else {
-      this.stopAnimation();
-
-      this.#state.currentTranslateX = translateX;
-
-      this.PhotoCarouselRowElement.style.transform = `translateX(${this.#state.currentTranslateX}%)`;
-
-      this.#setWhereAmI();
-    }
-  }
-
   // ✅
   stop(): void {
     // [1/2]
-    if (!this.#state.isStarted) return;
+    if (!this.state.isStarted) return;
 
-    this.#state.isStarted = false;
+    this.state.isStarted = false;
 
     // [2/2]
     this.PhotoCarouselRowElement.replaceChildren();
@@ -231,65 +204,31 @@ class PhotoCarousel {
   }
 
   // ✅
-  stopAnimation(): void {
-    if (!isNumber(this.#state.animationId)) return;
-
-    window.cancelAnimationFrame(this.#state.animationId);
-
-    this.#state.animationId = undefined;
-  }
-
-  // ✅
   #getIndex(i: number): number {
-    return (i + this.photos.length) % this.photos.length;
+    return (i + this.state.photos.length) % this.state.photos.length;
   }
 
   // ✅
   #getPhotoAtIndex(i: number): PhotoCarouselPhoto {
     const j = this.#getIndex(i);
 
-    return { ...this.photos[j]!, index: j };
+    return { ...this.state.photos[j]!, index: j };
   }
 
   // ✅
   #setCurrentIndex(i: number): void {
     // [1/3]
-    this.#state.currentIndex = this.#getIndex(i);
+    this.state.currentIndex = this.#getIndex(i);
 
     // [2/3]
     this.PhotoCarouselRowElement.replaceChildren(
-      createHtmlImageElement(this.#getPhotoAtIndex(this.#state.currentIndex - 1)),
-      createHtmlImageElement(this.#getPhotoAtIndex(this.#state.currentIndex)),
-      createHtmlImageElement(this.#getPhotoAtIndex(this.#state.currentIndex + 1)),
+      createHtmlImageElement(this.#getPhotoAtIndex(this.state.currentIndex - 1)),
+      createHtmlImageElement(this.#getPhotoAtIndex(this.state.currentIndex)),
+      createHtmlImageElement(this.#getPhotoAtIndex(this.state.currentIndex + 1)),
     );
 
     // [3/3]
-    this.startAnimation(-100);
-  }
-
-  // DOKONČIŤ
-  #setWhereAmI(): void {
-    const photoCount = this.photos.length - 1;
-
-    const $1 = (this.#state.currentTranslateX + 100) / photoCount;
-
-    const $2 = (this.#state.currentIndex * 100) / photoCount;
-
-    const $3 = Math.min(100, Math.max(0, $2 - $1));
-
-    this.WhereAmIElement1.style.width = `${$3}%`;
-
-    this.WhereAmIElement2.replaceChildren(
-      ...this.photos.map((photo, i) => {
-        const div = window.document.createElement('div');
-
-        div.setAttribute('data-index', i.toString());
-
-        div.style.opacity = i === this.#state.currentIndex ? '1' : '0.5';
-
-        return div;
-      }),
-    );
+    this.animation.start({ translateX: -100 });
   }
 }
 
