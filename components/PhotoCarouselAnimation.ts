@@ -18,7 +18,7 @@ class PhotoCarouselAnimation {
 
   readonly WhereAmIElement2: HTMLDivElement;
 
-  // ✅
+  // 🟢
   constructor($: PhotoCarousel) {
     this.PhotoCarouselRowElement = $.PhotoCarouselRowElement;
 
@@ -56,12 +56,12 @@ class PhotoCarouselAnimation {
     );
   }
 
-  // ✅
+  // 🟢
   start({ onTransitionEnd, translateX }: { onTransitionEnd?: () => void; translateX: number }): void {
     if (isFunction(onTransitionEnd)) {
       const { currentTranslateX, transitionDuration, transitionTimingFunction } = this.state;
 
-      const startTime = window.performance.now();
+      const startTime = performance.now();
 
       const $1 = (currentTime: number): void => {
         // RELATÍVNY ČAS OD ZAČIATKU ANIMÁCIE
@@ -75,7 +75,7 @@ class PhotoCarouselAnimation {
         });
 
         if (t < 1) {
-          this.state.animationId = window.requestAnimationFrame($1);
+          this.state.animationId = requestAnimationFrame($1);
         } else {
           this.stop();
 
@@ -83,7 +83,7 @@ class PhotoCarouselAnimation {
         }
       };
 
-      this.state.animationId = window.requestAnimationFrame($1);
+      this.state.animationId = requestAnimationFrame($1);
     } else {
       this.stop();
 
@@ -93,11 +93,11 @@ class PhotoCarouselAnimation {
     }
   }
 
-  // ✅
+  // 🟢
   stop(): void {
     if (!isNumber(this.state.animationId)) return;
 
-    window.cancelAnimationFrame(this.state.animationId);
+    cancelAnimationFrame(this.state.animationId);
 
     this.state.animationId = undefined;
   }

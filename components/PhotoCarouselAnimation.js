@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 05.08.2025
+ * Last Updated: 07.08.2025
  */
 import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';
@@ -9,7 +9,7 @@ class PhotoCarouselAnimation {
     state;
     WhereAmIElement1;
     WhereAmIElement2;
-    // ✅
+    // 🟢
     constructor($) {
         this.PhotoCarouselRowElement = $.PhotoCarouselRowElement;
         this.state = $.state;
@@ -31,37 +31,41 @@ class PhotoCarouselAnimation {
             return div;
         }));
     }
-    // ✅
+    // 🟢
     start({ onTransitionEnd, translateX }) {
         if (isFunction(onTransitionEnd)) {
             const { currentTranslateX, transitionDuration, transitionTimingFunction } = this.state;
-            const startTime = window.performance.now();
+            const startTime = performance.now();
             const $1 = (currentTime) => {
                 // RELATÍVNY ČAS OD ZAČIATKU ANIMÁCIE
                 const t = Math.max(0, Math.min(1, (currentTime - startTime) / transitionDuration));
                 // LINEÁRNA INTERPOLÁCIA
                 const newTranslateX = currentTranslateX + (translateX - currentTranslateX) * transitionTimingFunction(t);
-                this.$test({ translateX: newTranslateX });
+                this.$test({
+                    translateX: newTranslateX,
+                });
                 if (t < 1) {
-                    this.state.animationId = window.requestAnimationFrame($1);
+                    this.state.animationId = requestAnimationFrame($1);
                 }
                 else {
                     this.stop();
                     onTransitionEnd();
                 }
             };
-            this.state.animationId = window.requestAnimationFrame($1);
+            this.state.animationId = requestAnimationFrame($1);
         }
         else {
             this.stop();
-            this.$test({ translateX });
+            this.$test({
+                translateX,
+            });
         }
     }
-    // ✅
+    // 🟢
     stop() {
         if (!isNumber(this.state.animationId))
             return;
-        window.cancelAnimationFrame(this.state.animationId);
+        cancelAnimationFrame(this.state.animationId);
         this.state.animationId = undefined;
     }
 }

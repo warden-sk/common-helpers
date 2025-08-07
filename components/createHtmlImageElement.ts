@@ -12,6 +12,7 @@ type I = PhotoCarouselPhoto;
 
 type O = HTMLImageElement;
 
+// 🟢
 function createHtmlImageElement(photo: I): O {
   const img = window.document.createElement('img');
 

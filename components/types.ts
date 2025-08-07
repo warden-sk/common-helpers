@@ -3,6 +3,7 @@
  * Last Updated: 07.08.2025
  */
 
+// 🟢
 type PhotoCarouselPhoto = {
   backgroundImage?: string;
   brand?: string; // FIVE STAR LIVING
@@ -14,6 +15,7 @@ type PhotoCarouselPhoto = {
 
 /**
  * DOKONČIŤ
+ * `animationId` → `PhotoCarouselAnimation`
  * `mouse` → `pointer`
  */
 type PhotoCarouselState = {

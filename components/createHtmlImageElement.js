@@ -1,9 +1,10 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 04.08.2025
+ * Last Updated: 07.08.2025
  */
 import isNumber from '../validation/isNumber.js';
 import isString from '../validation/isString.js';
+// 🟢
 function createHtmlImageElement(photo) {
     const img = window.document.createElement('img');
     //                           ↓ KĽÚČOVÉ

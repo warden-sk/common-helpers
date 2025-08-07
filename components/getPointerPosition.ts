@@ -10,6 +10,7 @@ type O = {
   y: number;
 };
 
+// 🟢
 function getPointerPosition(e: I): O {
   if (e instanceof MouseEvent) {
     return {

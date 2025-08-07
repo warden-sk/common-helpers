@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 05.08.2025
+ * Last Updated: 07.08.2025
  */
 import isNumber from '../validation/isNumber.js';
 import Σ from '../Σ.js';
@@ -60,7 +60,7 @@ class PhotoCarousel {
         const __TEST__1__ = new IntersectionObserver(__TEST__2__ => {
             const __TEST__3__ = __TEST__2__[0];
             if (__TEST__3__.isIntersecting) {
-                // this.start();
+                this.start();
             }
             else {
                 this.stop();
@@ -118,7 +118,9 @@ class PhotoCarousel {
         e.stopPropagation();
         this.state.mouseMove = getPointerPosition(e);
         // ANIMÁCIA
-        Σ(this.state.mouseMove.x - this.state.mouseDown.x, n => (n * 100) / this.PhotoCarouselElement.clientWidth, n => n + this.state.mouseDownTranslateX, n => this.animation.start({ translateX: n }));
+        Σ(this.state.mouseMove.x - this.state.mouseDown.x, n => (n * 100) / this.PhotoCarouselElement.clientWidth, n => n + this.state.mouseDownTranslateX, n => this.animation.start({
+            translateX: n,
+        }));
     };
     // ✅
     onUp = (e) => {
@@ -167,7 +169,10 @@ class PhotoCarousel {
     // ✅
     #getPhotoAtIndex(i) {
         const j = this.#getIndex(i);
-        return { ...this.state.photos[j], index: j };
+        return {
+            ...this.state.photos[j],
+            index: j,
+        };
     }
     // ✅
     #setCurrentIndex(i) {
@@ -176,7 +181,9 @@ class PhotoCarousel {
         // [2/3]
         this.PhotoCarouselRowElement.replaceChildren(createHtmlImageElement(this.#getPhotoAtIndex(this.state.currentIndex - 1)), createHtmlImageElement(this.#getPhotoAtIndex(this.state.currentIndex)), createHtmlImageElement(this.#getPhotoAtIndex(this.state.currentIndex + 1)));
         // [3/3]
-        this.animation.start({ translateX: -100 });
+        this.animation.start({
+            translateX: -100,
+        });
     }
 }
 export default PhotoCarousel;

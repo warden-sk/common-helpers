@@ -78,7 +78,7 @@ class PhotoCarousel {
       const __TEST__3__ = __TEST__2__[0]!;
 
       if (__TEST__3__.isIntersecting) {
-        // this.start();
+        this.start();
       } else {
         this.stop();
       }
