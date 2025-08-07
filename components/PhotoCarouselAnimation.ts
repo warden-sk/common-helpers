@@ -45,6 +45,8 @@ class PhotoCarouselAnimation {
 
     this.WhereAmIElement1.style.width = `${$3}%`;
 
+    if (this.state.photos.length > 20) return;
+
     this.WhereAmIElement2.replaceChildren(
       ...this.state.photos.map((photo, i) => {
         const div = window.document.createElement('div');
