@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 07.08.2025
+ * Last Updated: 11.08.2025
  */
 import isNumber from '../validation/isNumber.js';
 import Σ from '../Σ.js';
@@ -42,7 +42,7 @@ class PhotoCarousel {
         this.element = document.getElementById(id);
         if (this.element instanceof HTMLAnchorElement) {
             this.element.addEventListener('click', e => {
-                e.preventDefault();
+                // e.preventDefault();
             });
             this.element.draggable = false;
         }
@@ -103,10 +103,17 @@ class PhotoCarousel {
             translateX: -200,
         });
     }
+    onClick = (e) => {
+        if (this.state.__TEST__) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    };
     // 🟢
     onDown = (e) => {
         if (!this.state.isStarted)
             return;
+        this.state.__TEST__ = false;
         this.animation.stop();
         this.PhotoCarouselElement.style.cursor = 'grabbing';
         this.state.isMouseDown = true;
@@ -117,6 +124,7 @@ class PhotoCarousel {
     onMove = (e) => {
         if (!this.state.isMouseDown)
             return;
+        this.state.__TEST__ = true;
         e.stopPropagation(); // DOKONČIŤ
         this.state.mouseMove = getPointerPosition(e);
         // ANIMÁCIA

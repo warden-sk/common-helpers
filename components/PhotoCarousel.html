@@ -1,6 +1,6 @@
 <!--
   ~ Copyright 2025 Marek Kobida
-  ~ Last Updated: 07.08.2025
+  ~ Last Updated: 11.08.2025
   -->
 
 <!doctype html>
@@ -117,6 +117,8 @@
       });
 
       // [2/3]
+      photoCarousel.element.addEventListener('click', photoCarousel.onClick);
+
       if ('ontouchstart' in window) {
         photoCarousel.element.addEventListener('touchend', photoCarousel.onUp);
         photoCarousel.element.addEventListener('touchmove', photoCarousel.onMove);

@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 07.08.2025
+ * Last Updated: 11.08.2025
  */
 
 import type { PhotoCarouselPhoto, PhotoCarouselState } from './types.js';
@@ -54,7 +54,7 @@ class PhotoCarousel {
 
     if (this.element instanceof HTMLAnchorElement) {
       this.element.addEventListener('click', e => {
-        e.preventDefault();
+        // e.preventDefault();
       });
 
       this.element.draggable = false;
@@ -127,9 +127,18 @@ class PhotoCarousel {
     });
   }
 
+  onClick = (e: MouseEvent): void => {
+    if (this.state.__TEST__) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  };
+
   // 🟢
   onDown = (e: MouseEvent | TouchEvent): void => {
     if (!this.state.isStarted) return;
+
+    this.state.__TEST__ = false;
 
     this.animation.stop();
 
@@ -143,6 +152,8 @@ class PhotoCarousel {
   // 🟢
   onMove = (e: MouseEvent | TouchEvent): void => {
     if (!this.state.isMouseDown) return;
+
+    this.state.__TEST__ = true;
 
     e.stopPropagation(); // DOKONČIŤ
 
