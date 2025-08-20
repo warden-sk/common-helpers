@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 07.08.2025
+ * Last Updated: 20.08.2025
  */
 
 import type PhotoCarousel from './PhotoCarousel.js';
@@ -10,9 +10,11 @@ import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';
 
 class PhotoCarouselAnimation {
+  id?: number;
+
   readonly PhotoCarouselRowElement: HTMLDivElement;
 
-  state: PhotoCarouselState;
+  readonly state: PhotoCarouselState;
 
   readonly WhereAmIElement1: HTMLDivElement;
 
@@ -77,7 +79,7 @@ class PhotoCarouselAnimation {
         });
 
         if (t < 1) {
-          this.state.animationId = requestAnimationFrame($1);
+          this.id = requestAnimationFrame($1);
         } else {
           this.stop();
 
@@ -85,7 +87,7 @@ class PhotoCarouselAnimation {
         }
       };
 
-      this.state.animationId = requestAnimationFrame($1);
+      this.id = requestAnimationFrame($1);
     } else {
       this.stop();
 
@@ -97,11 +99,11 @@ class PhotoCarouselAnimation {
 
   // 🟢
   stop(): void {
-    if (!isNumber(this.state.animationId)) return;
+    if (!isNumber(this.id)) return;
 
-    cancelAnimationFrame(this.state.animationId);
+    cancelAnimationFrame(this.id);
 
-    this.state.animationId = undefined;
+    this.id = undefined;
   }
 }
 

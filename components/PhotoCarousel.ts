@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 11.08.2025
+ * Last Updated: 20.08.2025
  */
 
 import type { PhotoCarouselPhoto, PhotoCarouselState } from './types.js';
@@ -95,7 +95,7 @@ class PhotoCarousel {
 
   // 🟢
   moveCurrent(): void {
-    if (!this.state.isStarted || isNumber(this.state.animationId)) return;
+    if (!this.state.isStarted || isNumber(this.animation.id)) return;
 
     this.animation.start({
       onTransitionEnd: () => {},
@@ -105,7 +105,7 @@ class PhotoCarousel {
 
   // 🟢
   moveLeft(): void {
-    if (!this.state.isStarted || isNumber(this.state.animationId)) return;
+    if (!this.state.isStarted || isNumber(this.animation.id)) return;
 
     this.animation.start({
       onTransitionEnd: () => {
@@ -117,7 +117,7 @@ class PhotoCarousel {
 
   // 🟢
   moveRight(): void {
-    if (!this.state.isStarted || isNumber(this.state.animationId)) return;
+    if (!this.state.isStarted || isNumber(this.animation.id)) return;
 
     this.animation.start({
       onTransitionEnd: () => {

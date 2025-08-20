@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 07.08.2025
+ * Last Updated: 20.08.2025
  */
 
 // 🟢
@@ -15,11 +15,9 @@ type PhotoCarouselPhoto = {
 
 /**
  * DOKONČIŤ
- * `animationId` → `PhotoCarouselAnimation`
  * `mouse` → `pointer`
  */
 type PhotoCarouselState = {
-  animationId?: number;
   currentIndex: number;
   currentTranslateX: number; // %
   isMouseDown: boolean;
