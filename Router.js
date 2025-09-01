@@ -3,16 +3,14 @@
  * Last Updated: 01.09.2025
  */
 import ReactDOMServer from 'react-dom/server';
+import RouterHtmlTemplate from './RouterHtmlTemplate.js';
+import isError from './validation/isError.js';
 import isPromise from './validation/isPromise.js';
 import isReadableStream from './validation/isReadableStream.js';
 import isString from './validation/isString.js';
 import * as λ from './λ.js';
 class Router {
-    name;
     routes = [];
-    constructor(name) {
-        this.name = name;
-    }
     addRoute(method, url, action) {
         this.routes.push({
             action,
@@ -37,11 +35,17 @@ class Router {
             html: input => {
                 response.headers.set('Content-Type', 'text/html');
                 response.readableStream =
-                    //                                                ↓ "&" → "&amp;"
-                    isString(input) ? this.getReadableStream(input) : ReactDOMServer.renderToReadableStream(input);
+                    isString(input) ?
+                        this.getReadableStream(input)
+                        //             ↓ "&" → "&amp;"
+                        : ReactDOMServer.renderToReadableStream(RouterHtmlTemplate({
+                            $: input,
+                            request,
+                            response,
+                        }));
             },
             htmlOptions: {
-                openGraph: {},
+                useHtmlTemplate: true,
             },
             json: input => {
                 response.headers.set('Content-Type', 'application/json');
@@ -68,7 +72,7 @@ class Router {
         }
         catch (error) {
             response.statusCode = 500;
-            response.text(error instanceof Error ? error.message : 'The request is not valid.');
+            response.text(isError(error) ? error.message : 'The request is not valid.');
         }
         return response;
     }

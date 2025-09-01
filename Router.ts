@@ -9,6 +9,8 @@ import ReactDOMServer from 'react-dom/server';
 
 import type NewUrl from './NewUrl/index.js';
 
+import RouterHtmlTemplate from './RouterHtmlTemplate.js';
+import isError from './validation/isError.js';
 import isPromise from './validation/isPromise.js';
 import isReadableStream from './validation/isReadableStream.js';
 import isString from './validation/isString.js';
@@ -17,7 +19,7 @@ import * as λ from './λ.js';
 type HtmlOptions = {
   description?: string;
   keywords?: string;
-  openGraph: {
+  openGraph?: {
     description?: string;
     image?:
       | {
@@ -32,6 +34,7 @@ type HtmlOptions = {
     url?: string;
   };
   title?: string;
+  useHtmlTemplate?: boolean;
 };
 
 /**
@@ -71,8 +74,6 @@ type RouterResponse = {
 class Router {
   routes: Route[] = [];
 
-  constructor(public name?: string) {}
-
   addRoute(method: string, url: string, action: RouteAction): this {
     this.routes.push({
       action,
@@ -102,11 +103,19 @@ class Router {
         response.headers.set('Content-Type', 'text/html');
 
         response.readableStream =
-          //                                                ↓ "&" → "&amp;"
-          isString(input) ? this.getReadableStream(input) : ReactDOMServer.renderToReadableStream(input);
+          isString(input) ?
+            this.getReadableStream(input)
+            //             ↓ "&" → "&amp;"
+          : ReactDOMServer.renderToReadableStream(
+              RouterHtmlTemplate({
+                $: input,
+                request,
+                response,
+              }),
+            );
       },
       htmlOptions: {
-        openGraph: {},
+        useHtmlTemplate: true,
       },
       json: input => {
         response.headers.set('Content-Type', 'application/json');
@@ -138,7 +147,7 @@ class Router {
       response.text('The page does not exist.');
     } catch (error) {
       response.statusCode = 500;
-      response.text(error instanceof Error ? error.message : 'The request is not valid.');
+      response.text(isError(error) ? error.message : 'The request is not valid.');
     }
 
     return response;
