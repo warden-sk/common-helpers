@@ -32,7 +32,7 @@ class Router {
             headers: new Headers({
                 'Content-Type': 'text/plain',
             }),
-            html: input => {
+            html: (input, htmlOptions) => {
                 response.headers.set('Content-Type', 'text/html');
                 response.readableStream =
                     isString(input) ?
@@ -40,12 +40,10 @@ class Router {
                         //             ↓ "&" → "&amp;"
                         : ReactDOMServer.renderToReadableStream(RouterHtmlTemplate({
                             $: input,
+                            htmlOptions,
                             request,
                             response,
                         }));
-            },
-            htmlOptions: {
-                useHtmlTemplate: true,
             },
             json: input => {
                 response.headers.set('Content-Type', 'application/json');

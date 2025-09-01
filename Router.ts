@@ -63,8 +63,7 @@ type RouterRequest = {
 
 type RouterResponse = {
   headers: Headers;
-  html: (input: React.ReactNode) => void;
-  htmlOptions: HtmlOptions;
+  html: (input: React.ReactNode, htmlOptions?: HtmlOptions) => void;
   json: (input: unknown) => void;
   readableStream?: Promise<ReadableStream> | ReadableStream; // DOKONČIŤ
   statusCode: number;
@@ -99,7 +98,7 @@ class Router {
       headers: new Headers({
         'Content-Type': 'text/plain',
       }),
-      html: input => {
+      html: (input, htmlOptions) => {
         response.headers.set('Content-Type', 'text/html');
 
         response.readableStream =
@@ -109,13 +108,11 @@ class Router {
           : ReactDOMServer.renderToReadableStream(
               RouterHtmlTemplate({
                 $: input,
+                htmlOptions,
                 request,
                 response,
               }),
             );
-      },
-      htmlOptions: {
-        useHtmlTemplate: true,
       },
       json: input => {
         response.headers.set('Content-Type', 'application/json');

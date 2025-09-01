@@ -19,10 +19,8 @@ bun.test('[1]', async () => {
 
   // [2] ROUTE(S)
   router.addRoute('GET', '/html', (request, response) => {
-    response.htmlOptions = { useHtmlTemplate: false };
-
     //            ↓ React (JSX)
-    response.html(<h1>{request.url.input}</h1>);
+    response.html(<h1>{request.url.input}</h1>, { useHtmlTemplate: false });
 
     // OR
     // await response.html(`<h1>${request.url.input}</h1>`);

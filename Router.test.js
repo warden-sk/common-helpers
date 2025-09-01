@@ -13,9 +13,8 @@ bun.test('[1]', async () => {
     const router = new Router();
     // [2] ROUTE(S)
     router.addRoute('GET', '/html', (request, response) => {
-        response.htmlOptions = { useHtmlTemplate: false };
         //            ↓ React (JSX)
-        response.html(React.createElement("h1", null, request.url.input));
+        response.html(React.createElement("h1", null, request.url.input), { useHtmlTemplate: false });
         // OR
         // await response.html(`<h1>${request.url.input}</h1>`);
     });
