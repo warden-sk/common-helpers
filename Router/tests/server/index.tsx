@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.09.2025
+ * Last Updated: 02.09.2025
  */
 
 import React from 'react';
@@ -36,11 +36,10 @@ Bun.serve({
     if (response.statusCode !== 200) {
       const clientResponse = await clientRouter.getResponse(request);
 
+      // READABLE STREAM
       const html = await ReactDOMServer.renderToReadableStream(
-        <RouterHtmlTemplate htmlOptions={{ title: '' }} request={request} response={clientResponse} />,
+        <RouterHtmlTemplate request={request} response={clientResponse} />,
       );
-
-      response.headers.set('Content-Type', 'text/html');
 
       return new Response(html, { headers: response.headers, status: clientResponse.statusCode });
     }

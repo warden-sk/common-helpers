@@ -1,9 +1,9 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.09.2025
+ * Last Updated: 02.09.2025
  */
+import React from 'react';
 import isError from '../validation/isError.js';
-import isFunction from '../validation/isFunction.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 class Router {
@@ -27,10 +27,11 @@ class Router {
                     response.bytes = new TextEncoder().encode(input);
                 }
                 else {
-                    response.component = async () => input;
+                    response.component = input;
                 }
                 response.headers.set('Content-Type', 'text/html');
             },
+            htmlOptions: {},
             json: input => {
                 response.bytes = new TextEncoder().encode(λ.encodeJSON(input));
                 response.headers.set('Content-Type', 'application/json');
@@ -46,7 +47,7 @@ class Router {
                 const newRouteUrl = `${request.url.host}${route.url}`;
                 if (request.url.test(newRouteUrl) && route.method === request.method) {
                     await route.action(request, response);
-                    if (response.bytes.length || isFunction(response.component)) {
+                    if (response.bytes.length || React.isValidElement(response.component)) {
                         return response;
                     }
                 }

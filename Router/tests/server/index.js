@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.09.2025
+ * Last Updated: 02.09.2025
  */
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -26,8 +26,8 @@ Bun.serve({
         // [2.1] IF THE SERVER RESPONSE IS NOT VALID, USE THE CLIENT ONE
         if (response.statusCode !== 200) {
             const clientResponse = await clientRouter.getResponse(request);
-            const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { htmlOptions: { title: '' }, request: request, response: clientResponse }));
-            response.headers.set('Content-Type', 'text/html');
+            // READABLE STREAM
+            const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { request: request, response: clientResponse }));
             return new Response(html, { headers: response.headers, status: clientResponse.statusCode });
         }
         return new Response('lol', { headers: response.headers, status: response.statusCode });

@@ -1,14 +1,13 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.09.2025
+ * Last Updated: 02.09.2025
  */
 
-import type React from 'react';
+import React from 'react';
 
 import type NewUrl from '../NewUrl/index.js';
 
 import isError from '../validation/isError.js';
-import isFunction from '../validation/isFunction.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 
@@ -29,7 +28,7 @@ type HtmlOptions = {
     title?: string;
     url?: string;
   };
-  title: string;
+  title?: string;
 };
 
 /**
@@ -55,9 +54,10 @@ type RouterRequest = {
 
 type RouterResponse = {
   bytes: Uint8Array;
-  component?: () => React.ReactNode;
+  component?: React.ReactNode;
   headers: Headers;
   html: (input: React.ReactNode) => void;
+  htmlOptions: HtmlOptions;
   json: (input: unknown) => void;
   statusCode: number;
   text: (input: string) => void;
@@ -86,11 +86,12 @@ class Router {
         if (isString(input)) {
           response.bytes = new TextEncoder().encode(input);
         } else {
-          response.component = async () => input;
+          response.component = input;
         }
 
         response.headers.set('Content-Type', 'text/html');
       },
+      htmlOptions: {},
       json: input => {
         response.bytes = new TextEncoder().encode(λ.encodeJSON(input));
         response.headers.set('Content-Type', 'application/json');
@@ -109,7 +110,7 @@ class Router {
         if (request.url.test(newRouteUrl) && route.method === request.method) {
           await route.action(request, response);
 
-          if (response.bytes.length || isFunction(response.component)) {
+          if (response.bytes.length || React.isValidElement(response.component)) {
             return response;
           }
         }
