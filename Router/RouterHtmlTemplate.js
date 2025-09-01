@@ -3,8 +3,8 @@
  * Last Updated: 01.09.2025
  */
 import React from 'react';
-import isString from './validation/isString.js';
-import * as λ from './λ.js';
+import isString from '../validation/isString.js';
+import * as λ from '../λ.js';
 function RouterHtmlTemplate({ children, htmlOptions, request, response }) {
     if (htmlOptions?.useHtmlTemplate ?? true) {
         return (React.createElement("html", { lang: "sk" },

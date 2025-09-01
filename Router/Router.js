@@ -4,12 +4,12 @@
  */
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
+import isError from '../validation/isError.js';
+import isPromise from '../validation/isPromise.js';
+import isReadableStream from '../validation/isReadableStream.js';
+import isString from '../validation/isString.js';
+import * as λ from '../λ.js';
 import RouterHtmlTemplate from './RouterHtmlTemplate.js';
-import isError from './validation/isError.js';
-import isPromise from './validation/isPromise.js';
-import isReadableStream from './validation/isReadableStream.js';
-import isString from './validation/isString.js';
-import * as λ from './λ.js';
 class Router {
     routes = [];
     addRoute(method, url, action) {

@@ -4,10 +4,10 @@
  */
 import * as bun from 'bun:test';
 import React from 'react';
-import NewUrl from './NewUrl/index.js';
+import NewUrl from '../NewUrl/index.js';
+import isPromise from '../validation/isPromise.js';
+import isReadableStream from '../validation/isReadableStream.js';
 import Router from './Router.js';
-import isPromise from './validation/isPromise.js';
-import isReadableStream from './validation/isReadableStream.js';
 // [1] ROUTER
 const router = new Router();
 const testUrl = async (input, output, statusCode) => {

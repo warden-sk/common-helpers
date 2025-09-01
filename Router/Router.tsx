@@ -6,14 +6,14 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-import type NewUrl from './NewUrl/index.js';
+import type NewUrl from '../NewUrl/index.js';
 
+import isError from '../validation/isError.js';
+import isPromise from '../validation/isPromise.js';
+import isReadableStream from '../validation/isReadableStream.js';
+import isString from '../validation/isString.js';
+import * as λ from '../λ.js';
 import RouterHtmlTemplate from './RouterHtmlTemplate.js';
-import isError from './validation/isError.js';
-import isPromise from './validation/isPromise.js';
-import isReadableStream from './validation/isReadableStream.js';
-import isString from './validation/isString.js';
-import * as λ from './λ.js';
 
 type HtmlOptions = {
   description?: string;

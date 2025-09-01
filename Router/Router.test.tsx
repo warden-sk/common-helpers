@@ -8,10 +8,10 @@ import React from 'react';
 
 import type { RouterRequest } from './Router.js';
 
-import NewUrl from './NewUrl/index.js';
+import NewUrl from '../NewUrl/index.js';
+import isPromise from '../validation/isPromise.js';
+import isReadableStream from '../validation/isReadableStream.js';
 import Router from './Router.js';
-import isPromise from './validation/isPromise.js';
-import isReadableStream from './validation/isReadableStream.js';
 
 // [1] ROUTER
 const router = new Router();

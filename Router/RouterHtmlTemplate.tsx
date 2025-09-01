@@ -7,8 +7,8 @@ import React from 'react';
 
 import type { HtmlOptions, RouterRequest, RouterResponse } from './Router.js';
 
-import isString from './validation/isString.js';
-import * as λ from './λ.js';
+import isString from '../validation/isString.js';
+import * as λ from '../λ.js';
 
 type I = {
   children: React.ReactNode;
