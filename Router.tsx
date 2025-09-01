@@ -3,8 +3,7 @@
  * Last Updated: 01.09.2025
  */
 
-import type React from 'react';
-
+import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
 import type NewUrl from './NewUrl/index.js';
@@ -106,12 +105,9 @@ class Router {
             this.getReadableStream(input)
             //             ↓ "&" → "&amp;"
           : ReactDOMServer.renderToReadableStream(
-              RouterHtmlTemplate({
-                $: input,
-                htmlOptions,
-                request,
-                response,
-              }),
+              <RouterHtmlTemplate htmlOptions={htmlOptions} request={request} response={response}>
+                {input}
+              </RouterHtmlTemplate>,
             );
       },
       json: input => {

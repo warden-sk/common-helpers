@@ -11,7 +11,7 @@ import isString from './validation/isString.js';
 import * as λ from './λ.js';
 
 type I = {
-  $: React.ReactNode;
+  children: React.ReactNode;
   htmlOptions?: HtmlOptions;
   request: RouterRequest;
   response: RouterResponse;
@@ -19,7 +19,7 @@ type I = {
 
 type O = React.ReactNode;
 
-function RouterHtmlTemplate({ $, htmlOptions, request, response }: I): O {
+function RouterHtmlTemplate({ children, htmlOptions, request, response }: I): O {
   if (htmlOptions?.useHtmlTemplate ?? true) {
     return (
       <html lang="sk">
@@ -59,7 +59,7 @@ function RouterHtmlTemplate({ $, htmlOptions, request, response }: I): O {
           {isString(htmlOptions?.title) && <title>{htmlOptions.title}</title>}
         </head>
         <body>
-          <div id="root">{$}</div>
+          <div id="root">{children}</div>
 
           <script src="/index.js" type="module"></script>
         </body>
@@ -67,7 +67,7 @@ function RouterHtmlTemplate({ $, htmlOptions, request, response }: I): O {
     );
   }
 
-  return $;
+  return children;
 }
 
 export default RouterHtmlTemplate;

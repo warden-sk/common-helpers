@@ -2,6 +2,7 @@
  * Copyright 2025 Marek Kobida
  * Last Updated: 01.09.2025
  */
+import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 import RouterHtmlTemplate from './RouterHtmlTemplate.js';
 import isError from './validation/isError.js';
@@ -38,12 +39,7 @@ class Router {
                     isString(input) ?
                         this.getReadableStream(input)
                         //             ↓ "&" → "&amp;"
-                        : ReactDOMServer.renderToReadableStream(RouterHtmlTemplate({
-                            $: input,
-                            htmlOptions,
-                            request,
-                            response,
-                        }));
+                        : ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { htmlOptions: htmlOptions, request: request, response: response }, input));
             },
             json: input => {
                 response.headers.set('Content-Type', 'application/json');

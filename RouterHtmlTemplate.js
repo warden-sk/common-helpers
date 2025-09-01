@@ -5,7 +5,7 @@
 import React from 'react';
 import isString from './validation/isString.js';
 import * as λ from './λ.js';
-function RouterHtmlTemplate({ $, htmlOptions, request, response }) {
+function RouterHtmlTemplate({ children, htmlOptions, request, response }) {
     if (htmlOptions?.useHtmlTemplate ?? true) {
         return (React.createElement("html", { lang: "sk" },
             React.createElement("head", null,
@@ -24,9 +24,9 @@ function RouterHtmlTemplate({ $, htmlOptions, request, response }) {
                 React.createElement("script", null, `window.response = ${λ.encodeJSON(response)};`),
                 isString(htmlOptions?.title) && React.createElement("title", null, htmlOptions.title)),
             React.createElement("body", null,
-                React.createElement("div", { id: "root" }, $),
+                React.createElement("div", { id: "root" }, children),
                 React.createElement("script", { src: "/index.js", type: "module" }))));
     }
-    return $;
+    return children;
 }
 export default RouterHtmlTemplate;
