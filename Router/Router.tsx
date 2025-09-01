@@ -3,17 +3,14 @@
  * Last Updated: 01.09.2025
  */
 
-import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+import type React from 'react';
 
 import type NewUrl from '../NewUrl/index.js';
 
 import isError from '../validation/isError.js';
-import isPromise from '../validation/isPromise.js';
-import isReadableStream from '../validation/isReadableStream.js';
+import isFunction from '../validation/isFunction.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
-import RouterHtmlTemplate from './RouterHtmlTemplate.js';
 
 type HtmlOptions = {
   description?: string;
@@ -33,7 +30,6 @@ type HtmlOptions = {
     url?: string;
   };
   title: string;
-  useHtmlTemplate?: boolean;
 };
 
 /**
@@ -58,10 +54,11 @@ type RouterRequest = {
 };
 
 type RouterResponse = {
+  bytes: Uint8Array;
+  component?: () => React.ReactNode;
   headers: Headers;
-  html: (input: React.ReactNode, htmlOptions: HtmlOptions) => void;
+  html: (input: React.ReactNode) => void;
   json: (input: unknown) => void;
-  readableStream?: Promise<ReadableStream> | ReadableStream; // DOKONČIŤ
   statusCode: number;
   text: (input: string) => void;
 };
@@ -79,42 +76,29 @@ class Router {
     return this;
   }
 
-  getReadableStream(input: string): ReadableStream {
-    return new ReadableStream({
-      start($) {
-        $.enqueue(new TextEncoder().encode(input));
-
-        $.close();
-      },
-    });
-  }
-
   async getResponse(request: RouterRequest): Promise<RouterResponse> {
     const response: RouterResponse = {
+      bytes: new Uint8Array(),
       headers: new Headers({
         'Content-Type': 'text/plain',
       }),
-      html: (input, htmlOptions) => {
-        response.headers.set('Content-Type', 'text/html');
+      html: input => {
+        if (isString(input)) {
+          response.bytes = new TextEncoder().encode(input);
+        } else {
+          response.component = async () => input;
+        }
 
-        response.readableStream =
-          isString(input) ?
-            this.getReadableStream(input)
-            //             ↓ "&" → "&amp;"
-          : ReactDOMServer.renderToReadableStream(
-              <RouterHtmlTemplate htmlOptions={htmlOptions} request={request} response={response}>
-                {input}
-              </RouterHtmlTemplate>,
-            );
+        response.headers.set('Content-Type', 'text/html');
       },
       json: input => {
+        response.bytes = new TextEncoder().encode(λ.encodeJSON(input));
         response.headers.set('Content-Type', 'application/json');
-        response.readableStream = this.getReadableStream(λ.encodeJSON(input));
       },
       statusCode: 200,
       text: input => {
+        response.bytes = new TextEncoder().encode(input);
         response.headers.set('Content-Type', 'text/plain');
-        response.readableStream = this.getReadableStream(input);
       },
     };
 
@@ -125,17 +109,17 @@ class Router {
         if (request.url.test(newRouteUrl) && route.method === request.method) {
           await route.action(request, response);
 
-          if (isPromise(response.readableStream) || isReadableStream(response.readableStream)) {
+          if (response.bytes.length || isFunction(response.component)) {
             return response;
           }
         }
       }
 
       response.statusCode = 404;
-      response.html('The page does not exist.', { title: 'Error' });
+      response.html('The page does not exist.');
     } catch (error) {
       response.statusCode = 500;
-      response.html(isError(error) ? error.message : 'The request is not valid.', { title: 'Error' });
+      response.html(isError(error) ? error.message : 'The request is not valid.');
     }
 
     return response;
