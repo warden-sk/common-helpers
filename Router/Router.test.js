@@ -14,7 +14,7 @@ const testUrl = async (input, output, statusCode) => {
     // [3] REQUEST
     const request = {
         formData: new FormData(),
-        headers: new Headers({ Accept: 'application/json' }),
+        headers: new Headers(),
         json: {},
         method: 'GET',
         url: new NewUrl(input),

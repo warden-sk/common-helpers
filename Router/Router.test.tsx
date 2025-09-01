@@ -20,7 +20,7 @@ const testUrl = async (input: string, output: string, statusCode: number): Promi
   // [3] REQUEST
   const request: RouterRequest = {
     formData: new FormData(),
-    headers: new Headers({ Accept: 'application/json' }),
+    headers: new Headers(),
     json: {},
     method: 'GET',
     url: new NewUrl(input),
