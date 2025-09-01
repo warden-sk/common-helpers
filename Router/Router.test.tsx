@@ -21,7 +21,6 @@ const testUrl = async (input: string, output: string, statusCode: number): Promi
   const request: RouterRequest = {
     formData: new FormData(),
     headers: new Headers(),
-    json: {},
     method: 'GET',
     url: new NewUrl(input),
   };
@@ -49,7 +48,7 @@ bun.test('[1] HTML & JSON & TEXT', async () => {
   // [2] ROUTE(S)
   router.addRoute('GET', '/html', (request, response) => {
     //            ↓ React (JSX)
-    response.html(<h1>{request.url.input}</h1>, { useHtmlTemplate: false });
+    response.html(<h1>{request.url.input}</h1>, { title: '', useHtmlTemplate: false });
 
     // OR
     // await response.html(`<h1>${request.url.input}</h1>`);

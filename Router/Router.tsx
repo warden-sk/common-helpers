@@ -32,7 +32,7 @@ type HtmlOptions = {
     title?: string;
     url?: string;
   };
-  title?: string;
+  title: string;
   useHtmlTemplate?: boolean;
 };
 
@@ -53,16 +53,13 @@ type RouteAction = (request: RouterRequest, response: RouterResponse) => Promise
 type RouterRequest = {
   formData: FormData;
   headers: Headers;
-  json: {
-    [key: string]: unknown;
-  };
   method: string;
   url: NewUrl;
 };
 
 type RouterResponse = {
   headers: Headers;
-  html: (input: React.ReactNode, htmlOptions?: HtmlOptions) => void;
+  html: (input: React.ReactNode, htmlOptions: HtmlOptions) => void;
   json: (input: unknown) => void;
   readableStream?: Promise<ReadableStream> | ReadableStream; // DOKONČIŤ
   statusCode: number;
@@ -112,16 +109,23 @@ class Router {
       },
       json: input => {
         response.headers.set('Content-Type', 'application/json');
-
         response.readableStream = this.getReadableStream(λ.encodeJSON(input));
       },
       statusCode: 200,
       text: input => {
         response.headers.set('Content-Type', 'text/plain');
-
         response.readableStream = this.getReadableStream(input);
       },
     };
+
+    const file = Bun.file(`/Users/marekkobida/Documents/warden/common-helpers/Router/tests/client${request.url.path}`);
+
+    if (await file.exists()) {
+      response.headers.set('Content-Type', file.type);
+      response.readableStream = file.stream();
+
+      return response;
+    }
 
     try {
       for (const route of this.routes) {
@@ -137,10 +141,10 @@ class Router {
       }
 
       response.statusCode = 404;
-      response.text('The page does not exist.');
+      response.html('The page does not exist.', { title: 'Error' });
     } catch (error) {
       response.statusCode = 500;
-      response.text(isError(error) ? error.message : 'The request is not valid.');
+      response.html(isError(error) ? error.message : 'The request is not valid.', { title: 'Error' });
     }
 
     return response;

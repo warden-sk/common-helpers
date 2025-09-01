@@ -15,7 +15,6 @@ const testUrl = async (input, output, statusCode) => {
     const request = {
         formData: new FormData(),
         headers: new Headers(),
-        json: {},
         method: 'GET',
         url: new NewUrl(input),
     };
@@ -36,7 +35,7 @@ bun.test('[1] HTML & JSON & TEXT', async () => {
     // [2] ROUTE(S)
     router.addRoute('GET', '/html', (request, response) => {
         //            ↓ React (JSX)
-        response.html(React.createElement("h1", null, request.url.input), { useHtmlTemplate: false });
+        response.html(React.createElement("h1", null, request.url.input), { title: '', useHtmlTemplate: false });
         // OR
         // await response.html(`<h1>${request.url.input}</h1>`);
     });
