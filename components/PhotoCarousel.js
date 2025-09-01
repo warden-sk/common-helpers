@@ -1,8 +1,7 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 11.08.2025
+ * Last Updated: 21.08.2025
  */
-import isNumber from '../validation/isNumber.js';
 import Σ from '../Σ.js';
 import createHtmlImageElement from './createHtmlImageElement.js';
 import getPointerPosition from './getPointerPosition.js';
@@ -74,7 +73,7 @@ class PhotoCarousel {
     }
     // 🟢
     moveCurrent() {
-        if (!this.state.isStarted || isNumber(this.state.animationId))
+        if (!this.state.isStarted || this.animation.hasId())
             return;
         this.animation.start({
             onTransitionEnd: () => { },
@@ -83,7 +82,7 @@ class PhotoCarousel {
     }
     // 🟢
     moveLeft() {
-        if (!this.state.isStarted || isNumber(this.state.animationId))
+        if (!this.state.isStarted || this.animation.hasId())
             return;
         this.animation.start({
             onTransitionEnd: () => {
@@ -94,7 +93,7 @@ class PhotoCarousel {
     }
     // 🟢
     moveRight() {
-        if (!this.state.isStarted || isNumber(this.state.animationId))
+        if (!this.state.isStarted || this.animation.hasId())
             return;
         this.animation.start({
             onTransitionEnd: () => {
