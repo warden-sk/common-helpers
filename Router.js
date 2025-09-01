@@ -1,0 +1,76 @@
+/*
+ * Copyright 2025 Marek Kobida
+ * Last Updated: 01.09.2025
+ */
+import ReactDOMServer from 'react-dom/server';
+import isPromise from './validation/isPromise.js';
+import isReadableStream from './validation/isReadableStream.js';
+import isString from './validation/isString.js';
+import * as λ from './λ.js';
+class Router {
+    name;
+    routes = [];
+    constructor(name) {
+        this.name = name;
+    }
+    addRoute(method, url, action) {
+        this.routes.push({
+            action,
+            method,
+            url,
+        });
+        return this;
+    }
+    getReadableStream(input) {
+        return new ReadableStream({
+            start($) {
+                $.enqueue(new TextEncoder().encode(input));
+                $.close();
+            },
+        });
+    }
+    async getResponse(request) {
+        const response = {
+            headers: new Headers({
+                'Content-Type': 'text/plain',
+            }),
+            html: input => {
+                response.headers.set('Content-Type', 'text/html');
+                response.readableStream =
+                    //                                                ↓ "&" → "&amp;"
+                    isString(input) ? this.getReadableStream(input) : ReactDOMServer.renderToReadableStream(input);
+            },
+            htmlOptions: {
+                openGraph: {},
+            },
+            json: input => {
+                response.headers.set('Content-Type', 'application/json');
+                response.readableStream = this.getReadableStream(λ.encodeJSON(input));
+            },
+            statusCode: 200,
+            text: input => {
+                response.headers.set('Content-Type', 'text/plain');
+                response.readableStream = this.getReadableStream(input);
+            },
+        };
+        try {
+            for (const route of this.routes) {
+                const newRouteUrl = `${request.url.host}${route.url}`;
+                if (request.url.test(newRouteUrl) && route.method === request.method) {
+                    await route.action(request, response);
+                    if (isPromise(response.readableStream) || isReadableStream(response.readableStream)) {
+                        return response;
+                    }
+                }
+            }
+            response.statusCode = 404;
+            response.text('The page does not exist.');
+        }
+        catch (error) {
+            response.statusCode = 500;
+            response.text(error instanceof Error ? error.message : 'The request is not valid.');
+        }
+        return response;
+    }
+}
+export default Router;
