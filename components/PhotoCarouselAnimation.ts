@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 20.08.2025
+ * Last Updated: 21.08.2025
  */
 
 import type PhotoCarousel from './PhotoCarousel.js';
@@ -31,8 +31,61 @@ class PhotoCarouselAnimation {
     this.WhereAmIElement2 = $.WhereAmIElement2;
   }
 
+  // 🟢
+  hasId(): this is {
+    id: number;
+  } {
+    return isNumber(this.id);
+  }
+
+  // 🟢
+  start({ onTransitionEnd, translateX }: { onTransitionEnd?: () => void; translateX: number }): void {
+    if (isFunction(onTransitionEnd)) {
+      const { currentTranslateX, transitionDuration, transitionTimingFunction } = this.state;
+
+      const startTime = performance.now();
+
+      const __TEST__0__ = (currentTime: number): void => {
+        // RELATÍVNY ČAS OD ZAČIATKU ANIMÁCIE
+        const t = Math.max(0, Math.min(1, (currentTime - startTime) / transitionDuration));
+
+        // LINEÁRNA INTERPOLÁCIA
+        const newTranslateX = currentTranslateX + (translateX - currentTranslateX) * transitionTimingFunction(t);
+
+        this.#__TEST__0__({
+          translateX: newTranslateX,
+        });
+
+        if (t < 1) {
+          this.id = requestAnimationFrame(__TEST__0__);
+        } else {
+          this.stop();
+
+          onTransitionEnd();
+        }
+      };
+
+      this.id = requestAnimationFrame(__TEST__0__);
+    } else {
+      this.stop();
+
+      this.#__TEST__0__({
+        translateX,
+      });
+    }
+  }
+
+  // 🟢
+  stop(): void {
+    if (!isNumber(this.id)) return;
+
+    cancelAnimationFrame(this.id);
+
+    this.id = undefined;
+  }
+
   // DOKONČIŤ
-  $test({ translateX }: { translateX: number }): void {
+  #__TEST__0__({ translateX }: { translateX: number }): void {
     this.state.currentTranslateX = translateX;
 
     this.PhotoCarouselRowElement.style.transform = `translateX(${this.state.currentTranslateX}%)`;
@@ -58,52 +111,6 @@ class PhotoCarouselAnimation {
         return div;
       }),
     );
-  }
-
-  // 🟢
-  start({ onTransitionEnd, translateX }: { onTransitionEnd?: () => void; translateX: number }): void {
-    if (isFunction(onTransitionEnd)) {
-      const { currentTranslateX, transitionDuration, transitionTimingFunction } = this.state;
-
-      const startTime = performance.now();
-
-      const $1 = (currentTime: number): void => {
-        // RELATÍVNY ČAS OD ZAČIATKU ANIMÁCIE
-        const t = Math.max(0, Math.min(1, (currentTime - startTime) / transitionDuration));
-
-        // LINEÁRNA INTERPOLÁCIA
-        const newTranslateX = currentTranslateX + (translateX - currentTranslateX) * transitionTimingFunction(t);
-
-        this.$test({
-          translateX: newTranslateX,
-        });
-
-        if (t < 1) {
-          this.id = requestAnimationFrame($1);
-        } else {
-          this.stop();
-
-          onTransitionEnd();
-        }
-      };
-
-      this.id = requestAnimationFrame($1);
-    } else {
-      this.stop();
-
-      this.$test({
-        translateX,
-      });
-    }
-  }
-
-  // 🟢
-  stop(): void {
-    if (!isNumber(this.id)) return;
-
-    cancelAnimationFrame(this.id);
-
-    this.id = undefined;
   }
 }
 

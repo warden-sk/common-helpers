@@ -1,11 +1,10 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 20.08.2025
+ * Last Updated: 21.08.2025
  */
 
 import type { PhotoCarouselPhoto, PhotoCarouselState } from './types.js';
 
-import isNumber from '../validation/isNumber.js';
 import Σ from '../Σ.js';
 import createHtmlImageElement from './createHtmlImageElement.js';
 import getPointerPosition from './getPointerPosition.js';
@@ -95,7 +94,7 @@ class PhotoCarousel {
 
   // 🟢
   moveCurrent(): void {
-    if (!this.state.isStarted || isNumber(this.animation.id)) return;
+    if (!this.state.isStarted || this.animation.hasId()) return;
 
     this.animation.start({
       onTransitionEnd: () => {},
@@ -105,7 +104,7 @@ class PhotoCarousel {
 
   // 🟢
   moveLeft(): void {
-    if (!this.state.isStarted || isNumber(this.animation.id)) return;
+    if (!this.state.isStarted || this.animation.hasId()) return;
 
     this.animation.start({
       onTransitionEnd: () => {
@@ -117,7 +116,7 @@ class PhotoCarousel {
 
   // 🟢
   moveRight(): void {
-    if (!this.state.isStarted || isNumber(this.animation.id)) return;
+    if (!this.state.isStarted || this.animation.hasId()) return;
 
     this.animation.start({
       onTransitionEnd: () => {
