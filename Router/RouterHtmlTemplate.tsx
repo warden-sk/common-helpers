@@ -45,7 +45,7 @@ function RouterHtmlTemplate({ children, htmlOptions, request, response }: I): O 
 
           <script type="importmap">
             {
-              '{"imports":{"common-helpers/":"https://warden-sk.github.io/common-helpers/","react":"https://esm.sh/react@19.1.0","react-dom":"https://esm.sh/react-dom@19.1.0","react-dom/client":"https://esm.sh/react-dom@19.1.0/client"}}'
+              '{"imports":{"common-helpers/":"https://warden-sk.github.io/common-helpers/","react":"https://esm.sh/react@19.1.0","react-dom":"https://esm.sh/react-dom@19.1.0","react-dom/client":"https://esm.sh/react-dom@19.1.0/client","react-dom/server":"https://esm.sh/react-dom@19.1.0/server"}}'
             }
           </script>
 

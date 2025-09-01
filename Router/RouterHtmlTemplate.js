@@ -19,7 +19,7 @@ function RouterHtmlTemplate({ children, htmlOptions, request, response }) {
                 isString(htmlOptions.openGraph?.title) && React.createElement("meta", { content: htmlOptions.openGraph.title, property: "og:title" }),
                 isString(htmlOptions.openGraph?.url) && React.createElement("meta", { content: htmlOptions.openGraph.url, property: "og:url" }),
                 React.createElement("meta", { content: "initial-scale=1, maximum-scale=1, width=device-width", name: "viewport" }),
-                React.createElement("script", { type: "importmap" }, '{"imports":{"common-helpers/":"https://warden-sk.github.io/common-helpers/","react":"https://esm.sh/react@19.1.0","react-dom":"https://esm.sh/react-dom@19.1.0","react-dom/client":"https://esm.sh/react-dom@19.1.0/client"}}'),
+                React.createElement("script", { type: "importmap" }, '{"imports":{"common-helpers/":"https://warden-sk.github.io/common-helpers/","react":"https://esm.sh/react@19.1.0","react-dom":"https://esm.sh/react-dom@19.1.0","react-dom/client":"https://esm.sh/react-dom@19.1.0/client","react-dom/server":"https://esm.sh/react-dom@19.1.0/server"}}'),
                 React.createElement("script", null, `window.request = ${λ.encodeJSON(request)};`),
                 React.createElement("script", null, `window.response = ${λ.encodeJSON(response)};`),
                 React.createElement("title", null, htmlOptions.title)),

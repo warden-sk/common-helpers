@@ -118,15 +118,6 @@ class Router {
       },
     };
 
-    const file = Bun.file(`/Users/marekkobida/Documents/warden/common-helpers/Router/tests/client${request.url.path}`);
-
-    if (await file.exists()) {
-      response.headers.set('Content-Type', file.type);
-      response.readableStream = file.stream();
-
-      return response;
-    }
-
     try {
       for (const route of this.routes) {
         const newRouteUrl = `${request.url.host}${route.url}`;
