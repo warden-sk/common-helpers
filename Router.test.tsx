@@ -13,10 +13,39 @@ import Router from './Router.js';
 import isPromise from './validation/isPromise.js';
 import isReadableStream from './validation/isReadableStream.js';
 
-bun.test('[1]', async () => {
-  // [1] ROUTER
-  const router = new Router();
+// [1] ROUTER
+const router = new Router();
 
+const testUrl = async (input: string, output: string, statusCode: number): Promise<void> => {
+  // [3] REQUEST
+  const request: RouterRequest = {
+    formData: new FormData(),
+    headers: new Headers({ Accept: 'application/json' }),
+    json: {},
+    method: 'GET',
+    url: new NewUrl(input),
+  };
+
+  // [4] RESPONSE
+  const response = await router.getResponse(request);
+
+  bun.expect(response.statusCode).toStrictEqual(statusCode);
+
+  // [4.1] RESPONSE / READABLE STREAM
+  let readableStream = response.readableStream;
+
+  if (isPromise(readableStream)) {
+    readableStream = await readableStream;
+  }
+
+  if (isReadableStream(readableStream)) {
+    const text = await new Response(readableStream).text();
+
+    bun.expect(text).toStrictEqual(output);
+  }
+};
+
+bun.test('[1] HTML & JSON & TEXT', async () => {
   // [2] ROUTE(S)
   router.addRoute('GET', '/html', (request, response) => {
     //            ↓ React (JSX)
@@ -34,36 +63,25 @@ bun.test('[1]', async () => {
     response.text(request.url.input);
   });
 
-  const testUrl = async (input: string, output: string): Promise<void> => {
-    // [3] REQUEST
-    const request: RouterRequest = {
-      formData: new FormData(),
-      headers: new Headers({ Accept: 'application/json' }),
-      json: {},
-      method: 'GET',
-      url: new NewUrl(input),
-    };
+  await testUrl('https://test.sk/html', '<h1>https://test.sk/html</h1>', 200);
+  await testUrl('https://test.sk/json', '{"url":"https://test.sk/json"}', 200);
+  await testUrl('https://test.sk/text', 'https://test.sk/text', 200);
+});
 
-    // [4] RESPONSE
-    const response = await router.getResponse(request);
+bun.test('[2] ERROR(S)', async () => {
+  // NO RESPONSE
+  router.addRoute('GET', '/test/1', () => {});
 
-    bun.expect(response.statusCode).toStrictEqual(200);
+  // isError(error) ? error.message : 'The request is not valid.'
+  router.addRoute('GET', '/test/2', () => {
+    throw new Error('💫');
+  });
 
-    // [4.1] RESPONSE / READABLE STREAM
-    let readableStream = response.readableStream;
+  router.addRoute('GET', '/test/3', () => {
+    throw '';
+  });
 
-    if (isPromise(readableStream)) {
-      readableStream = await readableStream;
-    }
-
-    if (isReadableStream(readableStream)) {
-      const text = await new Response(readableStream).text();
-
-      bun.expect(text).toStrictEqual(output);
-    }
-  };
-
-  await testUrl('https://test.sk/html', '<h1>https://test.sk/html</h1>');
-  await testUrl('https://test.sk/json', '{"url":"https://test.sk/json"}');
-  await testUrl('https://test.sk/text', 'https://test.sk/text');
+  await testUrl('https://test.sk/test/1', 'The page does not exist.', 404);
+  await testUrl('https://test.sk/test/2', '💫', 500);
+  await testUrl('https://test.sk/test/3', 'The request is not valid.', 500);
 });
