@@ -3,20 +3,25 @@
  * Last Updated: 02.09.2025
  */
 
-import Router from 'common-helpers/Router/Router.js';
+import Router from 'common-helpers/Router/Router.js'; // KĽÚČOVÉ
 import React from 'react';
 
 const clientRouter = new Router();
 
 /**
+ * REACT COMPONENT
+ */
+function Product({ id }: { id: string }): React.ReactNode {
+  return <h1>{id}</h1>;
+}
+
+/**
  * ROUTE(S)
  */
 clientRouter.addRoute('GET', '/product/{id}', (request, response) => {
-  function Product(): React.ReactNode {
-    return <h1>{request.url.parameters.id!}</h1>;
-  }
+  const { id } = request.url.parameters;
 
-  response.html(<Product />);
+  response.html(<Product id={id!} />);
 
   response.htmlOptions = { title: 'Product' };
 });
