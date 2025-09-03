@@ -1,16 +1,13 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.09.2025
+ * Last Updated: 03.09.2025
  */
 
 import * as bun from 'bun:test';
-import React from 'react';
 
 import type { RouterRequest } from './Router.js';
 
 import NewUrl from '../NewUrl/index.js';
-import isPromise from '../validation/isPromise.js';
-import isReadableStream from '../validation/isReadableStream.js';
 import Router from './Router.js';
 
 // [1] ROUTER
@@ -28,30 +25,18 @@ const testUrl = async (input: string, output: string, statusCode: number): Promi
   // [4] RESPONSE
   const response = await router.getResponse(request);
 
+  bun.expect(response.body).toStrictEqual({ $: new TextEncoder().encode(output), type: 'bytes' });
+
   bun.expect(response.statusCode).toStrictEqual(statusCode);
-
-  // [4.1] RESPONSE / READABLE STREAM
-  let readableStream = response.readableStream;
-
-  if (isPromise(readableStream)) {
-    readableStream = await readableStream;
-  }
-
-  if (isReadableStream(readableStream)) {
-    const text = await new Response(readableStream).text();
-
-    bun.expect(text).toStrictEqual(output);
-  }
 };
 
 bun.test('[1] HTML & JSON & TEXT', async () => {
   // [2] ROUTE(S)
   router.addRoute('GET', '/html', (request, response) => {
-    //            ↓ React (JSX)
-    response.html(<h1>{request.url.input}</h1>, { title: '', useHtmlTemplate: false });
+    response.html(`<h1>${request.url.input}</h1>`);
 
-    // OR
-    // await response.html(`<h1>${request.url.input}</h1>`);
+    //               ↓ React (JSX)
+    // response.html(<h1>{request.url.input}</h1>);
   });
 
   router.addRoute('GET', '/json', (request, response) => {

@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.09.2025
+ * Last Updated: 03.09.2025
  */
 import React from 'react';
 import isString from '../validation/isString.js';
@@ -24,7 +24,7 @@ function RouterHtmlTemplate({ request, response }) {
             React.createElement("script", null, `window.response = ${λ.encodeJSON(response)};`),
             isString(response.htmlOptions.title) && React.createElement("title", null, response.htmlOptions.title)),
         React.createElement("body", null,
-            React.createElement("div", { id: "client" }, response.component ?? new TextDecoder().decode(response.bytes)),
+            React.createElement("div", { id: "client" }, response.body.$),
             React.createElement("script", { src: "/index.js", type: "module" }))));
 }
 export default RouterHtmlTemplate;

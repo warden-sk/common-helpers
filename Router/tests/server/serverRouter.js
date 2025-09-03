@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.09.2025
+ * Last Updated: 03.09.2025
  */
 import Router from '../../Router.js';
 const serverRouter = new Router();

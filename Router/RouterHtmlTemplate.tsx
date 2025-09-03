@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.09.2025
+ * Last Updated: 03.09.2025
  */
 
 import React from 'react';
@@ -62,7 +62,7 @@ function RouterHtmlTemplate({ request, response }: I): O {
         {isString(response.htmlOptions.title) && <title>{response.htmlOptions.title}</title>}
       </head>
       <body>
-        <div id="client">{response.component ?? new TextDecoder().decode(response.bytes)}</div>
+        <div id="client">{response.body.$}</div>
 
         <script src="/index.js" type="module"></script>
       </body>

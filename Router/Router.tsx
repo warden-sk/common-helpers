@@ -1,9 +1,9 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.09.2025
+ * Last Updated: 03.09.2025
  */
 
-import React from 'react';
+import type React from 'react';
 
 import type NewUrl from '../NewUrl/index.js';
 
@@ -53,8 +53,15 @@ type RouterRequest = {
 };
 
 type RouterResponse = {
-  bytes: Uint8Array;
-  component?: React.ReactNode;
+  body:
+    | {
+        $: React.ReactNode;
+        type: 'react';
+      }
+    | {
+        $: Uint8Array<ArrayBuffer>;
+        type: 'bytes';
+      };
   headers: Headers;
   html: (input: React.ReactNode) => void;
   htmlOptions: HtmlOptions;
@@ -78,27 +85,30 @@ class Router {
 
   async getResponse(request: RouterRequest): Promise<RouterResponse> {
     const response: RouterResponse = {
-      bytes: new Uint8Array(),
+      body: {
+        $: new Uint8Array(),
+        type: 'bytes',
+      },
       headers: new Headers({
         'Content-Type': 'text/plain',
       }),
       html: input => {
         if (isString(input)) {
-          response.bytes = new TextEncoder().encode(input);
+          response.body = { $: new TextEncoder().encode(input), type: 'bytes' };
         } else {
-          response.component = input;
+          response.body = { $: input, type: 'react' };
         }
 
         response.headers.set('Content-Type', 'text/html');
       },
       htmlOptions: {},
       json: input => {
-        response.bytes = new TextEncoder().encode(λ.encodeJSON(input));
+        response.body = { $: new TextEncoder().encode(λ.encodeJSON(input)), type: 'bytes' };
         response.headers.set('Content-Type', 'application/json');
       },
       statusCode: 200,
       text: input => {
-        response.bytes = new TextEncoder().encode(input);
+        response.body = { $: new TextEncoder().encode(input), type: 'bytes' };
         response.headers.set('Content-Type', 'text/plain');
       },
     };
@@ -110,17 +120,17 @@ class Router {
         if (request.url.test(newRouteUrl) && route.method === request.method) {
           await route.action(request, response);
 
-          if (response.bytes.length || React.isValidElement(response.component)) {
+          if ((response.body.type === 'bytes' && response.body.$.length > 0) || response.body.type === 'react') {
             return response;
           }
         }
       }
 
       response.statusCode = 404;
-      response.html('The page does not exist.');
+      response.text('The page does not exist.');
     } catch (error) {
       response.statusCode = 500;
-      response.html(isError(error) ? error.message : 'The request is not valid.');
+      response.text(isError(error) ? error.message : 'The request is not valid.');
     }
 
     return response;

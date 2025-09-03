@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.09.2025
+ * Last Updated: 03.09.2025
  */
 
 import React from 'react';
@@ -15,7 +15,6 @@ import serverRouter from './serverRouter.js';
 
 Bun.serve({
   async fetch({ headers, method, url }) {
-    // [1] REQUEST
     const request: RouterRequest = {
       formData: new FormData(),
       headers,
@@ -23,20 +22,18 @@ Bun.serve({
       url: new NewUrl(url),
     };
 
-    const file = Bun.file(`/Users/marekkobida/Documents/warden/common-helpers/Router/tests/client${request.url.path}`);
+    const file = Bun.file(`./client${request.url.path}`);
 
     if (await file.exists()) {
       return new Response(file);
     }
 
-    // [2] RESPONSE
     const response = await serverRouter.getResponse(request);
 
-    // [2.1] IF THE SERVER RESPONSE IS NOT VALID, USE THE CLIENT ONE
     if (response.statusCode !== 200) {
+      // IF THE SERVER RESPONSE IS NOT VALID, USE THE CLIENT ONE
       const clientResponse = await clientRouter.getResponse(request);
 
-      // READABLE STREAM
       const html = await ReactDOMServer.renderToReadableStream(
         <RouterHtmlTemplate request={request} response={clientResponse} />,
       );
@@ -44,7 +41,15 @@ Bun.serve({
       return new Response(html, { headers: response.headers, status: clientResponse.statusCode });
     }
 
-    return new Response('lol', { headers: response.headers, status: response.statusCode });
+    if (response.body.type === 'bytes') {
+      return new Response(response.body.$, { headers: response.headers, status: response.statusCode });
+    }
+
+    const html = await ReactDOMServer.renderToReadableStream(
+      <RouterHtmlTemplate request={request} response={response} />,
+    );
+
+    return new Response(html, { headers: response.headers, status: response.statusCode });
   },
   port: 8080,
 });
