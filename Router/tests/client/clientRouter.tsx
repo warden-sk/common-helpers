@@ -12,7 +12,7 @@ const clientRouter = new Router();
  * ROUTE(S)
  */
 clientRouter.addRoute('GET', '/', (request, response) => {
-  response.html(<p>Name: {response.context.name}</p>);
+  response.html(<p>{response.context.message}</p>);
 
   response.htmlOptions = { title: 'Index' };
 });

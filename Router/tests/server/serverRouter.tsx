@@ -12,7 +12,7 @@ const serverRouter = new Router();
  */
 serverRouter.addRoute('GET', '/', (request, response) => {
   response.context = {
-    name: 'Marek Kobida',
+    message: 'Hello',
   };
 });
 

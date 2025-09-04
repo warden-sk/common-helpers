@@ -9,9 +9,7 @@ const clientRouter = new Router();
  * ROUTE(S)
  */
 clientRouter.addRoute('GET', '/', (request, response) => {
-    response.html(React.createElement("p", null,
-        "Name: ",
-        response.context.name));
+    response.html(React.createElement("p", null, response.context.message));
     response.htmlOptions = { title: 'Index' };
 });
 export default clientRouter;

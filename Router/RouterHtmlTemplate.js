@@ -5,6 +5,7 @@
 import React from 'react';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
+import routerContext from './routerContext.js';
 function RouterHtmlTemplate({ request, response }) {
     response.headers.set('Content-Type', 'text/html');
     return (React.createElement("html", { lang: "sk" },
@@ -25,7 +26,11 @@ function RouterHtmlTemplate({ request, response }) {
             React.createElement("script", null, `window.response = ${λ.encodeJSON(response)};`),
             isString(response.htmlOptions.title) && React.createElement("title", null, response.htmlOptions.title)),
         React.createElement("body", null,
-            React.createElement("div", { id: "client" }, response.body.$),
+            React.createElement("div", { id: "client" },
+                React.createElement(routerContext.Provider, { value: {
+                        request,
+                        response,
+                    } }, response.body.$)),
             React.createElement("script", { src: "/index.js", type: "module" }))));
 }
 export default RouterHtmlTemplate;

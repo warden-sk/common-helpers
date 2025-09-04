@@ -9,6 +9,7 @@ import type { RouterRequest, RouterResponse } from './index.js';
 
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
+import routerContext from './routerContext.js';
 
 type I = {
   request: RouterRequest;
@@ -64,7 +65,16 @@ function RouterHtmlTemplate({ request, response }: I): O {
         {isString(response.htmlOptions.title) && <title>{response.htmlOptions.title}</title>}
       </head>
       <body>
-        <div id="client">{response.body.$}</div>
+        <div id="client">
+          <routerContext.Provider
+            value={{
+              request,
+              response,
+            }}
+          >
+            {response.body.$}
+          </routerContext.Provider>
+        </div>
 
         <script src="/index.js" type="module"></script>
       </body>
