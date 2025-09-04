@@ -61,7 +61,7 @@ class Router {
             for (const route of this.routes) {
                 const newRouteUrl = `${request.url.host}${route.url}`;
                 if (request.url.test(newRouteUrl) &&
-                    (isString(route.method) ? route.method === request.method : route.method.some($ => $ === request.method))) {
+                    (isString(route.method) ? route.method === request.method : route.method.includes(request.method))) {
                     await route.action(request, response);
                     if ((response.body.type === 'bytes' && response.body.$.length > 0) || response.body.type === 'react') {
                         return response;

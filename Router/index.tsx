@@ -140,7 +140,7 @@ class Router {
 
         if (
           request.url.test(newRouteUrl) &&
-          (isString(route.method) ? route.method === request.method : route.method.some($ => $ === request.method))
+          (isString(route.method) ? route.method === request.method : route.method.includes(request.method))
         ) {
           await route.action(request, response);
 
