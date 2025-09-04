@@ -36,7 +36,7 @@ type HtmlOptions = {
  */
 type Route = {
   action: RouteAction;
-  method: string;
+  method: string | string[];
   url: string;
 };
 
@@ -76,7 +76,7 @@ type RouterResponse = {
 class Router {
   routes: Route[] = [];
 
-  addRoute(method: string, url: string, action: RouteAction): this {
+  addRoute(method: string | string[], url: string, action: RouteAction): this {
     this.routes.push({
       action,
       method,
@@ -138,7 +138,10 @@ class Router {
       for (const route of this.routes) {
         const newRouteUrl = `${request.url.host}${route.url}`;
 
-        if (request.url.test(newRouteUrl) && route.method === request.method) {
+        if (
+          request.url.test(newRouteUrl) &&
+          (isString(route.method) ? route.method === request.method : route.method.some($ => request.method))
+        ) {
           await route.action(request, response);
 
           if ((response.body.type === 'bytes' && response.body.$.length > 0) || response.body.type === 'react') {
