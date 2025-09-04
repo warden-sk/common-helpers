@@ -30,7 +30,10 @@ Bun.serve({
                 });
             }
             const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { request: serverRequest, response: clientResponse }));
-            return new Response(html, { headers: clientResponse.headers, status: clientResponse.statusCode });
+            return new Response(html, {
+                headers: clientResponse.headers,
+                status: clientResponse.statusCode,
+            });
         }
         if (serverResponse.body.type === 'bytes') {
             return new Response(serverResponse.body.$, {
@@ -39,7 +42,10 @@ Bun.serve({
             });
         }
         const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { request: serverRequest, response: serverResponse }));
-        return new Response(html, { headers: serverResponse.headers, status: serverResponse.statusCode });
+        return new Response(html, {
+            headers: serverResponse.headers,
+            status: serverResponse.statusCode,
+        });
     },
     port: 8080,
 });

@@ -18,7 +18,10 @@ function RouterHtmlTemplate({ css, js, request, response }) {
     };
     return (React.createElement("html", { lang: "sk" },
         React.createElement("head", null,
-            isArray(css) && css.map($ => React.createElement("link", { href: $, key: $, rel: "stylesheet" })),
+            isArray(css) &&
+                css.map($ => {
+                    return React.createElement("link", { href: $, key: $, rel: "stylesheet" });
+                }),
             React.createElement("link", { href: `${request.url.host}/index.css`, rel: "stylesheet" }),
             React.createElement("meta", { charSet: "utf-8" }),
             React.createElement("meta", { content: "Marek Kobida", name: "author" }),
@@ -31,7 +34,13 @@ function RouterHtmlTemplate({ css, js, request, response }) {
             isString(response.htmlOptions.openGraph?.url) && (React.createElement("meta", { content: response.htmlOptions.openGraph.url, property: "og:url" })),
             React.createElement("meta", { content: "initial-scale=1, maximum-scale=1, width=device-width", name: "viewport" }),
             React.createElement("script", { type: "importmap" }, λ.encodeJSON($)),
-            isArray(js) && js.map($ => React.createElement("script", { key: $, src: $ })),
+            isArray(js) &&
+                js.map($ => {
+                    if (isString($)) {
+                        return React.createElement("script", { key: $, src: $ });
+                    }
+                    return React.createElement("script", { key: $.url, src: $.url, type: $.type });
+                }),
             React.createElement("script", null, `window.request = ${λ.encodeJSON(request)};`),
             React.createElement("script", null, `window.response = ${λ.encodeJSON(response)};`),
             isString(response.htmlOptions.title) && React.createElement("title", null, response.htmlOptions.title)),

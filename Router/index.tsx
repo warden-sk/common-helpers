@@ -86,7 +86,12 @@ class Router {
     return this;
   }
 
-  async getResponse(request: RouterRequest, initialContext: { [key: string]: unknown }): Promise<RouterResponse> {
+  async getResponse(
+    request: RouterRequest,
+    initialContext: {
+      [key: string]: unknown;
+    },
+  ): Promise<RouterResponse> {
     const response: RouterResponse = {
       body: {
         $: new Uint8Array(),
@@ -98,21 +103,33 @@ class Router {
       }),
       html: input => {
         if (isString(input)) {
-          response.body = { $: new TextEncoder().encode(input), type: 'bytes' };
+          response.body = {
+            $: new TextEncoder().encode(input),
+            type: 'bytes',
+          };
         } else {
-          response.body = { $: input, type: 'react' };
+          response.body = {
+            $: input,
+            type: 'react',
+          };
         }
 
         response.headers.set('Content-Type', 'text/html');
       },
       htmlOptions: {},
       json: input => {
-        response.body = { $: new TextEncoder().encode(λ.encodeJSON(input)), type: 'bytes' };
+        response.body = {
+          $: new TextEncoder().encode(λ.encodeJSON(input)),
+          type: 'bytes',
+        };
         response.headers.set('Content-Type', 'application/json');
       },
       statusCode: 200,
       text: input => {
-        response.body = { $: new TextEncoder().encode(input), type: 'bytes' };
+        response.body = {
+          $: new TextEncoder().encode(input),
+          type: 'bytes',
+        };
         response.headers.set('Content-Type', 'text/plain');
       },
     };

@@ -44,7 +44,10 @@ Bun.serve({
         <RouterHtmlTemplate request={serverRequest} response={clientResponse} />,
       );
 
-      return new Response(html, { headers: clientResponse.headers, status: clientResponse.statusCode });
+      return new Response(html, {
+        headers: clientResponse.headers,
+        status: clientResponse.statusCode,
+      });
     }
 
     if (serverResponse.body.type === 'bytes') {
@@ -58,7 +61,10 @@ Bun.serve({
       <RouterHtmlTemplate request={serverRequest} response={serverResponse} />,
     );
 
-    return new Response(html, { headers: serverResponse.headers, status: serverResponse.statusCode });
+    return new Response(html, {
+      headers: serverResponse.headers,
+      status: serverResponse.statusCode,
+    });
   },
   port: 8080,
 });

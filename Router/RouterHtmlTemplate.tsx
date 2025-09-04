@@ -14,7 +14,13 @@ import routerContext from './routerContext.js';
 
 type I = {
   css?: string[];
-  js?: string[];
+  js?: (
+    | {
+        type?: 'module';
+        url: string;
+      }
+    | string
+  )[];
   request: RouterRequest;
   response: RouterResponse;
 };
@@ -34,7 +40,11 @@ function RouterHtmlTemplate({ css, js, request, response }: I): O {
   return (
     <html lang="sk">
       <head>
-        {isArray(css) && css.map($ => <link href={$} key={$} rel="stylesheet" />)}
+        {isArray(css) &&
+          css.map($ => {
+            return <link href={$} key={$} rel="stylesheet" />;
+          })}
+
         <link href={`${request.url.host}/index.css`} rel="stylesheet" />
 
         <meta charSet="utf-8" />
@@ -66,7 +76,14 @@ function RouterHtmlTemplate({ css, js, request, response }: I): O {
 
         <script type="importmap">{λ.encodeJSON($)}</script>
 
-        {isArray(js) && js.map($ => <script key={$} src={$} />)}
+        {isArray(js) &&
+          js.map($ => {
+            if (isString($)) {
+              return <script key={$} src={$} />;
+            }
+
+            return <script key={$.url} src={$.url} type={$.type} />;
+          })}
 
         <script>{`window.request = ${λ.encodeJSON(request)};`}</script>
         <script>{`window.response = ${λ.encodeJSON(response)};`}</script>

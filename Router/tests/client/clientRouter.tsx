@@ -14,7 +14,9 @@ const clientRouter = new Router();
 clientRouter.addRoute('GET', '/', (request, response) => {
   response.html(<p>{response.context.message}</p>);
 
-  response.htmlOptions = { title: 'Index' };
+  response.htmlOptions = {
+    title: 'Index',
+  };
 });
 
 export default clientRouter;
