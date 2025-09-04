@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.09.2025
+ * Last Updated: 03.09.2025
  */
 
 import type { RouterRequest } from 'common-helpers/Router/Router.js'; // KĽÚČOVÉ
@@ -23,5 +23,5 @@ if (typeof window !== 'undefined') {
 
   const response = await clientRouter.getResponse(request);
 
-  // ReactDOM.hydrateRoot(container);
+  // ReactDOM.hydrateRoot();
 }

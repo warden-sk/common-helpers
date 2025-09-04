@@ -21,11 +21,17 @@ Bun.serve({
             return new Response(file);
         }
         const response = await serverRouter.getResponse(request);
+        // IF THE SERVER RESPONSE IS NOT VALID, USE THE CLIENT ONE
         if (response.statusCode !== 200) {
-            // IF THE SERVER RESPONSE IS NOT VALID, USE THE CLIENT ONE
             const clientResponse = await clientRouter.getResponse(request);
+            if (clientResponse.body.type === 'bytes') {
+                return new Response(clientResponse.body.$, {
+                    headers: clientResponse.headers,
+                    status: clientResponse.statusCode,
+                });
+            }
             const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { request: request, response: clientResponse }));
-            return new Response(html, { headers: response.headers, status: clientResponse.statusCode });
+            return new Response(html, { headers: clientResponse.headers, status: clientResponse.statusCode });
         }
         if (response.body.type === 'bytes') {
             return new Response(response.body.$, { headers: response.headers, status: response.statusCode });

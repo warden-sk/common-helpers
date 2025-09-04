@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.09.2025
+ * Last Updated: 03.09.2025
  */
 import NewUrl from 'common-helpers/NewUrl/index.js'; // KĽÚČOVÉ
 import clientRouter from './clientRouter.js';
@@ -15,5 +15,5 @@ if (typeof window !== 'undefined') {
         url: new NewUrl(window.request.url.input),
     };
     const response = await clientRouter.getResponse(request);
-    // ReactDOM.hydrateRoot(container);
+    // ReactDOM.hydrateRoot();
 }

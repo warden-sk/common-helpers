@@ -1,12 +1,12 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.09.2025
+ * Last Updated: 03.09.2025
  */
 import Router from 'common-helpers/Router/Router.js'; // KĽÚČOVÉ
 import React from 'react';
 const clientRouter = new Router();
 /**
- * REACT COMPONENT
+ * REACT
  */
 function Product({ id }) {
     return React.createElement("h1", null, id);
