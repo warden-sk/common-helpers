@@ -38,7 +38,7 @@ function RouterHtmlTemplate({ aliases, css, js, request, response }) {
                     if (isString($)) {
                         return React.createElement("script", { key: $, src: $ });
                     }
-                    return React.createElement("script", { key: $.url, src: $.url, type: $.type });
+                    return React.createElement("script", { async: $.async, fetchPriority: $.fetchPriority, key: $.url, src: $.url, type: $.type });
                 }),
             React.createElement("script", null, `window.request = ${λ.encodeJSON(request)};`),
             React.createElement("script", null, `window.response = ${λ.encodeJSON(response)};`),
