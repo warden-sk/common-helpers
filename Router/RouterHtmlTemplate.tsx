@@ -19,6 +19,8 @@ type I = {
   css?: string[];
   js?: (
     | {
+        async?: boolean;
+        fetchPriority?: 'auto' | 'high' | 'low';
         type?: 'module';
         url: string;
       }
@@ -84,7 +86,7 @@ function RouterHtmlTemplate({ aliases, css, js, request, response }: I): O {
               return <script key={$} src={$} />;
             }
 
-            return <script key={$.url} src={$.url} type={$.type} />;
+            return <script async={$.async} fetchPriority={$.fetchPriority} key={$.url} src={$.url} type={$.type} />;
           })}
 
         <script>{`window.request = ${λ.encodeJSON(request)};`}</script>
