@@ -5,18 +5,16 @@
 import NewUrl from 'common-helpers/NewUrl/index.js'; // KĽÚČOVÉ
 import ReactDOM from 'react-dom/client';
 import clientRouter from './clientRouter.js';
-if (typeof window !== 'undefined') {
-    const serverRequest = {
-        formData: new FormData(),
-        // @ts-ignore
-        headers: new Headers(window.request.headers),
-        // @ts-ignore
-        method: window.request.method,
-        // @ts-ignore
-        url: new NewUrl(window.request.url.input),
-    };
+const serverRequest = {
+    formData: new FormData(),
     // @ts-ignore
-    const serverResponse = window.response;
-    const response = await clientRouter.getResponse(serverRequest, serverResponse.context);
-    ReactDOM.hydrateRoot(document.getElementById('client'), response.body.$);
-}
+    headers: new Headers(window.request.headers),
+    // @ts-ignore
+    method: window.request.method,
+    // @ts-ignore
+    url: new NewUrl(window.request.url.input),
+};
+// @ts-ignore
+const serverResponse = window.response;
+const response = await clientRouter.getResponse(serverRequest, serverResponse.context);
+ReactDOM.hydrateRoot(document.getElementById('client'), response.body.$);

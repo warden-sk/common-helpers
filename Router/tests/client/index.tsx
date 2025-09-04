@@ -10,21 +10,19 @@ import ReactDOM from 'react-dom/client';
 
 import clientRouter from './clientRouter.js';
 
-if (typeof window !== 'undefined') {
-  const serverRequest: RouterRequest = {
-    formData: new FormData(),
-    // @ts-ignore
-    headers: new Headers(window.request.headers),
-    // @ts-ignore
-    method: window.request.method,
-    // @ts-ignore
-    url: new NewUrl(window.request.url.input),
-  };
-
+const serverRequest: RouterRequest = {
+  formData: new FormData(),
   // @ts-ignore
-  const serverResponse: RouterResponse = window.response;
+  headers: new Headers(window.request.headers),
+  // @ts-ignore
+  method: window.request.method,
+  // @ts-ignore
+  url: new NewUrl(window.request.url.input),
+};
 
-  const response = await clientRouter.getResponse(serverRequest, serverResponse.context);
+// @ts-ignore
+const serverResponse: RouterResponse = window.response;
 
-  ReactDOM.hydrateRoot(document.getElementById('client')!, response.body.$);
-}
+const response = await clientRouter.getResponse(serverRequest, serverResponse.context);
+
+ReactDOM.hydrateRoot(document.getElementById('client')!, response.body.$);
