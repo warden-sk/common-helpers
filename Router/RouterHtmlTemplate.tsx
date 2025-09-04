@@ -1,11 +1,11 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
 
 import React from 'react';
 
-import type { RouterRequest, RouterResponse } from './Router.js';
+import type { RouterRequest, RouterResponse } from './index.js';
 
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
@@ -23,6 +23,8 @@ function RouterHtmlTemplate({ request, response }: I): O {
   return (
     <html lang="sk">
       <head>
+        <link href="/index.css" rel="stylesheet" />
+
         <meta charSet="utf-8" />
         <meta content="Marek Kobida" name="author" />
 

@@ -1,9 +1,9 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
 
-import Router from 'common-helpers/Router/Router.js'; // KĽÚČOVÉ
+import Router from 'common-helpers/Router/index.js'; // KĽÚČOVÉ
 import React from 'react';
 
 const clientRouter = new Router();

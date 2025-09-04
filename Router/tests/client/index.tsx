@@ -1,9 +1,9 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
 
-import type { RouterRequest } from 'common-helpers/Router/Router.js'; // KĽÚČOVÉ
+import type { RouterRequest } from 'common-helpers/Router/index.js'; // KĽÚČOVÉ
 
 import NewUrl from 'common-helpers/NewUrl/index.js'; // KĽÚČOVÉ
 import ReactDOM from 'react-dom/client';

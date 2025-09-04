@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
 import React from 'react';
 import isString from '../validation/isString.js';
@@ -9,6 +9,7 @@ function RouterHtmlTemplate({ request, response }) {
     response.headers.set('Content-Type', 'text/html');
     return (React.createElement("html", { lang: "sk" },
         React.createElement("head", null,
+            React.createElement("link", { href: "/index.css", rel: "stylesheet" }),
             React.createElement("meta", { charSet: "utf-8" }),
             React.createElement("meta", { content: "Marek Kobida", name: "author" }),
             isString(response.htmlOptions.description) && (React.createElement("meta", { content: response.htmlOptions.description, name: "description" })),

@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
 import NewUrl from 'common-helpers/NewUrl/index.js'; // KĽÚČOVÉ
 import clientRouter from './clientRouter.js';

@@ -1,8 +1,8 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
-import Router from '../../Router.js';
+import Router from '../../index.js';
 const serverRouter = new Router();
 /**
  * ROUTE(S)

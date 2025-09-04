@@ -1,12 +1,12 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
 
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
 
-import type { RouterRequest } from '../../Router.js';
+import type { RouterRequest } from '../../index.js';
 
 import NewUrl from '../../../NewUrl/index.js';
 import RouterHtmlTemplate from '../../RouterHtmlTemplate.js';

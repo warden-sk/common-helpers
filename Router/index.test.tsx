@@ -1,14 +1,14 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
 
 import * as bun from 'bun:test';
 
-import type { RouterRequest } from './Router.js';
+import type { RouterRequest } from './index.js';
 
 import NewUrl from '../NewUrl/index.js';
-import Router from './Router.js';
+import Router from './index.js';
 
 // [1] ROUTER
 const router = new Router();
