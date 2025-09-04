@@ -13,6 +13,9 @@ import * as λ from '../λ.js';
 import routerContext from './routerContext.js';
 
 type I = {
+  aliases?: {
+    [key: string]: string;
+  };
   css?: string[];
   js?: (
     | {
@@ -27,14 +30,13 @@ type I = {
 
 type O = React.ReactNode;
 
-function RouterHtmlTemplate({ css, js, request, response }: I): O {
-  const $ = {
-    imports: {
-      'common-helpers/': 'https://warden-sk.github.io/common-helpers/',
-      react: 'https://esm.sh/react@19.1.0',
-      'react-dom': 'https://esm.sh/react-dom@19.1.0',
-      'react-dom/client': 'https://esm.sh/react-dom@19.1.0/client',
-    },
+function RouterHtmlTemplate({ aliases, css, js, request, response }: I): O {
+  const newAliases = {
+    ...aliases,
+    'common-helpers/': 'https://warden-sk.github.io/common-helpers/',
+    react: 'https://esm.sh/react@19.1.0',
+    'react-dom': 'https://esm.sh/react-dom@19.1.0',
+    'react-dom/client': 'https://esm.sh/react-dom@19.1.0/client',
   };
 
   return (
@@ -74,7 +76,7 @@ function RouterHtmlTemplate({ css, js, request, response }: I): O {
 
         <meta content="initial-scale=1, maximum-scale=1, width=device-width" name="viewport" />
 
-        <script type="importmap">{λ.encodeJSON($)}</script>
+        <script type="importmap">{λ.encodeJSON({ imports: newAliases })}</script>
 
         {isArray(js) &&
           js.map($ => {

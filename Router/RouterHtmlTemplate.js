@@ -7,14 +7,13 @@ import isArray from '../validation/isArray.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 import routerContext from './routerContext.js';
-function RouterHtmlTemplate({ css, js, request, response }) {
-    const $ = {
-        imports: {
-            'common-helpers/': 'https://warden-sk.github.io/common-helpers/',
-            react: 'https://esm.sh/react@19.1.0',
-            'react-dom': 'https://esm.sh/react-dom@19.1.0',
-            'react-dom/client': 'https://esm.sh/react-dom@19.1.0/client',
-        },
+function RouterHtmlTemplate({ aliases, css, js, request, response }) {
+    const newAliases = {
+        ...aliases,
+        'common-helpers/': 'https://warden-sk.github.io/common-helpers/',
+        react: 'https://esm.sh/react@19.1.0',
+        'react-dom': 'https://esm.sh/react-dom@19.1.0',
+        'react-dom/client': 'https://esm.sh/react-dom@19.1.0/client',
     };
     return (React.createElement("html", { lang: "sk" },
         React.createElement("head", null,
@@ -33,7 +32,7 @@ function RouterHtmlTemplate({ css, js, request, response }) {
             isString(response.htmlOptions.openGraph?.title) && (React.createElement("meta", { content: response.htmlOptions.openGraph.title, property: "og:title" })),
             isString(response.htmlOptions.openGraph?.url) && (React.createElement("meta", { content: response.htmlOptions.openGraph.url, property: "og:url" })),
             React.createElement("meta", { content: "initial-scale=1, maximum-scale=1, width=device-width", name: "viewport" }),
-            React.createElement("script", { type: "importmap" }, λ.encodeJSON($)),
+            React.createElement("script", { type: "importmap" }, λ.encodeJSON({ imports: newAliases })),
             isArray(js) &&
                 js.map($ => {
                     if (isString($)) {
