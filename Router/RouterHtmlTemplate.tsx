@@ -7,24 +7,35 @@ import React from 'react';
 
 import type { RouterRequest, RouterResponse } from './index.js';
 
+import isArray from '../validation/isArray.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 import routerContext from './routerContext.js';
 
 type I = {
+  css?: string[];
+  js?: string[];
   request: RouterRequest;
   response: RouterResponse;
 };
 
 type O = React.ReactNode;
 
-function RouterHtmlTemplate({ request, response }: I): O {
-  response.headers.set('Content-Type', 'text/html');
+function RouterHtmlTemplate({ css, js, request, response }: I): O {
+  const $ = {
+    imports: {
+      'common-helpers/': 'https://warden-sk.github.io/common-helpers/',
+      react: 'https://esm.sh/react@19.1.0',
+      'react-dom': 'https://esm.sh/react-dom@19.1.0',
+      'react-dom/client': 'https://esm.sh/react-dom@19.1.0/client',
+    },
+  };
 
   return (
     <html lang="sk">
       <head>
-        <link href="/index.css" rel="stylesheet" />
+        {isArray(css) && css.map($ => <link href={$} key={$} rel="stylesheet" />)}
+        <link href={`${request.url.host}/index.css`} rel="stylesheet" />
 
         <meta charSet="utf-8" />
         <meta content="Marek Kobida" name="author" />
@@ -53,11 +64,9 @@ function RouterHtmlTemplate({ request, response }: I): O {
 
         <meta content="initial-scale=1, maximum-scale=1, width=device-width" name="viewport" />
 
-        <script type="importmap">
-          {
-            '{"imports":{"common-helpers/":"https://warden-sk.github.io/common-helpers/","react":"https://esm.sh/react@19.1.0?dev","react-dom":"https://esm.sh/react-dom@19.1.0?dev","react-dom/client":"https://esm.sh/react-dom@19.1.0/client?dev"}}'
-          }
-        </script>
+        <script type="importmap">{λ.encodeJSON($)}</script>
+
+        {isArray(js) && js.map($ => <script key={$} src={$} />)}
 
         <script>{`window.request = ${λ.encodeJSON(request)};`}</script>
         <script>{`window.response = ${λ.encodeJSON(response)};`}</script>
@@ -76,7 +85,7 @@ function RouterHtmlTemplate({ request, response }: I): O {
           </routerContext.Provider>
         </div>
 
-        <script src="/index.js" type="module"></script>
+        <script src={`${request.url.host}/index.js`} type="module"></script>
       </body>
     </html>
   );

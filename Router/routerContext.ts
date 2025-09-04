@@ -3,9 +3,9 @@
  * Last Updated: 04.09.2025
  */
 
-import type { RouterRequest, RouterResponse } from 'common-helpers/Router/index.js';
-
 import React from 'react';
+
+import type { RouterRequest, RouterResponse } from '../Router/index.js';
 
 type RouterContext = {
   request: RouterRequest;
