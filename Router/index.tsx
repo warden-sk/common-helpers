@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 03.09.2025
+ * Last Updated: 04.09.2025
  */
 
 import type React from 'react';
@@ -13,6 +13,9 @@ import * as λ from '../λ.js';
 
 type HtmlOptions = {
   description?: string;
+  json?: {
+    [key: string]: unknown;
+  };
   keywords?: string;
   openGraph?: {
     description?: string;

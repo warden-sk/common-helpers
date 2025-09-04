@@ -3,6 +3,7 @@
  * Last Updated: 04.09.2025
  */
 import React from 'react';
+import isObject from '../validation/isObject.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 function RouterHtmlTemplate({ request, response }) {
@@ -21,6 +22,7 @@ function RouterHtmlTemplate({ request, response }) {
             isString(response.htmlOptions.openGraph?.url) && (React.createElement("meta", { content: response.htmlOptions.openGraph.url, property: "og:url" })),
             React.createElement("meta", { content: "initial-scale=1, maximum-scale=1, width=device-width", name: "viewport" }),
             React.createElement("script", { type: "importmap" }, '{"imports":{"common-helpers/":"https://warden-sk.github.io/common-helpers/","react":"https://esm.sh/react@19.1.0?dev","react-dom":"https://esm.sh/react-dom@19.1.0?dev","react-dom/client":"https://esm.sh/react-dom@19.1.0/client?dev"}}'),
+            isObject(response.htmlOptions.json) && (React.createElement("script", null, `window.json = ${λ.encodeJSON(response.htmlOptions.json)};`)),
             React.createElement("script", null, `window.request = ${λ.encodeJSON(request)};`),
             React.createElement("script", null, `window.response = ${λ.encodeJSON(response)};`),
             isString(response.htmlOptions.title) && React.createElement("title", null, response.htmlOptions.title)),
