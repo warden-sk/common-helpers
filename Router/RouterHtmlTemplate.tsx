@@ -7,7 +7,6 @@ import React from 'react';
 
 import type { RouterRequest, RouterResponse } from './index.js';
 
-import isObject from '../validation/isObject.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 
@@ -58,10 +57,6 @@ function RouterHtmlTemplate({ request, response }: I): O {
             '{"imports":{"common-helpers/":"https://warden-sk.github.io/common-helpers/","react":"https://esm.sh/react@19.1.0?dev","react-dom":"https://esm.sh/react-dom@19.1.0?dev","react-dom/client":"https://esm.sh/react-dom@19.1.0/client?dev"}}'
           }
         </script>
-
-        {isObject(response.htmlOptions.json) && (
-          <script>{`window.json = ${λ.encodeJSON(response.htmlOptions.json)};`}</script>
-        )}
 
         <script>{`window.request = ${λ.encodeJSON(request)};`}</script>
         <script>{`window.response = ${λ.encodeJSON(response)};`}</script>

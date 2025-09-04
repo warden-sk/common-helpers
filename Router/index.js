@@ -21,6 +21,7 @@ class Router {
                 $: new Uint8Array(),
                 type: 'bytes',
             },
+            data: {},
             headers: new Headers({
                 'Content-Type': 'text/plain',
             }),

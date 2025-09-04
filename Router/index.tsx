@@ -13,9 +13,6 @@ import * as λ from '../λ.js';
 
 type HtmlOptions = {
   description?: string;
-  json?: {
-    [key: string]: unknown;
-  };
   keywords?: string;
   openGraph?: {
     description?: string;
@@ -49,6 +46,9 @@ type RouteAction = (request: RouterRequest, response: RouterResponse) => Promise
  * Router
  */
 type RouterRequest = {
+  data: {
+    [key: string]: unknown;
+  };
   formData: FormData;
   headers: Headers;
   method: string;
@@ -65,6 +65,9 @@ type RouterResponse = {
         $: Uint8Array<ArrayBuffer>;
         type: 'bytes';
       };
+  data: {
+    [key: string]: unknown;
+  };
   headers: Headers;
   html: (input: React.ReactNode) => void;
   htmlOptions: HtmlOptions;
@@ -92,6 +95,7 @@ class Router {
         $: new Uint8Array(),
         type: 'bytes',
       },
+      data: {},
       headers: new Headers({
         'Content-Type': 'text/plain',
       }),
