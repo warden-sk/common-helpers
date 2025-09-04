@@ -9,21 +9,12 @@ import React from 'react';
 const clientRouter = new Router();
 
 /**
- * REACT
- */
-function Product({ id }: { id: string }): React.ReactNode {
-  return <h1>{id}</h1>;
-}
-
-/**
  * ROUTE(S)
  */
-clientRouter.addRoute('GET', '/product/{id}', (request, response) => {
-  const { id } = request.url.parameters;
+clientRouter.addRoute('GET', '/', (request, response) => {
+  response.html(<h1>Index</h1>);
 
-  response.html(<Product id={id!} />);
-
-  response.htmlOptions = { title: 'Product' };
+  response.htmlOptions = { title: 'Index' };
 });
 
 export default clientRouter;

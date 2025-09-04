@@ -15,12 +15,13 @@ class Router {
         });
         return this;
     }
-    async getResponse(request) {
+    async getResponse(request, initialContext) {
         const response = {
             body: {
                 $: new Uint8Array(),
                 type: 'bytes',
             },
+            context: initialContext,
             headers: new Headers({
                 'Content-Type': 'text/plain',
             }),

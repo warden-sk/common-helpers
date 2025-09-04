@@ -10,34 +10,36 @@ import clientRouter from '../client/clientRouter.js';
 import serverRouter from './serverRouter.js';
 Bun.serve({
     async fetch({ headers, method, url }) {
-        const request = {
+        const serverRequest = {
             formData: new FormData(),
             headers,
             method,
             url: new NewUrl(url),
         };
-        const file = Bun.file(`./client${request.url.path}`);
+        const file = Bun.file(`./client${serverRequest.url.path}`);
         if (await file.exists()) {
             return new Response(file);
         }
-        const response = await serverRouter.getResponse(request);
-        // IF THE SERVER RESPONSE IS NOT VALID, USE THE CLIENT ONE
-        if (response.statusCode !== 200) {
-            const clientResponse = await clientRouter.getResponse(request);
+        const serverResponse = await serverRouter.getResponse(serverRequest, {});
+        if (serverResponse.statusCode !== 200) {
+            const clientResponse = await clientRouter.getResponse(serverRequest, serverResponse.context);
             if (clientResponse.body.type === 'bytes') {
                 return new Response(clientResponse.body.$, {
                     headers: clientResponse.headers,
                     status: clientResponse.statusCode,
                 });
             }
-            const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { request: request, response: clientResponse }));
+            const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { request: serverRequest, response: clientResponse }));
             return new Response(html, { headers: clientResponse.headers, status: clientResponse.statusCode });
         }
-        if (response.body.type === 'bytes') {
-            return new Response(response.body.$, { headers: response.headers, status: response.statusCode });
+        if (serverResponse.body.type === 'bytes') {
+            return new Response(serverResponse.body.$, {
+                headers: serverResponse.headers,
+                status: serverResponse.statusCode,
+            });
         }
-        const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { request: request, response: response }));
-        return new Response(html, { headers: response.headers, status: response.statusCode });
+        const html = await ReactDOMServer.renderToReadableStream(React.createElement(RouterHtmlTemplate, { request: serverRequest, response: serverResponse }));
+        return new Response(html, { headers: serverResponse.headers, status: serverResponse.statusCode });
     },
     port: 8080,
 });

@@ -62,6 +62,9 @@ type RouterResponse = {
         $: Uint8Array<ArrayBuffer>;
         type: 'bytes';
       };
+  context: {
+    [key: string]: unknown;
+  };
   headers: Headers;
   html: (input: React.ReactNode) => void;
   htmlOptions: HtmlOptions;
@@ -83,12 +86,13 @@ class Router {
     return this;
   }
 
-  async getResponse(request: RouterRequest): Promise<RouterResponse> {
+  async getResponse(request: RouterRequest, initialContext: { [key: string]: unknown }): Promise<RouterResponse> {
     const response: RouterResponse = {
       body: {
         $: new Uint8Array(),
         type: 'bytes',
       },
+      context: initialContext,
       headers: new Headers({
         'Content-Type': 'text/plain',
       }),

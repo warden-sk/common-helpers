@@ -7,6 +7,9 @@
     "module": "esnext",
     "moduleResolution": "bundler",
     "noUncheckedIndexedAccess": true,
+    "paths": {
+      "common-helpers/*": ["./*"]
+    },
     "skipLibCheck": true,
     "strict": true,
     "target": "esnext"

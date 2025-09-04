@@ -6,17 +6,10 @@ import Router from 'common-helpers/Router/index.js'; // KĽÚČOVÉ
 import React from 'react';
 const clientRouter = new Router();
 /**
- * REACT
- */
-function Product({ id }) {
-    return React.createElement("h1", null, id);
-}
-/**
  * ROUTE(S)
  */
-clientRouter.addRoute('GET', '/product/{id}', (request, response) => {
-    const { id } = request.url.parameters;
-    response.html(React.createElement(Product, { id: id }));
-    response.htmlOptions = { title: 'Product' };
+clientRouter.addRoute('GET', '/', (request, response) => {
+    response.html(React.createElement("h1", null, "Index"));
+    response.htmlOptions = { title: 'Index' };
 });
 export default clientRouter;

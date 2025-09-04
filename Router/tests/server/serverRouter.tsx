@@ -10,6 +10,10 @@ const serverRouter = new Router();
 /**
  * ROUTE(S)
  */
-serverRouter.addRoute('GET', '/product/{id}', (request, response) => {});
+serverRouter.addRoute('GET', '/', (request, response) => {
+  response.context = {
+    name: 'Marek Kobida',
+  };
+});
 
 export default serverRouter;

@@ -3,9 +3,10 @@
  * Last Updated: 04.09.2025
  */
 import NewUrl from 'common-helpers/NewUrl/index.js'; // KĽÚČOVÉ
+import ReactDOM from 'react-dom/client';
 import clientRouter from './clientRouter.js';
 if (typeof window !== 'undefined') {
-    const request = {
+    const serverRequest = {
         formData: new FormData(),
         // @ts-ignore
         headers: new Headers(window.request.headers),
@@ -14,6 +15,8 @@ if (typeof window !== 'undefined') {
         // @ts-ignore
         url: new NewUrl(window.request.url.input),
     };
-    const response = await clientRouter.getResponse(request);
-    // ReactDOM.hydrateRoot();
+    // @ts-ignore
+    const serverResponse = window.response;
+    const response = await clientRouter.getResponse(serverRequest, serverResponse.context);
+    ReactDOM.hydrateRoot(document.getElementById('client'), response.body.$);
 }
