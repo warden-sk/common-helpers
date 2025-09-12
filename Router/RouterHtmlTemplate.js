@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 04.09.2025
+ * Last Updated: 12.09.2025
  */
 import React from 'react';
 import isArray from '../validation/isArray.js';
@@ -17,6 +17,7 @@ function RouterHtmlTemplate({ aliases, css, js, request, response }) {
     };
     return (React.createElement("html", { lang: "sk" },
         React.createElement("head", null,
+            React.createElement("meta", { content: "noindex", name: "robots" }),
             isArray(css) &&
                 css.map($ => {
                     return React.createElement("link", { href: $, key: $, rel: "stylesheet" });

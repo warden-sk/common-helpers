@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 04.09.2025
+ * Last Updated: 12.09.2025
  */
 
 import React from 'react';
@@ -44,6 +44,8 @@ function RouterHtmlTemplate({ aliases, css, js, request, response }: I): O {
   return (
     <html lang="sk">
       <head>
+        <meta content="noindex" name="robots" />
+
         {isArray(css) &&
           css.map($ => {
             return <link href={$} key={$} rel="stylesheet" />;
