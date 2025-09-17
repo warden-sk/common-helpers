@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 04.09.2025
+ * Last Updated: 17.09.2025
  */
 
 import type React from 'react';
@@ -69,6 +69,7 @@ type RouterResponse = {
   html: (input: React.ReactNode) => void;
   htmlOptions: HtmlOptions;
   json: (input: unknown) => void;
+  redirect: (input: string) => void;
   statusCode: number;
   text: (input: string) => void;
 };
@@ -122,7 +123,20 @@ class Router {
           $: new TextEncoder().encode(λ.encodeJSON(input)),
           type: 'bytes',
         };
+
         response.headers.set('Content-Type', 'application/json');
+      },
+      redirect: input => {
+        response.body = {
+          $: new TextEncoder().encode(`<a href="${input}">${input}</a>`),
+          type: 'bytes',
+        };
+
+        response.headers.set('Cache-Control', 'no-cache');
+        response.headers.set('Content-Type', 'text/html');
+        response.headers.set('Location', input);
+
+        response.statusCode = 302;
       },
       statusCode: 200,
       text: input => {
@@ -130,6 +144,7 @@ class Router {
           $: new TextEncoder().encode(input),
           type: 'bytes',
         };
+
         response.headers.set('Content-Type', 'text/plain');
       },
     };
