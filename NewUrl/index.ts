@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 20.07.2025
+ * Last Updated: 18.09.2025
  */
 
 import Tokenizer from './Tokenizer.js';
@@ -40,7 +40,8 @@ class NewUrl {
       }
 
       if (token.type === 'SEARCH_PARAMETER') {
-        this.searchParameters[token.parameter[0]] = token.parameter[1];
+        // DOKONČIŤ
+        this.searchParameters[token.parameter[0]] = decodeURIComponent(token.parameter[1]);
       }
     }
   }
