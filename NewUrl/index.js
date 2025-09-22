@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 18.09.2025
+ * Last Updated: 22.09.2025
  */
 import Tokenizer from './Tokenizer.js';
 class NewUrl {
@@ -65,6 +65,14 @@ class NewUrl {
             }
         }
         return true;
+    }
+    toString() {
+        let url = `${this.host}${this.path}`;
+        const keys = Object.entries(this.searchParameters);
+        if (keys.length > 0) {
+            url += `?${keys.map(([key, value]) => `${key}=${value}`).join('&')}`;
+        }
+        return url;
     }
 }
 export default NewUrl;

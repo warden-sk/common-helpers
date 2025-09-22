@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 18.09.2025
+ * Last Updated: 22.09.2025
  */
 
 import Tokenizer from './Tokenizer.js';
@@ -8,11 +8,15 @@ import Tokenizer from './Tokenizer.js';
 class NewUrl {
   host = '';
   readonly input: string;
-  parameters: { [key: string]: string } = {};
+  parameters: {
+    [key: string]: string;
+  } = {};
   path = '';
-  searchParameters: { [key: string]: string } = {};
-  private testTokenizer?: Tokenizer;
-  private tokenizer: Tokenizer;
+  searchParameters: {
+    [key: string]: string;
+  } = {};
+  testTokenizer?: Tokenizer;
+  tokenizer: Tokenizer;
 
   constructor(input: string) {
     this.input = input;
@@ -81,6 +85,18 @@ class NewUrl {
     }
 
     return true;
+  }
+
+  toString(): string {
+    let url = `${this.host}${this.path}`;
+
+    const keys = Object.entries(this.searchParameters);
+
+    if (keys.length > 0) {
+      url += `?${keys.map(([key, value]) => `${key}=${value}`).join('&')}`;
+    }
+
+    return url;
   }
 }
 
