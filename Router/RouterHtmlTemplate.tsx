@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 12.09.2025
+ * Last Updated: 01.10.2025
  */
 
 import React from 'react';
@@ -27,7 +27,7 @@ type I = {
     | string
   )[];
   request: RouterRequest;
-  response: RouterResponse;
+  response: RouterResponse<{}>;
 };
 
 type O = React.ReactNode;

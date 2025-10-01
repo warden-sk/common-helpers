@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 17.09.2025
+ * Last Updated: 01.10.2025
  */
 import isError from '../validation/isError.js';
 import isString from '../validation/isString.js';

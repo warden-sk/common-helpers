@@ -1,6 +1,6 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 17.09.2025
+ * Last Updated: 01.10.2025
  */
 
 import type React from 'react';
@@ -34,13 +34,13 @@ type HtmlOptions = {
 /**
  * Route
  */
-type Route = {
-  action: RouteAction;
+type Route<Context> = {
+  action: RouteAction<Context>;
   method: string | string[];
   url: string;
 };
 
-type RouteAction = (request: RouterRequest, response: RouterResponse) => Promise<void> | void;
+type RouteAction<Context> = (request: RouterRequest, response: RouterResponse<Context>) => Promise<void> | void;
 
 /**
  * Router
@@ -52,7 +52,7 @@ type RouterRequest = {
   url: NewUrl;
 };
 
-type RouterResponse = {
+type RouterResponse<Context> = {
   body:
     | {
         $: React.ReactNode;
@@ -62,9 +62,7 @@ type RouterResponse = {
         $: Uint8Array<ArrayBuffer>;
         type: 'bytes';
       };
-  context: {
-    [key: string]: unknown;
-  };
+  context: Context;
   headers: Headers;
   html: (input: React.ReactNode) => void;
   htmlOptions: HtmlOptions;
@@ -74,10 +72,10 @@ type RouterResponse = {
   text: (input: string) => void;
 };
 
-class Router {
-  routes: Route[] = [];
+class Router<Context> {
+  routes: Route<Context>[] = [];
 
-  addRoute(method: string | string[], url: string, action: RouteAction): this {
+  addRoute(method: string | string[], url: string, action: RouteAction<Context>): this {
     this.routes.push({
       action,
       method,
@@ -87,13 +85,8 @@ class Router {
     return this;
   }
 
-  async getResponse(
-    request: RouterRequest,
-    initialContext: {
-      [key: string]: unknown;
-    },
-  ): Promise<RouterResponse> {
-    const response: RouterResponse = {
+  async getResponse(request: RouterRequest, initialContext: Context): Promise<RouterResponse<Context>> {
+    const response: RouterResponse<Context> = {
       body: {
         $: new Uint8Array(),
         type: 'bytes',
