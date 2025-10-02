@@ -1,12 +1,13 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.10.2025
+ * Last Updated: 02.10.2025
  */
 import isError from '../validation/isError.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 class Router {
     routes = [];
+    useAction;
     addRoute(method, url, action) {
         this.routes.push({
             action,
@@ -68,12 +69,16 @@ class Router {
             },
         };
         try {
+            await this.useAction?.(request, response);
             for (const route of this.routes) {
                 const newRouteUrl = `${request.url.host}${route.url}`;
                 if (request.url.test(newRouteUrl) &&
                     (isString(route.method) ? route.method === request.method : route.method.includes(request.method))) {
                     await route.action(request, response);
-                    if ((response.body.type === 'bytes' && response.body.$.length > 0) || response.body.type === 'react') {
+                    if (response.body.type === 'bytes' && response.body.$.length > 0) {
+                        return response;
+                    }
+                    if (response.body.type === 'react') {
                         return response;
                     }
                 }
@@ -86,6 +91,10 @@ class Router {
             response.text(isError(error) ? error.message : 'The request is not valid.');
         }
         return response;
+    }
+    use(action) {
+        this.useAction = action;
+        return this;
     }
 }
 export default Router;
