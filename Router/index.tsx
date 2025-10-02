@@ -1,79 +1,18 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.10.2025
+ * Last Updated: 02.10.2025
  */
 
-import type React from 'react';
-
-import type NewUrl from '../NewUrl/index.js';
+import type { Route, RouteAction, RouterRequest, RouterResponse } from './types.js';
 
 import isError from '../validation/isError.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 
-type HtmlOptions = {
-  description?: string;
-  keywords?: string;
-  openGraph?: {
-    description?: string;
-    image?:
-      | {
-          alt?: string;
-          height?: number;
-          url: string;
-          width?: number;
-        }
-      | string;
-    site_name?: string; // DOKONČIŤ - `siteName` or `site_name`
-    title?: string;
-    url?: string;
-  };
-  title?: string;
-};
-
-/**
- * Route
- */
-type Route<Context> = {
-  action: RouteAction<Context>;
-  method: string | string[];
-  url: string;
-};
-
-type RouteAction<Context> = (request: RouterRequest, response: RouterResponse<Context>) => Promise<void> | void;
-
-/**
- * Router
- */
-type RouterRequest = {
-  formData: FormData;
-  headers: Headers;
-  method: string;
-  url: NewUrl;
-};
-
-type RouterResponse<Context> = {
-  body:
-    | {
-        $: React.ReactNode;
-        type: 'react';
-      }
-    | {
-        $: Uint8Array<ArrayBuffer>;
-        type: 'bytes';
-      };
-  context: Context;
-  headers: Headers;
-  html: (input: React.ReactNode) => void;
-  htmlOptions: HtmlOptions;
-  json: (input: unknown) => void;
-  redirect: (input: string) => void;
-  statusCode: number;
-  text: (input: string) => void;
-};
-
 class Router<Context> {
   routes: Route<Context>[] = [];
+
+  useAction?: RouteAction<Context>;
 
   addRoute(method: string | string[], url: string, action: RouteAction<Context>): this {
     this.routes.push({
@@ -143,6 +82,8 @@ class Router<Context> {
     };
 
     try {
+      await this.useAction?.(request, response);
+
       for (const route of this.routes) {
         const newRouteUrl = `${request.url.host}${route.url}`;
 
@@ -152,7 +93,11 @@ class Router<Context> {
         ) {
           await route.action(request, response);
 
-          if ((response.body.type === 'bytes' && response.body.$.length > 0) || response.body.type === 'react') {
+          if (response.body.type === 'bytes' && response.body.$.length > 0) {
+            return response;
+          }
+
+          if (response.body.type === 'react') {
             return response;
           }
         }
@@ -167,8 +112,12 @@ class Router<Context> {
 
     return response;
   }
-}
 
-export type { HtmlOptions, RouteAction, RouterRequest, RouterResponse };
+  use(action: RouteAction<Context>): this {
+    this.useAction = action;
+
+    return this;
+  }
+}
 
 export default Router;

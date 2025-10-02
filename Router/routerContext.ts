@@ -1,18 +1,19 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.10.2025
+ * Last Updated: 02.10.2025
  */
 
 import React from 'react';
 
-import type { RouterRequest, RouterResponse } from '../Router/index.js';
+import type { RouterRequest, RouterResponse } from '../Router/types.js';
 
-type RouterContext = {
+type RouterContext<Context> = {
   request: RouterRequest;
-  response: RouterResponse<{}>;
+  response: RouterResponse<Context>;
 };
 
-const routerContext = React.createContext<RouterContext>({} as RouterContext);
+// @ts-ignore
+const routerContext = React.createContext<RouterContext<{}>>({});
 
 export type { RouterContext };
 

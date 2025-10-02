@@ -1,11 +1,11 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 01.10.2025
+ * Last Updated: 02.10.2025
  */
 
 import React from 'react';
 
-import type { RouterRequest, RouterResponse } from './index.js';
+import type { RouterRequest, RouterResponse } from './types.js';
 
 import isArray from '../validation/isArray.js';
 import isString from '../validation/isString.js';
@@ -80,7 +80,11 @@ function RouterHtmlTemplate({ aliases, css, js, request, response }: I): O {
 
         <meta content="initial-scale=1, maximum-scale=1, width=device-width" name="viewport" />
 
-        <script type="importmap">{λ.encodeJSON({ imports: newAliases })}</script>
+        <script type="importmap">
+          {λ.encodeJSON({
+            imports: newAliases,
+          })}
+        </script>
 
         {isArray(js) &&
           js.map($ => {
