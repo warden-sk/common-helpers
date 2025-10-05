@@ -12,9 +12,12 @@ const schemes: string[] = ['http://', 'https://'];
 // RFC 1738
 class Tokenizer {
   cursor = 0;
+
   readonly input: string;
+
   tokens: Token[] = [];
 
+  // ✅
   constructor(input: string) {
     this.input = input;
 
@@ -78,7 +81,10 @@ class Tokenizer {
 
     invariant(value.length, 'The host is not valid.');
 
-    return this.addToken({ type: 'HOST', value });
+    return this.addToken({
+      type: 'HOST',
+      value,
+    });
   }
 
   // ✅
@@ -115,7 +121,11 @@ class Tokenizer {
 
           value += `{${parameter[0]}${parameter[1] ? '?' : ''}}`;
 
-          this.addToken({ parameter, type: 'PARAMETERIZED_PATH', value });
+          this.addToken({
+            parameter,
+            type: 'PARAMETERIZED_PATH',
+            value,
+          });
         } else {
           while (
             this.isNotEnd() &&
@@ -138,7 +148,10 @@ class Tokenizer {
 
           // invariant(value.length, 'The path is not valid.');
 
-          this.addToken({ type: 'PATH', value });
+          this.addToken({
+            type: 'PATH',
+            value,
+          });
         }
       }
     }
@@ -161,7 +174,10 @@ class Tokenizer {
 
       invariant(value.length, 'The port is not valid.');
 
-      return this.addToken({ type: 'PORT', value });
+      return this.addToken({
+        type: 'PORT',
+        value,
+      });
     }
 
     return this;
@@ -181,7 +197,10 @@ class Tokenizer {
 
     invariant(value.length, 'The scheme is not valid.');
 
-    return this.addToken({ type: 'SCHEME', value });
+    return this.addToken({
+      type: 'SCHEME',
+      value,
+    });
   }
 
   // ✅
@@ -207,7 +226,11 @@ class Tokenizer {
           this.cursor++;
         }
 
-        this.addToken({ parameter: [key, value], type: 'SEARCH_PARAMETER', value: `${key}=${value}` });
+        this.addToken({
+          parameter: [key, value],
+          type: 'SEARCH_PARAMETER',
+          value: `${key}=${value}`,
+        });
 
         if (this.readCharacter() === '&') {
           this.cursor++;

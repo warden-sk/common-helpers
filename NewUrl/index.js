@@ -10,11 +10,11 @@ class NewUrl {
     searchParameters = {};
     testTokenizer;
     tokenizer;
+    // ✅
     constructor(input) {
         this.input = input;
         this.tokenizer = new Tokenizer(this.input);
-        for (let i = 0; i < this.tokenizer.tokens.length; i++) {
-            const token = this.tokenizer.tokens[i];
+        for (const token of this.tokenizer.tokens) {
             // Sort: SCHEME, HOST, PORT, PATH, SEARCH_PARAMETER
             if (token.type === 'SCHEME') {
                 this.host += token.value;
@@ -29,8 +29,7 @@ class NewUrl {
                 this.path += `/${token.value}`;
             }
             if (token.type === 'SEARCH_PARAMETER') {
-                // DOKONČIŤ
-                this.searchParameters[token.parameter[0]] = decodeURIComponent(token.parameter[1]);
+                this.searchParameters[token.parameter[0]] = token.parameter[1];
             }
         }
     }
@@ -65,6 +64,7 @@ class NewUrl {
         }
         return true;
     }
+    // DOKONČIŤ
     toString() {
         let url = `${this.host}${this.path}`;
         const keys = Object.entries(this.searchParameters);

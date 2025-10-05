@@ -114,3 +114,31 @@ test('[4] SCHEME + HOST + PORT + PATH + SEARCH_PARAMETER', () => {
     },
   ]);
 });
+
+test('[5] SCHEME + HOST + PORT + PATH + SEARCH_PARAMETER', () => {
+  const tokenizer = new Tokenizer('https://kobida.sk:443/test?search=Ako+sa+m%C3%A1%C5%A1%3F');
+
+  expect(tokenizer.tokens).toEqual([
+    {
+      type: 'SCHEME',
+      value: 'https://',
+    },
+    {
+      type: 'HOST',
+      value: 'kobida.sk',
+    },
+    {
+      type: 'PORT',
+      value: '443',
+    },
+    {
+      type: 'PATH',
+      value: 'test',
+    },
+    {
+      parameter: ['search', ''],
+      type: 'SEARCH_PARAMETER',
+      value: 'search=',
+    },
+  ]);
+});

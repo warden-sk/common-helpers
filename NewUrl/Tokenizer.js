@@ -9,6 +9,7 @@ class Tokenizer {
     cursor = 0;
     input;
     tokens = [];
+    // ✅
     constructor(input) {
         this.input = input;
         this.readScheme().readHost().readPort().readPath().readSearchParameters();
@@ -51,7 +52,10 @@ class Tokenizer {
             this.cursor++;
         }
         invariant(value.length, 'The host is not valid.');
-        return this.addToken({ type: 'HOST', value });
+        return this.addToken({
+            type: 'HOST',
+            value,
+        });
     }
     // ✅
     readPath() {
@@ -77,7 +81,11 @@ class Tokenizer {
                     invariant(this.readCharacter() === '}', 'The character "}" does not exist.');
                     this.cursor++;
                     value += `{${parameter[0]}${parameter[1] ? '?' : ''}}`;
-                    this.addToken({ parameter, type: 'PARAMETERIZED_PATH', value });
+                    this.addToken({
+                        parameter,
+                        type: 'PARAMETERIZED_PATH',
+                        value,
+                    });
                 }
                 else {
                     while (this.isNotEnd() &&
@@ -91,7 +99,10 @@ class Tokenizer {
                         this.cursor++;
                     }
                     // invariant(value.length, 'The path is not valid.');
-                    this.addToken({ type: 'PATH', value });
+                    this.addToken({
+                        type: 'PATH',
+                        value,
+                    });
                 }
             }
         }
@@ -107,7 +118,10 @@ class Tokenizer {
                 this.cursor++;
             }
             invariant(value.length, 'The port is not valid.');
-            return this.addToken({ type: 'PORT', value });
+            return this.addToken({
+                type: 'PORT',
+                value,
+            });
         }
         return this;
     }
@@ -121,7 +135,10 @@ class Tokenizer {
             }
         }
         invariant(value.length, 'The scheme is not valid.');
-        return this.addToken({ type: 'SCHEME', value });
+        return this.addToken({
+            type: 'SCHEME',
+            value,
+        });
     }
     // ✅
     readSearchParameters() {
@@ -141,7 +158,11 @@ class Tokenizer {
                     }
                     this.cursor++;
                 }
-                this.addToken({ parameter: [key, value], type: 'SEARCH_PARAMETER', value: `${key}=${value}` });
+                this.addToken({
+                    parameter: [key, value],
+                    type: 'SEARCH_PARAMETER',
+                    value: `${key}=${value}`,
+                });
                 if (this.readCharacter() === '&') {
                     this.cursor++;
                 }

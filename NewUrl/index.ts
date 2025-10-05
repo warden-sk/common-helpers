@@ -6,24 +6,29 @@ import Tokenizer from './Tokenizer.js';
 
 class NewUrl {
   host = '';
+
   readonly input: string;
+
   parameters: {
     [key: string]: string;
   } = {};
+
   path = '';
+
   searchParameters: {
     [key: string]: string;
   } = {};
+
   testTokenizer?: Tokenizer;
+
   tokenizer: Tokenizer;
 
+  // ✅
   constructor(input: string) {
     this.input = input;
     this.tokenizer = new Tokenizer(this.input);
 
-    for (let i = 0; i < this.tokenizer.tokens.length; i++) {
-      const token = this.tokenizer.tokens[i]!;
-
+    for (const token of this.tokenizer.tokens) {
       // Sort: SCHEME, HOST, PORT, PATH, SEARCH_PARAMETER
 
       if (token.type === 'SCHEME') {
@@ -43,8 +48,7 @@ class NewUrl {
       }
 
       if (token.type === 'SEARCH_PARAMETER') {
-        // DOKONČIŤ
-        this.searchParameters[token.parameter[0]] = decodeURIComponent(token.parameter[1]);
+        this.searchParameters[token.parameter[0]] = token.parameter[1];
       }
     }
   }
@@ -86,6 +90,7 @@ class NewUrl {
     return true;
   }
 
+  // DOKONČIŤ
   toString(): string {
     let url = `${this.host}${this.path}`;
 

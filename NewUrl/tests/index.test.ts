@@ -14,5 +14,7 @@ test('[1]', () => {
 
   expect(newUrl.test('https://kobida.sk:443/{fileName?}')).toEqual(true);
 
-  expect(newUrl.parameters).toEqual({ fileName: 'test.html' });
+  expect(newUrl.parameters).toEqual({
+    fileName: 'test.html',
+  });
 });
