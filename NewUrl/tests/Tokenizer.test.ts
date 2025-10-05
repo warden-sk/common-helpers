@@ -136,9 +136,9 @@ test('[5] SCHEME + HOST + PORT + PATH + SEARCH_PARAMETER', () => {
       value: 'test',
     },
     {
-      parameter: ['search', ''],
+      parameter: ['search', 'Ako sa máš?'],
       type: 'SEARCH_PARAMETER',
-      value: 'search=',
+      value: 'search=Ako+sa+m%C3%A1%C5%A1%3F',
     },
   ]);
 });

@@ -227,7 +227,7 @@ class Tokenizer {
         }
 
         this.addToken({
-          parameter: [key, value],
+          parameter: [key, decodeURIComponent(value).replace(/\+/g, ' ')],
           type: 'SEARCH_PARAMETER',
           value: `${key}=${value}`,
         });
