@@ -1,6 +1,5 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 02.10.2025
  */
 
 import type React from 'react';

@@ -1,6 +1,5 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 21.07.2025
  */
 
 const ID_PATTERN = /^[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-4[0-9A-Fa-f]{3}-[89ABab][0-9A-Fa-f]{3}-[0-9A-Fa-f]{12}$/;

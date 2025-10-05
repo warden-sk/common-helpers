@@ -1,6 +1,5 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 21.07.2025
  */
 import invariant from './invariant.js';
 import isString from './isString.js';

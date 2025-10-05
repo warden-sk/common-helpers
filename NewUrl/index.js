@@ -1,6 +1,5 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 22.09.2025
  */
 import Tokenizer from './Tokenizer.js';
 class NewUrl {

@@ -1,6 +1,5 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 21.07.2025
  */
 
 import type { Token } from './types.js';

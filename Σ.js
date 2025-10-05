@@ -1,6 +1,5 @@
 /*
- * Copyright 2024 Marek Kobida
- * Last Updated: 17.10.2024
+ * Copyright 2025 Marek Kobida
  */
 function Σ(a, ab, bc, cd, de, ef) {
     if (ab && bc && cd && de && ef) {

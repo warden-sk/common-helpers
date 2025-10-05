@@ -1,6 +1,5 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 21.08.2025
  */
 import isFunction from '../validation/isFunction.js';
 import isNumber from '../validation/isNumber.js';

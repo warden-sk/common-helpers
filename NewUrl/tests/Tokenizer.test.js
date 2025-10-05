@@ -1,6 +1,5 @@
 /*
  * Copyright 2025 Marek Kobida
- * Last Updated: 22.07.2025
  */
 import { expect, test } from 'bun:test';
 import Tokenizer from '../Tokenizer.js';
