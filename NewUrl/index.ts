@@ -2,6 +2,7 @@
  * Copyright 2025 Marek Kobida
  */
 
+import isObject from '../validation/isObject.js';
 import Tokenizer from './Tokenizer.js';
 
 class NewUrl {
@@ -62,7 +63,7 @@ class NewUrl {
       const token2 = this.testTokenizer.tokens[i]!;
 
       if (token2.type === 'HOST' || token2.type === 'PATH' || token2.type === 'PORT' || token2.type === 'SCHEME') {
-        if (!(token1 && token1.type === token2.type && token1.value === token2.value)) {
+        if (!(isObject(token1) && token1.type === token2.type && token1.value === token2.value)) {
           return false;
         }
       }
@@ -70,7 +71,7 @@ class NewUrl {
       if (token2.type === 'PARAMETERIZED_PATH') {
         //         ↓ je voliteľný?
         if (token2.parameter[1]) {
-          if (token1 && token1.type !== 'SEARCH_PARAMETER') {
+          if (isObject(token1) && token1.type !== 'SEARCH_PARAMETER') {
             if (token1.type !== 'PATH') {
               return false;
             }
@@ -78,7 +79,7 @@ class NewUrl {
             this.parameters[token2.parameter[0]] = token1.value;
           }
         } else {
-          if (!(token1 && token1.type === 'PATH')) {
+          if (!(isObject(token1) && token1.type === 'PATH')) {
             return false;
           }
 
