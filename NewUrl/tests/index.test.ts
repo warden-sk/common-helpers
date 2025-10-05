@@ -18,3 +18,11 @@ test('[1]', () => {
     fileName: 'test.html',
   });
 });
+
+test('[2]', () => {
+  const newUrl = new NewUrl('https://kobida.sk:443/test.html');
+
+  newUrl.searchParameters.page = '1';
+
+  expect(newUrl.toString()).toBe('https://kobida.sk/test.html?page=1');
+});

@@ -90,17 +90,13 @@ class NewUrl {
     return true;
   }
 
-  // DOKONČIŤ
+  // ✅
   toString(): string {
-    let url = `${this.host}${this.path}`;
+    const url = new URL(this.path, this.host);
 
-    const keys = Object.entries(this.searchParameters);
+    url.search = new URLSearchParams(this.searchParameters).toString();
 
-    if (keys.length > 0) {
-      url += `?${keys.map(([key, value]) => `${key}=${value}`).join('&')}`;
-    }
-
-    return url;
+    return url.toString();
   }
 }
 

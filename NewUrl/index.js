@@ -64,14 +64,11 @@ class NewUrl {
         }
         return true;
     }
-    // DOKONČIŤ
+    // ✅
     toString() {
-        let url = `${this.host}${this.path}`;
-        const keys = Object.entries(this.searchParameters);
-        if (keys.length > 0) {
-            url += `?${keys.map(([key, value]) => `${key}=${value}`).join('&')}`;
-        }
-        return url;
+        const url = new URL(this.path, this.host);
+        url.search = new URLSearchParams(this.searchParameters).toString();
+        return url.toString();
     }
 }
 export default NewUrl;
