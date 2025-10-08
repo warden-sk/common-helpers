@@ -1,6 +1,7 @@
 /*
  * Copyright 2025 Marek Kobida
  */
+import { decodeBase64Url, encodeBase64Url } from './base64.js';
 class Hmac {
     // https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
     #key;
@@ -19,23 +20,14 @@ class Hmac {
         await crypto.subtle.sign('HMAC', await this.#key, new TextEncoder().encode(input)));
     }
     async signBase64Url(input) {
-        const bytes = await this.sign(input);
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64
-        return bytes.toBase64({
-            alphabet: 'base64url',
-            omitPadding: true,
-        });
+        return encodeBase64Url(await this.sign(input));
     }
     async verify(input, signature) {
         // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify
         return crypto.subtle.verify('HMAC', await this.#key, signature, new TextEncoder().encode(input));
     }
     async verifyBase64Url(input, signature) {
-        return this.verify(input, 
-        // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/setFromBase64
-        Uint8Array.fromBase64(signature, {
-            alphabet: 'base64url',
-        }));
+        return this.verify(input, decodeBase64Url(signature));
     }
 }
 function hmac(key, algorithm = 'SHA-256') {

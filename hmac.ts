@@ -2,6 +2,8 @@
  * Copyright 2025 Marek Kobida
  */
 
+import { decodeBase64Url, encodeBase64Url } from './base64.js';
+
 type Algorithm = 'SHA-256' | 'SHA-384' | 'SHA-512';
 
 class Hmac {
@@ -31,13 +33,7 @@ class Hmac {
   }
 
   async signBase64Url(input: string): Promise<string> {
-    const bytes = await this.sign(input);
-
-    // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/toBase64
-    return bytes.toBase64({
-      alphabet: 'base64url',
-      omitPadding: true,
-    });
+    return encodeBase64Url(await this.sign(input));
   }
 
   async verify(input: string, signature: Uint8Array<ArrayBuffer>): Promise<boolean> {
@@ -46,13 +42,7 @@ class Hmac {
   }
 
   async verifyBase64Url(input: string, signature: string): Promise<boolean> {
-    return this.verify(
-      input,
-      // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Uint8Array/setFromBase64
-      Uint8Array.fromBase64(signature, {
-        alphabet: 'base64url',
-      }),
-    );
+    return this.verify(input, decodeBase64Url(signature));
   }
 }
 
