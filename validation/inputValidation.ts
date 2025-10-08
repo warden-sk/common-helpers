@@ -143,7 +143,7 @@ const allowedCharacters = new Set([
   0x63, // c
 ]);
 
-function isInputValid(input: unknown): boolean {
+function isInputValid(input: any): boolean {
   try {
     return input === validateInput(input);
   } catch {
@@ -151,7 +151,7 @@ function isInputValid(input: unknown): boolean {
   }
 }
 
-function validateInput(input: unknown): string {
+function validateInput(input: any): string {
   invariant(isString(input), 'Vstup nie je platný.');
 
   const $ = input.normalize(); // from a [0x0061] ◌́ [0x0301] to á [0x00E1]
