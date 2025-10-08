@@ -2,6 +2,8 @@
  * Copyright 2025 Marek Kobida
  */
 
+import type { Algorithm } from './hmac.js';
+
 import { decodeBase64Url, encodeBase64Url } from './base64.js';
 import hmac from './hmac.js';
 import invariant from './validation/invariant.js';
@@ -12,10 +14,14 @@ import isString from './validation/isString.js';
 import * as λ from './λ.js';
 
 class Authorization {
-  key: string;
+  #algorithm: Algorithm;
 
-  constructor(key: string) {
-    this.key = key;
+  #key: string;
+
+  constructor(key: string, algorithm: Algorithm = 'SHA-256') {
+    this.#algorithm = algorithm;
+
+    this.#key = key;
   }
 
   async decodeKey(input: string): Promise<unknown> {
@@ -23,7 +29,10 @@ class Authorization {
 
     invariant(isString(jsonBase64Url) && isString(signatureBase64Url), 'Kľúč nie je platný.');
 
-    invariant(await hmac(this.key).verifyBase64Url(jsonBase64Url, signatureBase64Url), 'Kľúč nie je platný.');
+    invariant(
+      await hmac(this.#key, this.#algorithm).verifyBase64Url(jsonBase64Url, signatureBase64Url),
+      'Kľúč nie je platný.',
+    );
 
     const json = λ.decodeJSON(decodeBase64Url(jsonBase64Url));
 
@@ -56,14 +65,16 @@ class Authorization {
 
     const json = λ.encodeJSON(newInput);
     const jsonBase64Url = encodeBase64Url(json);
-    const signatureBase64Url = await hmac(this.key).signBase64Url(jsonBase64Url);
+    const signatureBase64Url = await hmac(this.#key, this.#algorithm).signBase64Url(jsonBase64Url);
 
     return `${jsonBase64Url}.${signatureBase64Url}`;
   }
 }
 
-function authorization(key: string): Authorization {
-  return new Authorization(key);
+function authorization(key: string, algorithm: Algorithm = 'SHA-256'): Authorization {
+  return new Authorization(key, algorithm);
 }
+
+export { Authorization };
 
 export default authorization;
