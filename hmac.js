@@ -3,9 +3,9 @@
  */
 class Hmac {
     // https://developer.mozilla.org/en-US/docs/Web/API/CryptoKey
-    key;
-    constructor(algorithm, key) {
-        this.key = crypto.subtle.importKey('raw', new TextEncoder().encode(key), 
+    #key;
+    constructor(key, algorithm = 'SHA-256') {
+        this.#key = crypto.subtle.importKey('raw', new TextEncoder().encode(key), 
         // https://developer.mozilla.org/en-US/docs/Web/API/HmacImportParams
         {
             hash: algorithm,
@@ -16,7 +16,7 @@ class Hmac {
     async sign(input) {
         return new Uint8Array(
         // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/sign
-        await crypto.subtle.sign('HMAC', await this.key, new TextEncoder().encode(input)));
+        await crypto.subtle.sign('HMAC', await this.#key, new TextEncoder().encode(input)));
     }
     async signBase64Url(input) {
         const bytes = await this.sign(input);
@@ -28,7 +28,7 @@ class Hmac {
     }
     async verify(input, signature) {
         // https://developer.mozilla.org/en-US/docs/Web/API/SubtleCrypto/verify
-        return crypto.subtle.verify('HMAC', await this.key, signature, new TextEncoder().encode(input));
+        return crypto.subtle.verify('HMAC', await this.#key, signature, new TextEncoder().encode(input));
     }
     async verifyBase64Url(input, signature) {
         return this.verify(input, 
@@ -38,7 +38,7 @@ class Hmac {
         }));
     }
 }
-function hmac(key) {
-    return new Hmac('SHA-256', key);
+function hmac(key, algorithm = 'SHA-256') {
+    return new Hmac(key, algorithm);
 }
 export default hmac;

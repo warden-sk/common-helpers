@@ -9,8 +9,10 @@ import isNumber from '../validation/isNumber.js';
 import isObject from '../validation/isObject.js';
 import isString from '../validation/isString.js';
 import AbstractRepository from './AbstractRepository.js';
+// ✅
 class MemoryRepository extends AbstractRepository {
     #rows = new Map();
+    // ✅
     constructor(validator, initialRows) {
         super(validator);
         if (isArray(initialRows)) {
@@ -20,6 +22,7 @@ class MemoryRepository extends AbstractRepository {
             }
         }
     }
+    // ✅
     async create(row) {
         const newRow = {
             ...row,
@@ -29,31 +32,39 @@ class MemoryRepository extends AbstractRepository {
         this.#rows.set(newRow._id, newRow);
         return newRow;
     }
+    // ✅
     async deleteAll() {
         this.#rows.clear();
     }
+    // ✅
     async deleteById(id) {
         this.#rows.delete(id);
     }
+    // ✅
     async read(filter) {
         return (await this.readAll()).filter(row => {
             return this.#testWhere(row, filter.where);
         });
     }
+    // ✅
     async readAll() {
         return [...this.#rows.values()];
     }
+    // ✅
     async readById(id) {
         return this.#rows.get(id);
     }
+    // ✅
     async update(row) {
         invariant(this.#rows.has(row._id), 'The row does not exist.');
         this.validate(row);
         this.#rows.set(row._id, row);
     }
+    // ✅
     #isComparable(input) {
         return isBoolean(input) || isNumber(input) || isString(input);
     }
+    // ✅
     #testWhere(row, where) {
         const { $and, $or, ...$ } = where;
         if (isArray($and) &&

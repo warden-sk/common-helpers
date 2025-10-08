@@ -10,14 +10,16 @@ import isObject from './validation/isObject.js';
 import isString from './validation/isString.js';
 import * as λ from './λ.js';
 class Authorization {
-    key;
-    constructor(key) {
-        this.key = key;
+    #algorithm;
+    #key;
+    constructor(key, algorithm = 'SHA-256') {
+        this.#algorithm = algorithm;
+        this.#key = key;
     }
     async decodeKey(input) {
         const [jsonBase64Url, signatureBase64Url] = input.split('.');
         invariant(isString(jsonBase64Url) && isString(signatureBase64Url), 'Kľúč nie je platný.');
-        invariant(await hmac(this.key).verifyBase64Url(jsonBase64Url, signatureBase64Url), 'Kľúč nie je platný.');
+        invariant(await hmac(this.#key, this.#algorithm).verifyBase64Url(jsonBase64Url, signatureBase64Url), 'Kľúč nie je platný.');
         const json = λ.decodeJSON(decodeBase64Url(jsonBase64Url));
         if (isObject(json)) {
             invariant(isISODate(json.createdAt), 'Kľúč nie je platný.');
@@ -42,11 +44,12 @@ class Authorization {
             : input;
         const json = λ.encodeJSON(newInput);
         const jsonBase64Url = encodeBase64Url(json);
-        const signatureBase64Url = await hmac(this.key).signBase64Url(jsonBase64Url);
+        const signatureBase64Url = await hmac(this.#key, this.#algorithm).signBase64Url(jsonBase64Url);
         return `${jsonBase64Url}.${signatureBase64Url}`;
     }
 }
-function authorization(key) {
-    return new Authorization(key);
+function authorization(key, algorithm = 'SHA-256') {
+    return new Authorization(key, algorithm);
 }
+export { Authorization };
 export default authorization;
