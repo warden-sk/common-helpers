@@ -5,7 +5,7 @@
 import isNull from './isNull.js';
 import isUndefined from './isUndefined.js';
 
-function isNullOrUndefined(input: any): input is null | undefined {
+function isNullOrUndefined(input: unknown): input is null | undefined {
   return isNull(input) || isUndefined(input);
 }
 

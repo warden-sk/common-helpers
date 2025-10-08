@@ -2,7 +2,7 @@
  * Copyright 2025 Marek Kobida
  */
 
-function isArray(input: any): input is any[] {
+function isArray(input: unknown): input is unknown[] {
   return Object.prototype.toString.call(input) === '[object Array]';
 }
 

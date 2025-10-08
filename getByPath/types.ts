@@ -5,7 +5,7 @@
 type ArrayKey = number;
 
 //                     ↓ KĽÚČOVÉ
-type IsTuple<T extends readonly any[]> = number extends T['length'] ? false : true;
+type IsTuple<T extends readonly unknown[]> = number extends T['length'] ? false : true;
 
 type Path<T> =
   //        ↓ KĽÚČOVÉ
@@ -25,7 +25,7 @@ type PathConcatenate<TKey extends number | string, TValue> =
 // DOKONČIŤ
 type PathValue<T, TPath extends Path<T>> =
   // DISTRIBUTIVE CONDITIONAL TYPES
-  T extends any ?
+  T extends unknown ?
     TPath extends `${infer K}.${infer R}` ?
       K extends keyof T ?
         R extends Path<T[K]> ?
@@ -52,9 +52,9 @@ type PathValue<T, TPath extends Path<T>> =
 type Primitive = bigint | boolean | null | number | string | symbol | undefined;
 
 //                       ↓ KĽÚČOVÉ
-type TupleKeys<T extends readonly any[]> = Extract<keyof T, `${number}`>;
+type TupleKeys<T extends readonly unknown[]> = Extract<keyof T, `${number}`>;
 
 //                          ↓ KĽÚČOVÉ
-// type TupleKeys<T extends readonly any[]> = Exclude<keyof T, keyof any[]>;
+// type TupleKeys<T extends readonly unknown[]> = Exclude<keyof T, keyof unknown[]>;
 
 export type { Path, PathValue };

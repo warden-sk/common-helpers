@@ -15,7 +15,7 @@ function Σ<A, B, C, D, E, F>(
   de: (d: D) => E,
   ef: (e: E) => F,
 ): F;
-function Σ(a: any, ab?: Function, bc?: Function, cd?: Function, de?: Function, ef?: Function): any {
+function Σ(a: unknown, ab?: Function, bc?: Function, cd?: Function, de?: Function, ef?: Function): unknown {
   if (ab && bc && cd && de && ef) {
     return ef(de(cd(bc(ab(a)))));
   }

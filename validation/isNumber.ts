@@ -2,7 +2,7 @@
  * Copyright 2025 Marek Kobida
  */
 
-function isNumber(input: any): input is number {
+function isNumber(input: unknown): input is number {
   return Object.prototype.toString.call(input) === '[object Number]';
 }
 
