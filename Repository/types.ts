@@ -4,10 +4,12 @@
 
 import type { Path, PathValue } from '../getByPath/types.js';
 
+// ✅
 type Filter<T extends Row> = {
   where: Where<T>;
 };
 
+// ✅
 type Repository<T extends Row> = {
   create(row: Omit<T, '_id'>): Promise<T>;
 
@@ -24,16 +26,20 @@ type Repository<T extends Row> = {
   update(row: T): Promise<void>;
 };
 
+// ✅
 type Row = {
   _id: string;
 };
 
-type Validator<T extends Row> = (row: any) => row is T;
+// ✅
+type Validator<T extends Row> = (row: unknown) => row is T;
 
+// ✅
 type Where<T extends Row> = {
   [TPath in Path<T>]?:
     | {
         $eq?: PathValue<T, TPath>; // EQUAL TO (=)
+        // $exists?: boolean;
         $gt?: PathValue<T, TPath>; // GREATER THAN (>)
         $gte?: PathValue<T, TPath>; // GREATER THAN OR EQUAL TO (>=)
         $lt?: PathValue<T, TPath>; // LESS THAN (<)

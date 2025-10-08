@@ -6,6 +6,7 @@ import type { Filter, Repository, Row, Validator } from './types.js';
 
 import invariant from '../validation/invariant.js';
 
+// ✅
 abstract class AbstractRepository<T extends Row> implements Repository<T> {
   #validator: Validator<T>;
 
@@ -27,7 +28,8 @@ abstract class AbstractRepository<T extends Row> implements Repository<T> {
 
   abstract update(row: T): Promise<void>;
 
-  validate(row: any): asserts row is T {
+  // ✅
+  validate(row: unknown): asserts row is T {
     invariant(this.#validator(row), 'The row is not valid.');
   }
 }

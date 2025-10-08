@@ -13,9 +13,11 @@ import isObject from '../validation/isObject.js';
 import isString from '../validation/isString.js';
 import AbstractRepository from './AbstractRepository.js';
 
+// ✅
 class MemoryRepository<T extends Row> extends AbstractRepository<T> {
   #rows: Map<string, T> = new Map<string, T>();
 
+  // ✅
   constructor(validator: Validator<T>, initialRows?: T[]) {
     super(validator);
 
@@ -28,6 +30,7 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
     }
   }
 
+  // ✅
   async create(row: Omit<T, '_id'>): Promise<T> {
     const newRow = {
       ...row,
@@ -41,28 +44,34 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
     return newRow;
   }
 
+  // ✅
   async deleteAll(): Promise<void> {
     this.#rows.clear();
   }
 
+  // ✅
   async deleteById(id: string): Promise<void> {
     this.#rows.delete(id);
   }
 
+  // ✅
   async read(filter: Filter<T>): Promise<T[]> {
     return (await this.readAll()).filter(row => {
       return this.#testWhere(row, filter.where);
     });
   }
 
+  // ✅
   async readAll(): Promise<T[]> {
     return [...this.#rows.values()];
   }
 
+  // ✅
   async readById(id: string): Promise<T | undefined> {
     return this.#rows.get(id);
   }
 
+  // ✅
   async update(row: T): Promise<void> {
     invariant(this.#rows.has(row._id), 'The row does not exist.');
 
@@ -71,10 +80,12 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
     this.#rows.set(row._id, row);
   }
 
-  #isComparable(input: any): input is boolean | number | string {
+  // ✅
+  #isComparable(input: unknown): input is boolean | number | string {
     return isBoolean(input) || isNumber(input) || isString(input);
   }
 
+  // ✅
   #testWhere(row: T, where: Where<T>): boolean {
     const { $and, $or, ...$ } = where;
 
