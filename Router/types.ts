@@ -55,7 +55,7 @@ type RouterResponse<Context> = {
   headers: Headers;
   html: (input: React.ReactNode) => void;
   htmlOptions: HtmlOptions;
-  json: (input: unknown) => void;
+  json: (input: any) => void;
   redirect: (input: string) => void;
   statusCode: number;
   text: (input: string) => void;
