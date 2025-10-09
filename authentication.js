@@ -9,7 +9,7 @@ import isNumber from './validation/isNumber.js';
 import isObject from './validation/isObject.js';
 import isString from './validation/isString.js';
 import * as λ from './λ.js';
-class Authorization {
+class Authentication {
     #algorithm;
     #key;
     constructor(key, algorithm = 'SHA-256') {
@@ -48,8 +48,8 @@ class Authorization {
         return `${jsonBase64Url}.${signatureBase64Url}`;
     }
 }
-function authorization(key, algorithm = 'SHA-256') {
-    return new Authorization(key, algorithm);
+function authentication(key, algorithm = 'SHA-256') {
+    return new Authentication(key, algorithm);
 }
-export { Authorization };
-export default authorization;
+export { Authentication };
+export default authentication;

@@ -13,7 +13,7 @@ import isObject from './validation/isObject.js';
 import isString from './validation/isString.js';
 import * as λ from './λ.js';
 
-class Authorization {
+class Authentication {
   #algorithm: Algorithm;
 
   #key: string;
@@ -71,10 +71,10 @@ class Authorization {
   }
 }
 
-function authorization(key: string, algorithm: Algorithm = 'SHA-256'): Authorization {
-  return new Authorization(key, algorithm);
+function authentication(key: string, algorithm: Algorithm = 'SHA-256'): Authentication {
+  return new Authentication(key, algorithm);
 }
 
-export { Authorization };
+export { Authentication };
 
-export default authorization;
+export default authentication;
