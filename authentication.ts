@@ -34,7 +34,7 @@ class Authentication {
       'Kľúč nie je platný.',
     );
 
-    const json = λ.decodeJSON(decodeBase64Url(jsonBase64Url));
+    const json = λ.decodeJSON(decodeBase64Url(jsonBase64Url).toString());
 
     if (isObject(json)) {
       invariant(isISODate(json.createdAt), 'Kľúč nie je platný.');

@@ -20,7 +20,7 @@ class Authentication {
         const [jsonBase64Url, signatureBase64Url] = input.split('.');
         invariant(isString(jsonBase64Url) && isString(signatureBase64Url), 'Kľúč nie je platný.');
         invariant(await hmac(this.#key, this.#algorithm).verifyBase64Url(jsonBase64Url, signatureBase64Url), 'Kľúč nie je platný.');
-        const json = λ.decodeJSON(decodeBase64Url(jsonBase64Url));
+        const json = λ.decodeJSON(decodeBase64Url(jsonBase64Url).toString());
         if (isObject(json)) {
             invariant(isISODate(json.createdAt), 'Kľúč nie je platný.');
             if ('expiresAt' in json) {
