@@ -7,7 +7,6 @@ import type { Algorithm } from './hmac.js';
 import { decodeBase64Url, encodeBase64Url } from './base64.js';
 import hmac from './hmac.js';
 import invariant from './validation/invariant.js';
-import isISODate from './validation/isISODate.js';
 import isNumber from './validation/isNumber.js';
 import isObject from './validation/isObject.js';
 import isString from './validation/isString.js';
@@ -37,10 +36,10 @@ class Authentication {
     const json = λ.decodeJSON(decodeBase64Url(jsonBase64Url).toString());
 
     if (isObject(json)) {
-      invariant(isISODate(json.createdAt), 'Kľúč nie je platný.');
+      invariant(isNumber(json.createdAt), 'Kľúč nie je platný.');
 
       if ('expiresAt' in json) {
-        invariant(isISODate(json.expiresAt), 'Kľúč nie je platný.');
+        invariant(isNumber(json.expiresAt), 'Kľúč nie je platný.');
 
         invariant(+new Date(json.expiresAt) > +new Date(), 'Platnosť kľúča vypršala.');
       }
@@ -54,10 +53,10 @@ class Authentication {
       isObject(input) ?
         {
           ...input,
-          createdAt: new Date().toISOString(),
+          createdAt: +new Date(),
           ...(isNumber(expiresAt) ?
             {
-              expiresAt: new Date(+new Date() + expiresAt * 3_600_000).toISOString(),
+              expiresAt: +new Date(+new Date() + expiresAt * 3_600_000),
             }
           : {}),
         }
