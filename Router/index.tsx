@@ -21,7 +21,12 @@ class Router<Context> {
     return this;
   }
 
-  async getResponse(request: RouterRequest, $: { context: Context }): Promise<RouterResponse> {
+  async getResponse(
+    request: RouterRequest,
+    $: {
+      context: Context;
+    },
+  ): Promise<RouterResponse> {
     const response: RouterResponse = {
       body: {
         $: new Uint8Array(),
