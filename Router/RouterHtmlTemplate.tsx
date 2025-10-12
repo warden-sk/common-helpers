@@ -26,7 +26,7 @@ type I = {
     | string
   )[];
   request: RouterRequest;
-  response: RouterResponse;
+  response: RouterResponse<{}>; // DOKONČIŤ
 };
 
 type O = React.ReactNode;

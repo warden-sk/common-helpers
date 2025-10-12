@@ -6,7 +6,8 @@ import type React from 'react';
 
 import type NewUrl from '../NewUrl/index.js';
 
-type HtmlOptions = {
+type HtmlOptions<Context> = {
+  context?: Context;
   description?: string;
   keywords?: string;
   openGraph?: {
@@ -32,11 +33,7 @@ type Route<Context> = {
   url: string;
 };
 
-type RouteAction<Context> = (
-  request: RouterRequest,
-  response: RouterResponse,
-  context: Context,
-) => Promise<void> | void;
+type RouteAction<Context> = (request: RouterRequest, response: RouterResponse<Context>) => Promise<void> | void;
 
 type RouterRequest = {
   formData: FormData;
@@ -45,7 +42,7 @@ type RouterRequest = {
   url: NewUrl;
 };
 
-type RouterResponse = {
+type RouterResponse<Context> = {
   body:
     | {
         $: React.ReactNode;
@@ -57,7 +54,7 @@ type RouterResponse = {
       };
   headers: Headers;
   html: (input: React.ReactNode) => void;
-  htmlOptions: HtmlOptions;
+  htmlOptions: HtmlOptions<Context>;
   json: (input: unknown) => void;
   redirect: (input: string) => void;
   statusCode: number;

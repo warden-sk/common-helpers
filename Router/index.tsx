@@ -21,8 +21,8 @@ class Router<Context> {
     return this;
   }
 
-  async getResponse(request: RouterRequest, context: Context): Promise<RouterResponse> {
-    const response: RouterResponse = {
+  async getResponse(request: RouterRequest, context: Context): Promise<RouterResponse<Context>> {
+    const response: RouterResponse<Context> = {
       body: {
         $: new Uint8Array(),
         type: 'bytes',
@@ -85,7 +85,7 @@ class Router<Context> {
           request.url.test(newRouteUrl) &&
           (isString(route.method) ? route.method === request.method : route.method.includes(request.method))
         ) {
-          await route.action(request, response, context);
+          await route.action(request, response);
 
           if (response.body.type === 'bytes' && response.body.$.length > 0) {
             return response;

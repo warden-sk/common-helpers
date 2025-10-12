@@ -10,7 +10,7 @@ import NewUrl from '../NewUrl/index.js';
 
 type RouterContext = {
   request: RouterRequest;
-  response: RouterResponse;
+  response: RouterResponse<{}>; // DOKONČIŤ
 };
 
 const routerContext = React.createContext<RouterContext>({

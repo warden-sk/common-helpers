@@ -70,7 +70,7 @@ class Router {
                 const newRouteUrl = `${request.url.host}${route.url}`;
                 if (request.url.test(newRouteUrl) &&
                     (isString(route.method) ? route.method === request.method : route.method.includes(request.method))) {
-                    await route.action(request, response, context);
+                    await route.action(request, response);
                     if (response.body.type === 'bytes' && response.body.$.length > 0) {
                         return response;
                     }
