@@ -8,9 +8,9 @@ import type { RouterRequest, RouterResponse } from '../Router/types.js';
 
 import NewUrl from '../NewUrl/index.js';
 
-type RouterContext<Context = {}> = {
+type RouterContext = {
   request: RouterRequest;
-  response: RouterResponse<Context>;
+  response: RouterResponse;
 };
 
 const routerContext = React.createContext<RouterContext>({
@@ -25,7 +25,6 @@ const routerContext = React.createContext<RouterContext>({
       $: new Uint8Array(),
       type: 'bytes',
     },
-    context: {},
     headers: new Headers({
       'Content-Type': 'text/plain',
     }),

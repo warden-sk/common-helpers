@@ -26,13 +26,13 @@ type HtmlOptions = {
   title?: string;
 };
 
-type Route<Context = {}> = {
-  action: RouteAction<Context>;
+type Route = {
+  action: RouteAction;
   method: string | string[];
   url: string;
 };
 
-type RouteAction<Context = {}> = (request: RouterRequest, response: RouterResponse<Context>) => Promise<void> | void;
+type RouteAction = (request: RouterRequest, response: RouterResponse) => Promise<void> | void;
 
 type RouterRequest = {
   formData: FormData;
@@ -41,7 +41,7 @@ type RouterRequest = {
   url: NewUrl;
 };
 
-type RouterResponse<Context = {}> = {
+type RouterResponse = {
   body:
     | {
         $: React.ReactNode;
@@ -51,7 +51,6 @@ type RouterResponse<Context = {}> = {
         $: Uint8Array<ArrayBuffer>;
         type: 'bytes';
       };
-  context: Context;
   headers: Headers;
   html: (input: React.ReactNode) => void;
   htmlOptions: HtmlOptions;

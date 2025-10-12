@@ -8,12 +8,10 @@ import isError from '../validation/isError.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 
-class Router<Context> {
-  routes: Route<Context>[] = [];
+class Router {
+  routes: Route[] = [];
 
-  useAction?: RouteAction<Context>;
-
-  addRoute(method: string | string[], url: string, action: RouteAction<Context>): this {
+  addRoute(method: string | string[], url: string, action: RouteAction): this {
     this.routes.push({
       action,
       method,
@@ -23,13 +21,12 @@ class Router<Context> {
     return this;
   }
 
-  async getResponse(request: RouterRequest, initialContext: Context): Promise<RouterResponse<Context>> {
-    const response: RouterResponse<Context> = {
+  async getResponse(request: RouterRequest): Promise<RouterResponse> {
+    const response: RouterResponse = {
       body: {
         $: new Uint8Array(),
         type: 'bytes',
       },
-      context: initialContext,
       headers: new Headers({
         'Content-Type': 'text/plain',
       }),
@@ -81,8 +78,6 @@ class Router<Context> {
     };
 
     try {
-      await this.useAction?.(request, response);
-
       for (const route of this.routes) {
         const newRouteUrl = `${request.url.host}${route.url}`;
 
@@ -110,12 +105,6 @@ class Router<Context> {
     }
 
     return response;
-  }
-
-  use(action: RouteAction<Context>): this {
-    this.useAction = action;
-
-    return this;
   }
 }
 
