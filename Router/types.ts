@@ -26,13 +26,13 @@ type HtmlOptions = {
   title?: string;
 };
 
-type Route<Context> = {
+type Route<Context = {}> = {
   action: RouteAction<Context>;
   method: string | string[];
   url: string;
 };
 
-type RouteAction<Context> = (request: RouterRequest, response: RouterResponse<Context>) => Promise<void> | void;
+type RouteAction<Context = {}> = (request: RouterRequest, response: RouterResponse<Context>) => Promise<void> | void;
 
 type RouterRequest = {
   formData: FormData;
@@ -41,7 +41,7 @@ type RouterRequest = {
   url: NewUrl;
 };
 
-type RouterResponse<Context> = {
+type RouterResponse<Context = {}> = {
   body:
     | {
         $: React.ReactNode;
