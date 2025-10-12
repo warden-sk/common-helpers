@@ -8,12 +8,12 @@ import type { RouterRequest, RouterResponse } from '../Router/types.js';
 
 import NewUrl from '../NewUrl/index.js';
 
-type RouterContext = {
+type RouterContext<Context> = {
   request: RouterRequest;
-  response: RouterResponse<{}>; // DOKONČIŤ
+  response: RouterResponse<Context>;
 };
 
-const routerContext = React.createContext<RouterContext>({
+const routerContext = React.createContext<RouterContext<{}>>({
   request: {
     formData: new FormData(),
     headers: new Headers(),
