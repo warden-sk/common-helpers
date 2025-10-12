@@ -14,7 +14,7 @@ class Router {
         });
         return this;
     }
-    async getResponse(request) {
+    async getResponse(request, context) {
         const response = {
             body: {
                 $: new Uint8Array(),
@@ -70,7 +70,7 @@ class Router {
                 const newRouteUrl = `${request.url.host}${route.url}`;
                 if (request.url.test(newRouteUrl) &&
                     (isString(route.method) ? route.method === request.method : route.method.includes(request.method))) {
-                    await route.action(request, response);
+                    await route.action(request, response, context);
                     if (response.body.type === 'bytes' && response.body.$.length > 0) {
                         return response;
                     }
