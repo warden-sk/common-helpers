@@ -10,7 +10,7 @@ import NewUrl from '../NewUrl/index.js';
 
 type RouterContext = {
   request: RouterRequest;
-  response: RouterResponse;
+  response: RouterResponse<{}>; // DOKONČIŤ
 };
 
 const routerContext = React.createContext<RouterContext>({
@@ -25,6 +25,7 @@ const routerContext = React.createContext<RouterContext>({
       $: new Uint8Array(),
       type: 'bytes',
     },
+    context: {},
     headers: new Headers({
       'Content-Type': 'text/plain',
     }),

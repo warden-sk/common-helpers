@@ -32,13 +32,7 @@ type Route<Context> = {
   url: string;
 };
 
-type RouteAction<Context> = (
-  request: RouterRequest,
-  response: RouterResponse,
-  $: {
-    context: Context;
-  },
-) => Promise<void> | void;
+type RouteAction<Context> = (request: RouterRequest, response: RouterResponse<Context>) => Promise<void> | void;
 
 type RouterRequest = {
   formData: FormData;
@@ -47,7 +41,7 @@ type RouterRequest = {
   url: NewUrl;
 };
 
-type RouterResponse = {
+type RouterResponse<Context> = {
   body:
     | {
         $: React.ReactNode;
@@ -57,6 +51,7 @@ type RouterResponse = {
         $: Uint8Array<ArrayBuffer>;
         type: 'bytes';
       };
+  context: Context;
   headers: Headers;
   html: (input: React.ReactNode) => void;
   htmlOptions: HtmlOptions;

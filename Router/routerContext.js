@@ -15,6 +15,7 @@ const routerContext = React.createContext({
             $: new Uint8Array(),
             type: 'bytes',
         },
+        context: {},
         headers: new Headers({
             'Content-Type': 'text/plain',
         }),
