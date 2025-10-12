@@ -8,10 +8,10 @@ import isError from '../validation/isError.js';
 import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 
-class Router {
-  routes: Route[] = [];
+class Router<Context> {
+  routes: Route<Context>[] = [];
 
-  addRoute(method: string | string[], url: string, action: RouteAction): this {
+  addRoute(method: string | string[], url: string, action: RouteAction<Context>): this {
     this.routes.push({
       action,
       method,
@@ -21,7 +21,7 @@ class Router {
     return this;
   }
 
-  async getResponse(request: RouterRequest): Promise<RouterResponse> {
+  async getResponse(request: RouterRequest, context: Context): Promise<RouterResponse> {
     const response: RouterResponse = {
       body: {
         $: new Uint8Array(),
@@ -85,7 +85,7 @@ class Router {
           request.url.test(newRouteUrl) &&
           (isString(route.method) ? route.method === request.method : route.method.includes(request.method))
         ) {
-          await route.action(request, response);
+          await route.action(request, response, context);
 
           if (response.body.type === 'bytes' && response.body.$.length > 0) {
             return response;
