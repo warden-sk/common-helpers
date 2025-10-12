@@ -6,7 +6,6 @@ import isString from '../validation/isString.js';
 import * as λ from '../λ.js';
 class Router {
     routes = [];
-    useAction;
     addRoute(method, url, action) {
         this.routes.push({
             action,
@@ -15,13 +14,12 @@ class Router {
         });
         return this;
     }
-    async getResponse(request, initialContext) {
+    async getResponse(request) {
         const response = {
             body: {
                 $: new Uint8Array(),
                 type: 'bytes',
             },
-            context: initialContext,
             headers: new Headers({
                 'Content-Type': 'text/plain',
             }),
@@ -68,7 +66,6 @@ class Router {
             },
         };
         try {
-            await this.useAction?.(request, response);
             for (const route of this.routes) {
                 const newRouteUrl = `${request.url.host}${route.url}`;
                 if (request.url.test(newRouteUrl) &&
@@ -90,10 +87,6 @@ class Router {
             response.text(isError(error) ? error.message : 'The request is not valid.');
         }
         return response;
-    }
-    use(action) {
-        this.useAction = action;
-        return this;
     }
 }
 export default Router;
