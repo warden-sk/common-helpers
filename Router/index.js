@@ -14,7 +14,7 @@ class Router {
         });
         return this;
     }
-    async getResponse(request, context) {
+    async getResponse(request) {
         const response = {
             body: {
                 $: new Uint8Array(),
