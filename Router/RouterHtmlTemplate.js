@@ -50,7 +50,7 @@ function RouterHtmlTemplate({ aliases, css, js, request, response }) {
                 React.createElement(routerContext.Provider, { value: {
                         request,
                         response,
-                    } }, response.body.$)),
+                    } }, response.body)),
             React.createElement("script", { src: `${request.url.host}/index.js`, type: "module" }))));
 }
 export default RouterHtmlTemplate;

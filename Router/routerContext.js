@@ -11,10 +11,7 @@ const routerContext = React.createContext({
         url: new NewUrl('http://127.0.0.1'),
     },
     response: {
-        body: {
-            $: new Uint8Array(),
-            type: 'bytes',
-        },
+        body: new Uint8Array(),
         context: {},
         headers: new Headers({
             'Content-Type': 'text/plain',
