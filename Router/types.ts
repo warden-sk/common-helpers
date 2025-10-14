@@ -42,18 +42,10 @@ type RouterRequest = {
 };
 
 type RouterResponse<Context> = {
-  body:
-    | {
-        $: React.ReactNode;
-        type: 'react';
-      }
-    | {
-        $: Uint8Array<ArrayBuffer>;
-        type: 'bytes';
-      };
+  body: React.ReactElement | Uint8Array<ArrayBuffer>;
   context: Context;
   headers: Headers;
-  html: (input: React.ReactNode) => void;
+  html: (input: React.ReactElement | string) => void;
   htmlOptions: HtmlOptions;
   json: (input: unknown) => void;
   redirect: (input: string) => void;

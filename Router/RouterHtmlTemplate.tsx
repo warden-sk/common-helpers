@@ -29,7 +29,7 @@ type I = {
   response: RouterResponse<{}>; // DOKONČIŤ
 };
 
-type O = React.ReactNode;
+type O = React.ReactElement;
 
 function RouterHtmlTemplate({ aliases, css, js, request, response }: I): O {
   const newAliases = {
@@ -107,7 +107,7 @@ function RouterHtmlTemplate({ aliases, css, js, request, response }: I): O {
               response,
             }}
           >
-            {response.body.$}
+            {response.body}
           </routerContext.Provider>
         </div>
 

@@ -5,7 +5,9 @@
 import type { Route, RouteAction, RouterRequest, RouterResponse } from './types.js';
 
 import isError from '../validation/isError.js';
+import isReactElement from '../validation/isReactElement.js';
 import isString from '../validation/isString.js';
+import isUint8Array from '../validation/isUint8Array.js';
 import * as λ from '../λ.js';
 
 class Router<Context> {
@@ -23,43 +25,30 @@ class Router<Context> {
 
   async getResponse(request: RouterRequest, context: Context): Promise<RouterResponse<Context>> {
     const response: RouterResponse<Context> = {
-      body: {
-        $: new Uint8Array(),
-        type: 'bytes',
-      },
+      body: new Uint8Array(),
       context,
       headers: new Headers({
         'Content-Type': 'text/plain',
       }),
       html: input => {
+        if (isReactElement(input)) {
+          response.body = input;
+        }
+
         if (isString(input)) {
-          response.body = {
-            $: new TextEncoder().encode(input),
-            type: 'bytes',
-          };
-        } else {
-          response.body = {
-            $: input,
-            type: 'react',
-          };
+          response.body = new TextEncoder().encode(input);
         }
 
         response.headers.set('Content-Type', 'text/html');
       },
       htmlOptions: {},
       json: input => {
-        response.body = {
-          $: new TextEncoder().encode(λ.encodeJSON(input)),
-          type: 'bytes',
-        };
+        response.body = new TextEncoder().encode(λ.encodeJSON(input));
 
         response.headers.set('Content-Type', 'application/json');
       },
       redirect: input => {
-        response.body = {
-          $: new TextEncoder().encode(`<a href="${input}">${input}</a>`),
-          type: 'bytes',
-        };
+        response.body = new TextEncoder().encode(`<a href="${input}">${input}</a>`);
 
         response.headers.set('Cache-Control', 'no-cache');
         response.headers.set('Content-Type', 'text/html');
@@ -69,10 +58,7 @@ class Router<Context> {
       },
       statusCode: 200,
       text: input => {
-        response.body = {
-          $: new TextEncoder().encode(input),
-          type: 'bytes',
-        };
+        response.body = new TextEncoder().encode(input);
 
         response.headers.set('Content-Type', 'text/plain');
       },
@@ -88,11 +74,11 @@ class Router<Context> {
         ) {
           await route.action(request, response);
 
-          if (response.body.type === 'bytes' && response.body.$.length > 0) {
+          if (isReactElement(response.body)) {
             return response;
           }
 
-          if (response.body.type === 'react') {
+          if (isUint8Array(response.body) && response.body.length > 0) {
             return response;
           }
         }
