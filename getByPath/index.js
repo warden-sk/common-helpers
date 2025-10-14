@@ -3,8 +3,13 @@
  */
 // ✅
 function getByPath(input, path) {
-    return path.split('.').reduce(($, key) => {
+    const keys = path.split('.');
+    return keys.reduce(($, key) => {
         return $[key];
     }, input);
 }
+function setByPath(input, path, value) {
+    return input;
+}
+export { setByPath };
 export default getByPath;
