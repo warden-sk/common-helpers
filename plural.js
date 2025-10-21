@@ -12,6 +12,9 @@ function plural(n, words) {
     else {
         word = words[2];
     }
-    return `${n} ${word}`;
+    return `${new Intl.NumberFormat('sk-SK', {
+        maximumFractionDigits: 0,
+        roundingMode: 'floor',
+    }).format(n)} ${word}`;
 }
 export default plural;
