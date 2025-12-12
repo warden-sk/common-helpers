@@ -32,11 +32,12 @@ type Row = {
 };
 
 // ✅
-type Validator<T extends Row> = (row: unknown) => row is T;
-
-// ✅
 type Where<T extends Row> = {
+  $and?: Where<T>[];
+  $or?: Where<T>[];
+} & {
   [TPath in Path<T>]?:
+    | PathValue<T, TPath>
     | {
         $eq?: PathValue<T, TPath>; // EQUAL TO (=)
         // $exists?: boolean;
@@ -45,11 +46,7 @@ type Where<T extends Row> = {
         $lt?: PathValue<T, TPath>; // LESS THAN (<)
         $lte?: PathValue<T, TPath>; // LESS THAN OR EQUAL TO (<=)
         $ne?: PathValue<T, TPath>; // NOT EQUAL TO (!=)
-      }
-    | PathValue<T, TPath>;
-} & {
-  $and?: Where<T>[];
-  $or?: Where<T>[];
+      };
 };
 
-export type { Filter, Repository, Row, Validator, Where };
+export type { Filter, Repository, Row, Where };

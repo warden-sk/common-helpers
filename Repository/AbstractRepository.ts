@@ -2,18 +2,10 @@
  * Copyright 2025 Marek Kobida
  */
 
-import type { Filter, Repository, Row, Validator } from './types.js';
-
-import invariant from '../validation/invariant.js';
+import type { Filter, Repository, Row } from './types.js';
 
 // ✅
 abstract class AbstractRepository<T extends Row> implements Repository<T> {
-  #validator: Validator<T>;
-
-  constructor(validator: Validator<T>) {
-    this.#validator = validator;
-  }
-
   abstract create(row: Omit<T, '_id'>): Promise<T>;
 
   abstract deleteAll(): Promise<void>;
@@ -27,11 +19,6 @@ abstract class AbstractRepository<T extends Row> implements Repository<T> {
   abstract readById(id: string): Promise<T | undefined>;
 
   abstract update(row: T): Promise<void>;
-
-  // ✅
-  validate(row: unknown): asserts row is T {
-    invariant(this.#validator(row), 'The row is not valid.');
-  }
 }
 
 export default AbstractRepository;

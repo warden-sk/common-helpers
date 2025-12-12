@@ -2,7 +2,7 @@
  * Copyright 2025 Marek Kobida
  */
 
-import type { Filter, Row, Validator, Where } from './types.js';
+import type { Filter, Row, Where } from './types.js';
 
 import getByPath from '../getByPath/index.js';
 import invariant from '../validation/invariant.js';
@@ -18,13 +18,11 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
   #rows: Map<string, T> = new Map<string, T>();
 
   // ✅
-  constructor(validator: Validator<T>, initialRows?: T[]) {
-    super(validator);
+  constructor(initialRows?: T[]) {
+    super();
 
     if (isArray(initialRows)) {
       for (const row of initialRows) {
-        this.validate(row);
-
         this.#rows.set(row._id, row);
       }
     }
@@ -35,9 +33,7 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
     const newRow = {
       ...row,
       _id: crypto.randomUUID(),
-    };
-
-    this.validate(newRow);
+    } as T;
 
     this.#rows.set(newRow._id, newRow);
 
@@ -74,8 +70,6 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
   // ✅
   async update(row: T): Promise<void> {
     invariant(this.#rows.has(row._id), 'The row does not exist.');
-
-    this.validate(row);
 
     this.#rows.set(row._id, row);
   }
