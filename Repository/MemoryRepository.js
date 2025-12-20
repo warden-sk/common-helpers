@@ -13,11 +13,10 @@ import AbstractRepository from './AbstractRepository.js';
 class MemoryRepository extends AbstractRepository {
     #rows = new Map();
     // ✅
-    constructor(validator, initialRows) {
-        super(validator);
+    constructor(initialRows) {
+        super();
         if (isArray(initialRows)) {
             for (const row of initialRows) {
-                this.validate(row);
                 this.#rows.set(row._id, row);
             }
         }
@@ -28,7 +27,6 @@ class MemoryRepository extends AbstractRepository {
             ...row,
             _id: crypto.randomUUID(),
         };
-        this.validate(newRow);
         this.#rows.set(newRow._id, newRow);
         return newRow;
     }
@@ -57,7 +55,6 @@ class MemoryRepository extends AbstractRepository {
     // ✅
     async update(row) {
         invariant(this.#rows.has(row._id), 'The row does not exist.');
-        this.validate(row);
         this.#rows.set(row._id, row);
     }
     // ✅
