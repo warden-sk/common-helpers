@@ -2,7 +2,7 @@
  * Copyright 2025 Marek Kobida
  */
 
-import type { Effect } from 'effect';
+import type { Effect, Option } from 'effect';
 
 import type { Filter, Repository, Row } from './types.js';
 
@@ -17,7 +17,7 @@ abstract class AbstractRepository<T extends Row> implements Repository<T> {
 
   abstract readAll(): Effect.Effect<readonly T[]>;
 
-  abstract readById(id: string): Effect.Effect<T | undefined>;
+  abstract readById(id: string): Effect.Effect<Option.Option<T>>;
 
   abstract update(row: T): Effect.Effect<T, Error>;
 }

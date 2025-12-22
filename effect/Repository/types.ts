@@ -2,7 +2,7 @@
  * Copyright 2025 Marek Kobida
  */
 
-import type { Effect } from 'effect';
+import type { Effect, Option } from 'effect';
 
 import type { Path, PathValue } from '../../getByPath/types.js';
 
@@ -21,7 +21,7 @@ type Repository<T extends Row> = {
 
   readonly readAll: () => Effect.Effect<readonly T[]>;
 
-  readonly readById: (id: string) => Effect.Effect<T | undefined>;
+  readonly readById: (id: string) => Effect.Effect<Option.Option<T>>;
 
   readonly update: (row: T) => Effect.Effect<T, Error>;
 };
@@ -31,9 +31,10 @@ type Row = {
 };
 
 type Where<T extends Row> = {
-  // DOKONČIŤ
-  //        ↓ TPath in Exclude<Path<T>, '$and' | '$or'>
-  readonly [TPath in Path<T>]?:
+  readonly $and?: readonly Where<T>[];
+  readonly $or?: readonly Where<T>[];
+} & {
+  readonly [TPath in Exclude<Path<T>, '$and' | '$or'>]?:
     | PathValue<T, TPath>
     | {
         readonly $eq?: PathValue<T, TPath>; // EQUAL TO (=)
@@ -43,9 +44,6 @@ type Where<T extends Row> = {
         readonly $lte?: PathValue<T, TPath>; // LESS THAN OR EQUAL TO (<=)
         readonly $ne?: PathValue<T, TPath>; // NOT EQUAL TO (!=)
       };
-} & {
-  readonly $and?: readonly Where<T>[];
-  readonly $or?: readonly Where<T>[];
 };
 
 export type { Filter, Repository, Row, Where };
