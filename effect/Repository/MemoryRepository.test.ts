@@ -23,6 +23,11 @@ const $ = Effect.gen(function* () {
   const allAccounts = yield* accountRepository.readAll();
 
   yield* Effect.log(allAccounts);
+
+  yield* accountRepository.update({
+    _id: lastCreatedAccount._id,
+    name: 'Marek',
+  });
 });
 
 Effect.runSync($);

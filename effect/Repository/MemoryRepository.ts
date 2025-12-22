@@ -2,7 +2,7 @@
  * Copyright 2025 Marek Kobida
  */
 
-import { Effect, Schema } from 'effect';
+import { Effect, Option, Schema } from 'effect';
 
 import type { Filter, Row, Where } from './types.js';
 
@@ -38,7 +38,7 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
     }).pipe(
       Effect.mapError(
         error =>
-          new Error('The input row is not valid.', {
+          new Error('The row is not valid.', {
             cause: error,
           }),
       ),
@@ -67,18 +67,28 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
   }
 
   readById(id: string) {
-    return Effect.sync(() => this.#rows.get(id));
+    return Effect.sync(() => Option.fromNullable(this.#rows.get(id)));
   }
 
   update(row: T) {
     return Schema.decodeUnknown(this.#schema)(row).pipe(
       Effect.mapError(
         error =>
-          new Error('The input row is not valid.', {
+          new Error('The row is not valid.', {
             cause: error,
           }),
       ),
-      Effect.tap(validRow => Effect.sync(() => this.#rows.set(validRow._id, validRow))),
+      Effect.flatMap(validRow => {
+        if (!this.#rows.has(validRow._id)) {
+          return Effect.fail(new Error('The row does not exist.'));
+        }
+
+        return Effect.sync(() => {
+          this.#rows.set(validRow._id, validRow);
+
+          return validRow;
+        });
+      }),
     );
   }
 
