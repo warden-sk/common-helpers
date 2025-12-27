@@ -15,7 +15,7 @@ import isString from '../../validation/isString.js';
 import AbstractRepository from './AbstractRepository.js';
 
 class MemoryRepository<T extends Row> extends AbstractRepository<T> {
-  #rows: Map<string, T> = new Map<string, T>();
+  #rows = new Map<string, T>();
 
   #schema: Schema.Schema<T>;
 

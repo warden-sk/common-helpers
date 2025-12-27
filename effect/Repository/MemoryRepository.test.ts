@@ -18,16 +18,18 @@ const $ = Effect.gen(function* () {
     name: 'Marek Kobida',
   });
 
-  yield* Effect.log(lastCreatedAccount);
+  yield* Effect.log('LAST CREATED ACCOUNT', lastCreatedAccount);
 
-  const allAccounts = yield* accountRepository.readAll();
+  const allCreatedAccounts = yield* accountRepository.readAll();
 
-  yield* Effect.log(allAccounts);
+  yield* Effect.log('ALL CREATED ACCOUNTS', allCreatedAccounts);
 
-  yield* accountRepository.update({
+  const lastUpdatedAccount = yield* accountRepository.update({
     _id: lastCreatedAccount._id,
-    name: 'Marek',
+    name: 'Kobida Marek',
   });
+
+  yield* Effect.log('LAST UPDATED ACCOUNT', lastUpdatedAccount);
 });
 
 Effect.runSync($);
