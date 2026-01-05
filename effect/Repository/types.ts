@@ -1,10 +1,10 @@
 /*
- * Copyright 2025 Marek Kobida
+ * Copyright 2026 Marek Kobida
  */
 
 import type { Effect, Option } from 'effect';
 
-import type { Path, PathValue } from '../../getByPath/types.js';
+import type { Path, PathValue } from './getByPath.types.js';
 
 type Filter<T extends Row> = {
   readonly where: Where<T>;

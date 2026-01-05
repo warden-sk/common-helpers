@@ -1,18 +1,18 @@
 /*
- * Copyright 2025 Marek Kobida
+ * Copyright 2026 Marek Kobida
  */
 
 import { Effect, Option, Schema } from 'effect';
 
 import type { Filter, Row, Where } from './types.js';
 
-import getByPath from '../../getByPath/index.js';
 import isArray from '../../validation/isArray.js';
 import isBoolean from '../../validation/isBoolean.js';
 import isNumber from '../../validation/isNumber.js';
 import isObject from '../../validation/isObject.js';
 import isString from '../../validation/isString.js';
 import AbstractRepository from './AbstractRepository.js';
+import getByPath from './getByPath.js';
 
 class MemoryRepository<T extends Row> extends AbstractRepository<T> {
   #rows = new Map<string, T>();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2025 Marek Kobida
+ * Copyright 2026 Marek Kobida
  */
 
 import type { Effect, Option } from 'effect';
