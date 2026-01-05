@@ -123,7 +123,13 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
       for (const path of paths) {
         // Z-A
         const value = $[path]!;
-        const rowValue = getByPath(row, path);
+        const rowValueOption = getByPath(row, path);
+
+        if (Option.isNone(rowValueOption)) {
+          return false;
+        }
+
+        const rowValue = rowValueOption.value;
 
         if (this.#isComparable(value) && !(value === rowValue)) {
           return false;
