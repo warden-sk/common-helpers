@@ -4,15 +4,11 @@
 
 import { Effect, Option, Schema } from 'effect';
 
-import type { Filter, Row, Where } from './types.js';
+import type { Filter, Row } from './types.js';
 
 import isArray from '../../validation/isArray.js';
-import isBoolean from '../../validation/isBoolean.js';
-import isNumber from '../../validation/isNumber.js';
-import isObject from '../../validation/isObject.js';
-import isString from '../../validation/isString.js';
 import AbstractRepository from './AbstractRepository.js';
-import getByPath from './getByPath.js';
+import testWhere from './testWhere.js';
 
 class MemoryRepository<T extends Row> extends AbstractRepository<T> {
   #rows = new Map<string, T>();
@@ -59,7 +55,7 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
   }
 
   read(filter: Filter<T>) {
-    return this.readAll().pipe(Effect.map(rows => rows.filter(row => this.#testWhere(row, filter.where))));
+    return this.readAll().pipe(Effect.map(rows => rows.filter(row => testWhere(row, filter.where))));
   }
 
   readAll() {
@@ -90,80 +86,6 @@ class MemoryRepository<T extends Row> extends AbstractRepository<T> {
         });
       }),
     );
-  }
-
-  #isComparable(input: unknown): input is boolean | number | string {
-    return isBoolean(input) || isNumber(input) || isString(input);
-  }
-
-  #testWhere(row: T, where: Where<T>): boolean {
-    const { $and, $or, ...$ } = where;
-
-    if (
-      isArray($and) &&
-      !$and.every(where => {
-        return this.#testWhere(row, where);
-      })
-    ) {
-      return false;
-    }
-
-    if (
-      isArray($or) &&
-      !$or.some(where => {
-        return this.#testWhere(row, where);
-      })
-    ) {
-      return false;
-    }
-
-    if (isObject($)) {
-      const paths = Object.keys($) as (keyof typeof $)[];
-
-      for (const path of paths) {
-        // Z-A
-        const value = $[path]!;
-        const rowValueOption = getByPath(row, path);
-
-        if (Option.isNone(rowValueOption)) {
-          return false;
-        }
-
-        const rowValue = rowValueOption.value;
-
-        if (this.#isComparable(value) && !(value === rowValue)) {
-          return false;
-        }
-
-        if (isObject(value)) {
-          if (this.#isComparable(value.$eq) && !(value.$eq === rowValue)) {
-            return false;
-          }
-
-          if (this.#isComparable(value.$gt) && !(value.$gt < rowValue)) {
-            return false;
-          }
-
-          if (this.#isComparable(value.$gte) && !(value.$gte <= rowValue)) {
-            return false;
-          }
-
-          if (this.#isComparable(value.$lt) && !(value.$lt > rowValue)) {
-            return false;
-          }
-
-          if (this.#isComparable(value.$lte) && !(value.$lte >= rowValue)) {
-            return false;
-          }
-
-          if (this.#isComparable(value.$ne) && !(value.$ne !== rowValue)) {
-            return false;
-          }
-        }
-      }
-    }
-
-    return true;
   }
 }
 

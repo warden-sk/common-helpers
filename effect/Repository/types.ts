@@ -12,17 +12,11 @@ type Filter<T extends Row> = {
 
 type Repository<T extends Row> = {
   readonly create: (row: Omit<T, '_id'>) => Effect.Effect<T, Error>;
-
   readonly deleteAll: () => Effect.Effect<void>;
-
   readonly deleteById: (id: string) => Effect.Effect<void>;
-
   readonly read: (filter: Filter<T>) => Effect.Effect<readonly T[]>;
-
   readonly readAll: () => Effect.Effect<readonly T[]>;
-
   readonly readById: (id: string) => Effect.Effect<Option.Option<T>>;
-
   readonly update: (row: T) => Effect.Effect<T, Error>;
 };
 
