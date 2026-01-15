@@ -21,7 +21,7 @@ type Where<T extends Row> = {
   readonly $and?: readonly Where<T>[];
   readonly $or?: readonly Where<T>[];
 } & {
-  readonly [TPath in Exclude<Path<T>, '$and' | '$or'>]?:
+  readonly [TPath in Path<T>]?:
     | PathValue<T, TPath>
     | {
         readonly $eq?: PathValue<T, TPath>; // EQUAL TO (=)
