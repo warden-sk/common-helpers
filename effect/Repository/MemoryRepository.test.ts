@@ -4,14 +4,17 @@
 
 import { Effect, Schema } from 'effect';
 
-import MemoryRepository from './MemoryRepository.js';
+import makeMemoryRepository from './MemoryRepository.new.js';
 
 const accountSchema = Schema.Struct({
   _id: Schema.UUID,
   name: Schema.String,
 });
 
-const accountRepository = new MemoryRepository(accountSchema);
+const accountRepository = makeMemoryRepository({
+  id: 'AccountRepository',
+  schema: accountSchema,
+});
 
 const $ = Effect.gen(function* () {
   const lastCreatedAccount = yield* accountRepository.create({
@@ -32,4 +35,4 @@ const $ = Effect.gen(function* () {
   yield* Effect.log('LAST UPDATED ACCOUNT', lastUpdatedAccount);
 });
 
-Effect.runSync($);
+Effect.runSync($.pipe(Effect.provide(accountRepository.layer)));

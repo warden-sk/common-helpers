@@ -7,17 +7,14 @@ import { Effect, Option, Schema } from 'effect';
 import type { Filter, Row } from './types.js';
 
 import isArray from '../../validation/isArray.js';
-import AbstractRepository from './AbstractRepository.js';
 import testWhere from './testWhere.js';
 
-class MemoryRepository<T extends Row> extends AbstractRepository<T> {
+class MemoryRepository<T extends Row> {
   #rows = new Map<string, T>();
 
   #schema: Schema.Schema<T>;
 
   constructor(schema: Schema.Schema<T>, initialRows?: readonly T[]) {
-    super();
-
     this.#schema = schema;
 
     if (isArray(initialRows)) {
