@@ -6,7 +6,6 @@ import { Context, Effect, Layer, Option, Ref, Schema } from 'effect';
 
 import type { Filter, Repository, Row } from './types.js';
 
-import isArray from '../../validation/isArray.js';
 import testWhere from './testWhere.js';
 
 type MakeMemoryRepositoryOptions<T extends Row> = {
@@ -16,22 +15,20 @@ type MakeMemoryRepositoryOptions<T extends Row> = {
 };
 
 function makeMemoryRepository<T extends Row>(options: MakeMemoryRepositoryOptions<T>) {
-  const { id, initialRows, schema } = options;
+  const { id, initialRows = [], schema } = options;
 
   const MemoryRepository = Context.GenericTag<Repository<T>>(id);
 
   const layer = Layer.effect(
     MemoryRepository,
     Effect.gen(function* () {
-      const rows = new Map<string, T>();
+      const initialState = new Map<string, T>();
 
-      if (isArray(initialRows)) {
-        for (const row of initialRows) {
-          rows.set(row._id, row);
-        }
+      for (const row of initialRows) {
+        initialState.set(row._id, row);
       }
 
-      const rowsRef = yield* Ref.make(rows);
+      const state = yield* Ref.make(initialState);
 
       const service: Repository<T> = {
         create: (row: Omit<T, '_id'>) =>
@@ -46,32 +43,41 @@ function makeMemoryRepository<T extends Row>(options: MakeMemoryRepositoryOption
                 }),
             ),
             Effect.tap(validRow =>
-              Ref.update(rowsRef, rows => {
-                const next = new Map(rows);
-                next.set(validRow._id, validRow);
-                return next;
+              Ref.update(state, oldState => {
+                const newState = new Map(oldState);
+                newState.set(validRow._id, validRow);
+                return newState;
               }),
             ),
           ),
 
-        deleteAll: () => Ref.set(rowsRef, new Map()),
+        deleteAll: () => Ref.set(state, new Map()),
 
         deleteById: (id: string) =>
-          Ref.update(rowsRef, rows => {
-            const next = new Map(rows);
-            next.delete(id);
-            return next;
+          Ref.update(state, oldState => {
+            const newState = new Map(oldState);
+            newState.delete(id);
+            return newState;
           }),
 
         read: (filter: Filter<T>) =>
-          Ref.get(rowsRef).pipe(
-            Effect.map(rows => [...rows.values()]),
-            Effect.map(rs => rs.filter(row => testWhere(row, filter.where))),
+          Ref.get(state).pipe(
+            Effect.map(oldState => {
+              const filteredRows: T[] = [];
+
+              for (const row of oldState.values()) {
+                if (testWhere(row, filter.where)) {
+                  filteredRows.push(row);
+                }
+              }
+
+              return filteredRows;
+            }),
           ),
 
-        readAll: () => Ref.get(rowsRef).pipe(Effect.map(rows => [...rows.values()])),
+        readAll: () => Ref.get(state).pipe(Effect.map(oldState => [...oldState.values()])),
 
-        readById: (id: string) => Ref.get(rowsRef).pipe(Effect.map(rows => Option.fromNullable(rows.get(id)))),
+        readById: (id: string) => Ref.get(state).pipe(Effect.map(oldState => Option.fromNullable(oldState.get(id)))),
 
         update: (row: T) =>
           Schema.decodeUnknown(schema)(row).pipe(
@@ -82,15 +88,15 @@ function makeMemoryRepository<T extends Row>(options: MakeMemoryRepositoryOption
                 }),
             ),
             Effect.flatMap(validRow =>
-              Ref.modify(rowsRef, rows => {
-                if (!rows.has(validRow._id)) {
-                  return [false as const, rows] as const;
+              Ref.modify(state, oldState => {
+                if (!oldState.has(validRow._id)) {
+                  return [false, oldState];
                 }
 
-                const next = new Map(rows);
-                next.set(validRow._id, validRow);
+                const newState = new Map(oldState);
+                newState.set(validRow._id, validRow);
 
-                return [true as const, next] as const;
+                return [true, newState];
               }).pipe(
                 Effect.flatMap(updated =>
                   updated ? Effect.succeed(validRow) : Effect.fail(new Error('The row does not exist.')),
@@ -104,13 +110,13 @@ function makeMemoryRepository<T extends Row>(options: MakeMemoryRepositoryOption
     }),
   );
 
-  const create = (row: Omit<T, '_id'>) => Effect.flatMap(MemoryRepository, repo => repo.create(row));
-  const deleteAll = () => Effect.flatMap(MemoryRepository, repo => repo.deleteAll());
-  const deleteById = (id: string) => Effect.flatMap(MemoryRepository, repo => repo.deleteById(id));
-  const read = (filter: Filter<T>) => Effect.flatMap(MemoryRepository, repo => repo.read(filter));
-  const readAll = () => Effect.flatMap(MemoryRepository, repo => repo.readAll());
-  const readById = (id: string) => Effect.flatMap(MemoryRepository, repo => repo.readById(id));
-  const update = (row: T) => Effect.flatMap(MemoryRepository, repo => repo.update(row));
+  const create = (row: Omit<T, '_id'>) => Effect.flatMap(MemoryRepository, repository => repository.create(row));
+  const deleteAll = () => Effect.flatMap(MemoryRepository, repository => repository.deleteAll());
+  const deleteById = (id: string) => Effect.flatMap(MemoryRepository, repository => repository.deleteById(id));
+  const read = (filter: Filter<T>) => Effect.flatMap(MemoryRepository, repository => repository.read(filter));
+  const readAll = () => Effect.flatMap(MemoryRepository, repository => repository.readAll());
+  const readById = (id: string) => Effect.flatMap(MemoryRepository, repository => repository.readById(id));
+  const update = (row: T) => Effect.flatMap(MemoryRepository, repository => repository.update(row));
 
   return {
     create,
