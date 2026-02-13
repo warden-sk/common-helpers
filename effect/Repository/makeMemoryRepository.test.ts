@@ -41,6 +41,8 @@ test('makeMemoryRepository', () => {
 
   expect(allCreatedAccounts).toHaveLength(1);
 
+  expect(lastCreatedAccount.name).toBe('MAREK KOBIDA');
+
   expect(lastUpdatedAccount._id).toBe(lastCreatedAccount._id);
   expect(lastUpdatedAccount.name).toBe('PETER MASÁR');
 });
