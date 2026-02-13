@@ -4,7 +4,7 @@
 
 import { Effect, Schema } from 'effect';
 
-import makeMemoryRepository from './MemoryRepository.new.js';
+import makeMemoryRepository from './makeMemoryRepository.js';
 
 const accountSchema = Schema.Struct({
   _id: Schema.UUID,
