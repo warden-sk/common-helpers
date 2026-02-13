@@ -24,12 +24,12 @@ type Where<T extends Row> = {
   readonly [TPath in Path<T>]?:
     | PathValue<T, TPath>
     | {
-        readonly $eq?: PathValue<T, TPath>; // EQUAL TO (=)
-        readonly $gt?: PathValue<T, TPath>; // GREATER THAN (>)
+        readonly $eq?: PathValue<T, TPath>; //  EQUAL TO (=)
+        readonly $gt?: PathValue<T, TPath>; //  GREATER THAN (>)
         readonly $gte?: PathValue<T, TPath>; // GREATER THAN OR EQUAL TO (>=)
-        readonly $lt?: PathValue<T, TPath>; // LESS THAN (<)
+        readonly $lt?: PathValue<T, TPath>; //  LESS THAN (<)
         readonly $lte?: PathValue<T, TPath>; // LESS THAN OR EQUAL TO (<=)
-        readonly $ne?: PathValue<T, TPath>; // NOT EQUAL TO (!=)
+        readonly $ne?: PathValue<T, TPath>; //  NOT EQUAL TO (!=)
       };
 };
 

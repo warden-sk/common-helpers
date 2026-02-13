@@ -2,12 +2,18 @@
  * Copyright 2026 Marek Kobida
  */
 
-import type { Effect, Option } from 'effect';
+import type { Effect, Option, Schema } from 'effect';
 
 import type { Where } from './testWhere.js';
 
 type Filter<T extends Row> = {
   readonly where: Where<T>;
+};
+
+type MakeMemoryRepositoryOptions<T extends Row> = {
+  readonly id: string;
+  readonly initialRows?: readonly T[];
+  readonly schema: Schema.Schema<T>;
 };
 
 type Repository<T extends Row> = {
@@ -21,7 +27,8 @@ type Repository<T extends Row> = {
 };
 
 type Row = {
+  //       ↓ MongoDB
   readonly _id: string;
 };
 
-export type { Filter, Repository, Row };
+export type { Filter, MakeMemoryRepositoryOptions, Repository, Row };

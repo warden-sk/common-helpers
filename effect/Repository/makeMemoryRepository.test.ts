@@ -16,9 +16,9 @@ const accountRepository = makeMemoryRepository({
   schema: accountSchema,
 });
 
-const $ = Effect.gen(function* () {
+const test = Effect.gen(function* () {
   const lastCreatedAccount = yield* accountRepository.create({
-    name: 'Marek Kobida',
+    name: 'MAREK KOBIDA',
   });
 
   yield* Effect.log('LAST CREATED ACCOUNT', lastCreatedAccount);
@@ -29,10 +29,10 @@ const $ = Effect.gen(function* () {
 
   const lastUpdatedAccount = yield* accountRepository.update({
     _id: lastCreatedAccount._id,
-    name: 'Kobida Marek',
+    name: 'PETER MASÁR',
   });
 
   yield* Effect.log('LAST UPDATED ACCOUNT', lastUpdatedAccount);
 });
 
-Effect.runSync($.pipe(Effect.provide(accountRepository.layer)));
+Effect.runSync(test.pipe(Effect.provide(accountRepository.layer)));

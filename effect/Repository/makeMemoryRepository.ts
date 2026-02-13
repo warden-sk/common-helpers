@@ -4,15 +4,9 @@
 
 import { Context, Effect, Layer, Option, Ref, Schema } from 'effect';
 
-import type { Filter, Repository, Row } from './types.js';
+import type { Filter, MakeMemoryRepositoryOptions, Repository, Row } from './types.js';
 
 import testWhere from './testWhere.js';
-
-type MakeMemoryRepositoryOptions<T extends Row> = {
-  readonly id: string;
-  readonly initialRows?: readonly T[];
-  readonly schema: Schema.Schema<T>;
-};
 
 function makeMemoryRepository<T extends Row>(options: MakeMemoryRepositoryOptions<T>) {
   const { id, initialRows = [], schema } = options;

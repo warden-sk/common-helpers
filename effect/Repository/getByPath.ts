@@ -10,10 +10,6 @@ import isIndexable from '../../validation/isIndexable.js';
 import isNullOrUndefined from '../../validation/isNullOrUndefined.js';
 
 function getByPath<T, TPath extends Path<T>>(input: T, path: TPath): Option.Option<PathValue<T, TPath>> {
-  if (path === '') {
-    return Option.some(input as PathValue<T, TPath>);
-  }
-
   // "a.b.c" → ["a", "b", "c"]
   const keys = path.split('.');
 
