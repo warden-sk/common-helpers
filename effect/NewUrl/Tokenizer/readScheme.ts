@@ -11,6 +11,7 @@ import readCharacters from './readCharacters.js';
 
 const schemes: readonly string[] = ['http://', 'https://'];
 
+// ✅
 function readScheme(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     let value = '';

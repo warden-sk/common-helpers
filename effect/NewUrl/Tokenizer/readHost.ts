@@ -11,6 +11,7 @@ import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
+// ✅
 function readHost(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     let value = '';
@@ -25,11 +26,12 @@ function readHost(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
     ) {
       const character = readCharacter(state);
 
-      if (!(character === '.' || isAllowedCharacter(character, [...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS]))) {
+      if (!isAllowedCharacter(character, ['.', ...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS])) {
         return yield* Effect.fail(new Error(`The character "${character}" is not valid.`));
       }
 
       value += character;
+
       state.cursor++;
     }
 

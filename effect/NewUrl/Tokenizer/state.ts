@@ -4,6 +4,7 @@
 
 import type { Token } from '../types.js';
 
+// ✅
 type TokenizerState = {
   cursor: number;
 

@@ -5,6 +5,7 @@
 import type { Token } from '../types.js';
 import type { TokenizerState } from './state.js';
 
+// ✅
 function addToken(token: Token) {
   return (state: TokenizerState): TokenizerState => {
     return {
