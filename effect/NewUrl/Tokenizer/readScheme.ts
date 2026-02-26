@@ -9,7 +9,9 @@ import type { TokenizerState } from './state.js';
 import addToken from './addToken.js';
 import readCharacters from './readCharacters.js';
 
-function readScheme(state: TokenizerState, schemes: readonly string[]): Effect.Effect<TokenizerState, Error> {
+const schemes: readonly string[] = ['http://', 'https://'];
+
+function readScheme(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     let value = '';
 

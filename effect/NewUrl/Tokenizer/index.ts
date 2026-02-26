@@ -13,8 +13,7 @@ import readPort from './readPort.js';
 import readScheme from './readScheme.js';
 import readSearchParameters from './readSearchParameters.js';
 
-const schemes: readonly string[] = ['http://', 'https://'];
-
+// ✅
 function tokenize(input: string): Effect.Effect<readonly Token[], Error> {
   return Effect.gen(function* () {
     let state: TokenizerState = {
@@ -23,7 +22,7 @@ function tokenize(input: string): Effect.Effect<readonly Token[], Error> {
       tokens: [],
     };
 
-    state = yield* readScheme(state, schemes);
+    state = yield* readScheme(state);
     state = yield* readHost(state);
     state = yield* readPort(state);
     state = yield* readPath(state);
