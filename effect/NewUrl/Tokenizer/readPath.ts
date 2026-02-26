@@ -21,11 +21,11 @@ function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
     while (isNotEnd(state) && readCharacter(state) === '/') {
       let value = '';
 
-      state.cursor++;
+      state.cursor++; // "/"
 
       // [1/2] PARAMETERIZED PATH
       if (readCharacter(state) === '{') {
-        state.cursor++;
+        state.cursor++; // "{"
 
         const parameter: [string, boolean] = ['', false];
 
@@ -49,7 +49,7 @@ function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
           return yield* Effect.fail(new Error('The character "}" does not exist.'));
         }
 
-        state.cursor++;
+        state.cursor++; // "}"
 
         value += `{${parameter[0]}${parameter[1] ? '?' : ''}}`;
 

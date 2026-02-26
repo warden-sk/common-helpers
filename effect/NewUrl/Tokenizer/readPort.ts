@@ -17,7 +17,7 @@ function readPort(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
     if (readCharacter(state) === ':') {
       let value = '';
 
-      state.cursor++;
+      state.cursor++; // ":"
 
       while (isNotEnd(state) && isAllowedCharacter(readCharacter(state), ALLOWED_NUMBERS)) {
         value += readCharacter(state);
