@@ -3,38 +3,131 @@
  */
 
 type HostToken = {
-  type: 'HOST';
-  value: string;
+  readonly type: 'HOST';
+  readonly value: string;
+};
+
+type NewUrlError = TokenizerError;
+
+type NewUrlState = {
+  readonly host: string;
+  readonly input: string;
+  readonly path: string;
+  readonly searchParameters: Readonly<Record<string, string>>;
+  readonly tokens: readonly Token[];
 };
 
 type ParameterizedPathToken = {
   //                  ↓ je voliteľný?
-  parameter: [string, boolean];
-  type: 'PARAMETERIZED_PATH';
-  value: string;
+  readonly parameter: readonly [string, boolean];
+  readonly type: 'PARAMETERIZED_PATH';
+  readonly value: string;
 };
 
 type PathToken = {
-  type: 'PATH';
-  value: string;
+  readonly type: 'PATH';
+  readonly value: string;
 };
 
 type PortToken = {
-  type: 'PORT';
-  value: string;
+  readonly type: 'PORT';
+  readonly value: string;
 };
 
 type SchemeToken = {
-  type: 'SCHEME';
-  value: string;
+  readonly type: 'SCHEME';
+  readonly value: string;
 };
 
 type SearchParameterToken = {
-  parameter: [string, string];
-  type: 'SEARCH_PARAMETER';
-  value: string;
+  readonly parameter: readonly [string, string];
+  readonly type: 'SEARCH_PARAMETER';
+  readonly value: string;
+};
+
+type TestResult = {
+  readonly matches: boolean;
+  readonly parameters: Readonly<Record<string, string>>;
+  readonly testTokens: readonly Token[];
 };
 
 type Token = HostToken | ParameterizedPathToken | PathToken | PortToken | SchemeToken | SearchParameterToken;
 
-export type { HostToken, ParameterizedPathToken, PathToken, PortToken, SchemeToken, SearchParameterToken, Token };
+type TokenizerError =
+  | InvalidCharacterError
+  | InvalidHostError
+  | InvalidParameterizedPathError
+  | InvalidPortError
+  | InvalidSchemeError
+  | MissingCharacterError;
+
+class InvalidCharacterError extends Error {
+  readonly _tag = 'InvalidCharacterError';
+
+  constructor(readonly character: string) {
+    super(`The character "${character}" is not valid.`);
+  }
+}
+
+class InvalidHostError extends Error {
+  readonly _tag = 'InvalidHostError';
+
+  constructor() {
+    super('The host is not valid.');
+  }
+}
+
+class InvalidParameterizedPathError extends Error {
+  readonly _tag = 'InvalidParameterizedPathError';
+
+  constructor() {
+    super('The parameterized path is not valid.');
+  }
+}
+
+class InvalidPortError extends Error {
+  readonly _tag = 'InvalidPortError';
+
+  constructor() {
+    super('The port is not valid.');
+  }
+}
+
+class InvalidSchemeError extends Error {
+  readonly _tag = 'InvalidSchemeError';
+
+  constructor() {
+    super('The scheme is not valid.');
+  }
+}
+
+class MissingCharacterError extends Error {
+  readonly _tag = 'MissingCharacterError';
+
+  constructor(readonly character: string) {
+    super(`The character "${character}" does not exist.`);
+  }
+}
+
+export type {
+  HostToken,
+  NewUrlError,
+  NewUrlState,
+  ParameterizedPathToken,
+  PathToken,
+  PortToken,
+  SchemeToken,
+  SearchParameterToken,
+  TestResult,
+  Token,
+  TokenizerError,
+};
+
+export {
+  InvalidCharacterError,
+  InvalidHostError,
+  InvalidParameterizedPathError,
+  InvalidPortError,
+  InvalidSchemeError,
+  MissingCharacterError,
+};

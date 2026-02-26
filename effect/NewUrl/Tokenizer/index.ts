@@ -1,0 +1,35 @@
+/*
+ * Copyright 2026 Marek Kobida
+ */
+
+import { Effect } from 'effect';
+
+import type { Token, TokenizerError } from '../types.js';
+import type { TokenizerState } from './state.js';
+
+import readHost from './readHost.js';
+import readPath from './readPath.js';
+import readPort from './readPort.js';
+import readScheme from './readScheme.js';
+import readSearchParameters from './readSearchParameters.js';
+
+const schemes: readonly string[] = ['http://', 'https://'];
+
+const tokenize = (input: string): Effect.Effect<readonly Token[], TokenizerError> =>
+  Effect.gen(function* () {
+    let state: TokenizerState = {
+      cursor: 0,
+      input,
+      tokens: [],
+    };
+
+    state = yield* readScheme(state, schemes);
+    state = yield* readHost(state);
+    state = yield* readPort(state);
+    state = yield* readPath(state);
+    state = yield* readSearchParameters(state);
+
+    return state.tokens;
+  });
+
+export { tokenize };

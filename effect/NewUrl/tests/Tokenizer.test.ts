@@ -3,13 +3,14 @@
  */
 
 import { expect, test } from 'bun:test';
+import { Effect } from 'effect';
 
-import Tokenizer from '../Tokenizer.js';
+import { tokenize } from '../Tokenizer/index.js';
 
 test('[1] SCHEME + HOST', () => {
-  const tokenizer = new Tokenizer('https://kobida.sk');
+  const tokens = Effect.runSync(tokenize('https://kobida.sk'));
 
-  expect(tokenizer.tokens).toEqual([
+  expect(tokens).toEqual([
     {
       type: 'SCHEME',
       value: 'https://',
@@ -22,9 +23,9 @@ test('[1] SCHEME + HOST', () => {
 });
 
 test('[2] SCHEME + HOST + PORT', () => {
-  const tokenizer = new Tokenizer('https://kobida.sk:443');
+  const tokens = Effect.runSync(tokenize('https://kobida.sk:443'));
 
-  expect(tokenizer.tokens).toEqual([
+  expect(tokens).toEqual([
     {
       type: 'SCHEME',
       value: 'https://',
@@ -41,9 +42,9 @@ test('[2] SCHEME + HOST + PORT', () => {
 });
 
 test('[3] SCHEME + HOST + PORT + PARAMETERIZED_PATH', () => {
-  const tokenizer = new Tokenizer('https://kobida.sk:443/{test?}');
+  const tokens = Effect.runSync(tokenize('https://kobida.sk:443/{test?}'));
 
-  expect(tokenizer.tokens).toEqual([
+  expect(tokens).toEqual([
     {
       type: 'SCHEME',
       value: 'https://',
@@ -65,9 +66,9 @@ test('[3] SCHEME + HOST + PORT + PARAMETERIZED_PATH', () => {
 });
 
 test('[4] SCHEME + HOST + PORT + PATH', () => {
-  const tokenizer = new Tokenizer('https://kobida.sk:443/test');
+  const tokens = Effect.runSync(tokenize('https://kobida.sk:443/test'));
 
-  expect(tokenizer.tokens).toEqual([
+  expect(tokens).toEqual([
     {
       type: 'SCHEME',
       value: 'https://',
@@ -88,9 +89,9 @@ test('[4] SCHEME + HOST + PORT + PATH', () => {
 });
 
 test('[5] SCHEME + HOST + PORT + PATH + SEARCH_PARAMETER', () => {
-  const tokenizer = new Tokenizer('https://kobida.sk:443/test?page=1');
+  const tokens = Effect.runSync(tokenize('https://kobida.sk:443/test?page=1'));
 
-  expect(tokenizer.tokens).toEqual([
+  expect(tokens).toEqual([
     {
       type: 'SCHEME',
       value: 'https://',
@@ -116,9 +117,9 @@ test('[5] SCHEME + HOST + PORT + PATH + SEARCH_PARAMETER', () => {
 });
 
 test('[6]', () => {
-  const tokenizer = new Tokenizer('https://kobida.sk:443/test?search=Ako+sa+m%C3%A1%C5%A1%3F');
+  const tokens = Effect.runSync(tokenize('https://kobida.sk:443/test?search=Ako+sa+m%C3%A1%C5%A1%3F'));
 
-  expect(tokenizer.tokens).toEqual([
+  expect(tokens).toEqual([
     {
       type: 'SCHEME',
       value: 'https://',

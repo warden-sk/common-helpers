@@ -2,99 +2,108 @@
  * Copyright 2026 Marek Kobida
  */
 
-import isObject from '../../validation/isObject.js';
-import Tokenizer from './Tokenizer.js';
+import { Effect } from 'effect';
 
-class NewUrl {
-  host = '';
+import type { NewUrlError, NewUrlState, TestResult, Token } from './types.js';
 
-  readonly input: string;
+import { tokenize } from './Tokenizer/index.js';
 
-  parameters: Record<string, string> = {};
+const buildState = (input: string, tokens: readonly Token[]): NewUrlState => {
+  let host = '';
+  let path = '';
+  const searchParameters: Record<string, string> = {};
 
-  path = '';
+  for (const token of tokens) {
+    if (token.type === 'SCHEME') {
+      host += token.value;
+    }
 
-  searchParameters: Record<string, string> = {};
+    if (token.type === 'HOST') {
+      host += token.value;
+    }
 
-  testTokenizer?: Tokenizer;
+    if (token.type === 'PORT') {
+      host += `:${token.value}`;
+    }
 
-  tokenizer: Tokenizer;
+    if (token.type === 'PATH') {
+      path += `/${token.value}`;
+    }
 
-  // ✅
-  constructor(input: string) {
-    this.input = input;
-    this.tokenizer = new Tokenizer(this.input);
-
-    for (const token of this.tokenizer.tokens) {
-      // Sort: SCHEME, HOST, PORT, PATH, SEARCH_PARAMETER
-
-      if (token.type === 'SCHEME') {
-        this.host += token.value;
-      }
-
-      if (token.type === 'HOST') {
-        this.host += token.value;
-      }
-
-      if (token.type === 'PORT') {
-        this.host += `:${token.value}`;
-      }
-
-      if (token.type === 'PATH') {
-        this.path += `/${token.value}`;
-      }
-
-      if (token.type === 'SEARCH_PARAMETER') {
-        this.searchParameters[token.parameter[0]] = token.parameter[1];
-      }
+    if (token.type === 'SEARCH_PARAMETER') {
+      searchParameters[token.parameter[0]] = token.parameter[1];
     }
   }
 
-  // DOKONČIŤ
-  test(input: string): boolean {
-    this.testTokenizer = new Tokenizer(input);
+  return {
+    host,
+    input,
+    path,
+    searchParameters,
+    tokens,
+  };
+};
 
-    for (let i = 0; i < this.testTokenizer.tokens.length; i++) {
-      const token1 = this.tokenizer.tokens[i];
-      const token2 = this.testTokenizer.tokens[i]!;
+const parseNewUrl = (input: string): Effect.Effect<NewUrlState, NewUrlError> =>
+  tokenize(input).pipe(Effect.map(tokens => buildState(input, tokens)));
 
-      if (token2.type === 'HOST' || token2.type === 'PATH' || token2.type === 'PORT' || token2.type === 'SCHEME') {
-        if (!(isObject(token1) && token1.type === token2.type && token1.value === token2.value)) {
-          return false;
+const testNewUrl = (state: NewUrlState, input: string): Effect.Effect<TestResult, NewUrlError> =>
+  tokenize(input).pipe(
+    Effect.map(testTokens => {
+      const parameters: Record<string, string> = {};
+      let matches = true;
+
+      for (let i = 0; i < testTokens.length; i++) {
+        const token1 = state.tokens[i];
+        const token2 = testTokens[i]!;
+
+        if (token2.type === 'HOST' || token2.type === 'PATH' || token2.type === 'PORT' || token2.type === 'SCHEME') {
+          if (!(token1 && token1.type === token2.type && token1.value === token2.value)) {
+            matches = false;
+            break;
+          }
         }
-      }
 
-      if (token2.type === 'PARAMETERIZED_PATH') {
-        //         ↓ je voliteľný?
-        if (token2.parameter[1]) {
-          if (isObject(token1) && token1.type !== 'SEARCH_PARAMETER') {
-            if (token1.type !== 'PATH') {
-              return false;
+        if (token2.type === 'PARAMETERIZED_PATH') {
+          if (token2.parameter[1]) {
+            if (token1 && token1.type !== 'SEARCH_PARAMETER') {
+              if (token1.type !== 'PATH') {
+                matches = false;
+                break;
+              }
+
+              parameters[token2.parameter[0]] = token1.value;
+            }
+          } else {
+            if (!(token1?.type === 'PATH')) {
+              matches = false;
+              break;
             }
 
-            this.parameters[token2.parameter[0]] = token1.value;
+            parameters[token2.parameter[0]] = token1.value;
           }
-        } else {
-          if (!(isObject(token1) && token1.type === 'PATH')) {
-            return false;
-          }
-
-          this.parameters[token2.parameter[0]] = token1.value;
         }
       }
-    }
 
-    return true;
-  }
+      return {
+        matches,
+        parameters,
+        testTokens,
+      };
+    }),
+  );
 
-  // ✅
-  toString(): string {
-    const url = new URL(this.path, this.host);
+const toStringNewUrl = (
+  state: NewUrlState,
+  overrides?: Partial<Pick<NewUrlState, 'path' | 'searchParameters'>>,
+): string => {
+  const path = overrides?.path ?? state.path;
+  const searchParameters = overrides?.searchParameters ?? state.searchParameters;
 
-    url.search = new URLSearchParams(this.searchParameters).toString();
+  const url = new URL(path, state.host);
+  url.search = new URLSearchParams(searchParameters).toString();
 
-    return url.toString();
-  }
-}
+  return url.toString();
+};
 
-export default NewUrl;
+export { parseNewUrl, testNewUrl, toStringNewUrl };

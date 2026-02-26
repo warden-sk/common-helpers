@@ -3,26 +3,33 @@
  */
 
 import { expect, test } from 'bun:test';
+import { Effect } from 'effect';
 
-import NewUrl from '../index.js';
+import { parseNewUrl, testNewUrl, toStringNewUrl } from '../index.js';
 
 test('[1]', () => {
-  const newUrl = new NewUrl('https://kobida.sk:443/test.html');
+  const state = Effect.runSync(parseNewUrl('https://kobida.sk:443/test.html'));
 
-  expect(newUrl.host).toBe('https://kobida.sk:443');
-  expect(newUrl.path).toBe('/test.html');
+  expect(state.host).toBe('https://kobida.sk:443');
+  expect(state.path).toBe('/test.html');
 
-  expect(newUrl.test('https://kobida.sk:443/{fileName?}')).toBe(true);
+  const result = Effect.runSync(testNewUrl(state, 'https://kobida.sk:443/{fileName?}'));
 
-  expect(newUrl.parameters).toEqual({
+  expect(result.matches).toBe(true);
+  expect(result.parameters).toEqual({
     fileName: 'test.html',
   });
 });
 
 test('[2]', () => {
-  const newUrl = new NewUrl('https://kobida.sk:443/test.html');
+  const state = Effect.runSync(parseNewUrl('https://kobida.sk:443/test.html'));
 
-  newUrl.searchParameters.page = '1';
+  const url = toStringNewUrl(state, {
+    searchParameters: {
+      ...state.searchParameters,
+      page: '1',
+    },
+  });
 
-  expect(newUrl.toString()).toBe('https://kobida.sk/test.html?page=1');
+  expect(url).toBe('https://kobida.sk/test.html?page=1');
 });

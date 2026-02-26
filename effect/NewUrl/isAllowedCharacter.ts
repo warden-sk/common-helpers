@@ -2,7 +2,7 @@
  * Copyright 2026 Marek Kobida
  */
 
-const ALLOWED_CHARACTERS: string[] = [
+const ALLOWED_CHARACTERS: readonly string[] = [
   'A',
   'B',
   'C',
@@ -57,9 +57,9 @@ const ALLOWED_CHARACTERS: string[] = [
   'z',
 ];
 
-const ALLOWED_NUMBERS: string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+const ALLOWED_NUMBERS: readonly string[] = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 
-function isAllowedCharacter(character: string, allowedCharacters: string[] = ALLOWED_CHARACTERS): boolean {
+function isAllowedCharacter(character: string, allowedCharacters: readonly string[] = ALLOWED_CHARACTERS): boolean {
   for (const allowedCharacter of allowedCharacters) {
     if (allowedCharacter === character) {
       return true;
