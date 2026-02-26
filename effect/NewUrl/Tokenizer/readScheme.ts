@@ -32,4 +32,6 @@ function readScheme(state: TokenizerState): Effect.Effect<TokenizerState, Error>
   });
 }
 
+export { schemes };
+
 export default readScheme;

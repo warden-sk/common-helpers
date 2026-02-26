@@ -4,8 +4,8 @@
 
 import { Effect } from 'effect';
 
-import type { Token } from '../types.js';
 import type { TokenizerState } from './state.js';
+import type { Token } from './types.js';
 
 import readHost from './readHost.js';
 import readPath from './readPath.js';

@@ -2,7 +2,7 @@
  * Copyright 2026 Marek Kobida
  */
 
-import type { Token } from '../types.js';
+import type { Token } from './types.js';
 
 // ✅
 type TokenizerState = {

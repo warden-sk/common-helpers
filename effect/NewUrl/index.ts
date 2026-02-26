@@ -4,7 +4,8 @@
 
 import { Effect } from 'effect';
 
-import type { NewUrlError, NewUrlState, TestResult, Token } from './types.js';
+import type { Token } from './Tokenizer/types.js';
+import type { NewUrlState, TestResult } from './types.js';
 
 import { tokenize } from './Tokenizer/index.js';
 
@@ -44,10 +45,10 @@ const buildState = (input: string, tokens: readonly Token[]): NewUrlState => {
   };
 };
 
-const parseNewUrl = (input: string): Effect.Effect<NewUrlState, NewUrlError> =>
+const parseNewUrl = (input: string): Effect.Effect<NewUrlState, Error> =>
   tokenize(input).pipe(Effect.map(tokens => buildState(input, tokens)));
 
-const testNewUrl = (state: NewUrlState, input: string): Effect.Effect<TestResult, NewUrlError> =>
+const testNewUrl = (state: NewUrlState, input: string): Effect.Effect<TestResult, Error> =>
   tokenize(input).pipe(
     Effect.map(testTokens => {
       const parameters: Record<string, string> = {};
