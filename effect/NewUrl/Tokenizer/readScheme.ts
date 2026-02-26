@@ -18,6 +18,7 @@ function readScheme(state: TokenizerState): Effect.Effect<TokenizerState, Error>
     for (const scheme of schemes) {
       if (scheme === readCharacters(state, state.cursor, scheme.length)) {
         value = scheme;
+
         state.cursor += scheme.length;
       }
     }
