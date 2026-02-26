@@ -8,8 +8,7 @@ type HostToken = {
 };
 
 type ParameterizedPathToken = {
-  //                                    ↓ je voliteľný?
-  readonly parameter: readonly [string, boolean];
+  readonly isOptional: boolean;
   readonly type: 'PARAMETERIZED_PATH';
   readonly value: string;
 };
@@ -30,7 +29,7 @@ type SchemeToken = {
 };
 
 type SearchParameterToken = {
-  readonly parameter: readonly [string, string];
+  readonly key: string;
   readonly type: 'SEARCH_PARAMETER';
   readonly value: string;
 };

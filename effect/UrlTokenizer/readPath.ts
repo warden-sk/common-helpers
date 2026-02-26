@@ -50,9 +50,7 @@ function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
 
         state.cursor++; // "}"
 
-        value += `{${parameter[0]}${parameter[1] ? '?' : ''}}`;
-
-        state = addToken({ parameter, type: 'PARAMETERIZED_PATH', value })(state);
+        state = addToken({ isOptional: parameter[1], type: 'PARAMETERIZED_PATH', value: parameter[0] })(state);
 
         continue;
       }

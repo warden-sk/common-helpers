@@ -58,9 +58,9 @@ test('[3] SCHEME + HOST + PORT + PARAMETERIZED_PATH', () => {
       value: '443',
     },
     {
-      parameter: ['test', true],
+      isOptional: true,
       type: 'PARAMETERIZED_PATH',
-      value: '{test?}',
+      value: 'test',
     },
   ]);
 });
@@ -109,9 +109,9 @@ test('[5] SCHEME + HOST + PORT + PATH + SEARCH_PARAMETER', () => {
       value: 'test',
     },
     {
-      parameter: ['page', '1'],
+      key: 'page',
       type: 'SEARCH_PARAMETER',
-      value: 'page=1',
+      value: '1',
     },
   ]);
 });

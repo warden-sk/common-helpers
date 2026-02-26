@@ -33,7 +33,7 @@ function readSearchParameters(state: TokenizerState): Effect.Effect<TokenizerSta
           state.cursor++;
         }
 
-        state = addToken({ parameter: [key, value], type: 'SEARCH_PARAMETER', value: `${key}=${value}` })(state);
+        state = addToken({ key, type: 'SEARCH_PARAMETER', value })(state);
 
         if (readCharacter(state) === '&') {
           state.cursor++;
