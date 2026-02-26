@@ -38,10 +38,7 @@ function readHost(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
       return yield* Effect.fail(new Error('The host is not valid.'));
     }
 
-    return addToken({
-      type: 'HOST',
-      value,
-    })(state);
+    return addToken({ type: 'HOST', value })(state);
   });
 }
 

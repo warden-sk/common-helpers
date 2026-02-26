@@ -16,11 +16,7 @@ import readSearchParameters from './readSearchParameters.js';
 // ✅
 function tokenize(input: string): Effect.Effect<readonly Token[], Error> {
   return Effect.gen(function* () {
-    let state: TokenizerState = {
-      cursor: 0,
-      input,
-      tokens: [],
-    };
+    let state: TokenizerState = { cursor: 0, input, tokens: [] };
 
     state = yield* readScheme(state);
     state = yield* readHost(state);

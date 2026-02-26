@@ -26,10 +26,7 @@ function readScheme(state: TokenizerState): Effect.Effect<TokenizerState, Error>
       return yield* Effect.fail(new Error('The scheme is not valid.'));
     }
 
-    return addToken({
-      type: 'SCHEME',
-      value,
-    })(state);
+    return addToken({ type: 'SCHEME', value })(state);
   });
 }
 

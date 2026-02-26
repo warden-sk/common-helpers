@@ -29,10 +29,7 @@ function readPort(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
         return yield* Effect.fail(new Error('The port is not valid.'));
       }
 
-      return addToken({
-        type: 'PORT',
-        value,
-      })(state);
+      return addToken({ type: 'PORT', value })(state);
     }
 
     return state;
