@@ -11,7 +11,6 @@ import isAllowedCharacter, { ALLOWED_CHARACTERS, ALLOWED_NUMBERS } from './isAll
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-// ✅
 function readHost(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     let value = '';

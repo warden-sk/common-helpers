@@ -6,7 +6,6 @@ import type { TokenizerState } from './types.js';
 
 import readCharacter from './readCharacter.js';
 
-// ✅
 function readCharacters(state: TokenizerState, cursor: number, length: number): string {
   let characters = '';
 

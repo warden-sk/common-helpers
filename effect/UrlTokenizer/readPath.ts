@@ -11,7 +11,6 @@ import isAllowedCharacter, { ALLOWED_CHARACTERS, ALLOWED_NUMBERS } from './isAll
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-// ✅
 function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     if (readCharacter(state) !== '/') {
@@ -23,7 +22,7 @@ function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
 
       state.cursor++; // "/"
 
-      // [1/2] PARAMETERIZED PATH
+      // [1/2] PARAMETERIZED PATH --------------------------------------------------------------------------------------
       if (readCharacter(state) === '{') {
         state.cursor++; // "{"
 
@@ -58,7 +57,7 @@ function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
         continue;
       }
 
-      // [2/2] PATH
+      // [2/2] PATH ----------------------------------------------------------------------------------------------------
       while (
         isNotEnd(state) &&
         readCharacter(state) !== '#' &&

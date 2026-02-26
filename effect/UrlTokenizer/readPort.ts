@@ -11,7 +11,6 @@ import isAllowedCharacter, { ALLOWED_NUMBERS } from './isAllowedCharacter.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-// ✅
 function readPort(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     if (readCharacter(state) === ':') {

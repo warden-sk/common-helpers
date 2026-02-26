@@ -10,7 +10,6 @@ import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-// ✅
 function readSearchParameters(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.sync(() => {
     if (readCharacter(state) === '?') {
