@@ -6,10 +6,10 @@ import { Effect } from 'effect';
 
 import type { TokenizerState } from './types.js';
 
-import addToken from './addToken.js';
-import isAllowedCharacter, { ALLOWED_CHARACTERS, ALLOWED_NUMBERS } from './isAllowedCharacter.js';
-import isNotEnd from './isNotEnd.js';
-import readCharacter from './readCharacter.js';
+import addToken from './helpers/addToken.js';
+import isAllowedCharacter, { ALLOWED_CHARACTERS, ALLOWED_NUMBERS } from './helpers/isAllowedCharacter.js';
+import isNotEnd from './helpers/isNotEnd.js';
+import readCharacter from './helpers/readCharacter.js';
 
 function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {

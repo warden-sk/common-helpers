@@ -6,8 +6,8 @@ import { Effect } from 'effect';
 
 import type { TokenizerState } from './types.js';
 
-import addToken from './addToken.js';
-import readCharacters from './readCharacters.js';
+import addToken from './helpers/addToken.js';
+import readCharacters from './helpers/readCharacters.js';
 
 const schemes: readonly string[] = ['http://', 'https://'];
 

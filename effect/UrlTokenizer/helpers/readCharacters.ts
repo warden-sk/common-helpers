@@ -2,7 +2,7 @@
  * Copyright 2026 Marek Kobida
  */
 
-import type { TokenizerState } from './types.js';
+import type { TokenizerState } from '../types.js';
 
 import readCharacter from './readCharacter.js';
 
