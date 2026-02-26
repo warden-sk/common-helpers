@@ -37,4 +37,19 @@ type SearchParameterToken = {
 
 type Token = HostToken | ParameterizedPathToken | PathToken | PortToken | SchemeToken | SearchParameterToken;
 
-export type { HostToken, ParameterizedPathToken, PathToken, PortToken, SchemeToken, SearchParameterToken, Token };
+type TokenizerState = {
+  cursor: number;
+  readonly input: string;
+  readonly tokens: readonly Token[];
+};
+
+export type {
+  HostToken,
+  ParameterizedPathToken,
+  PathToken,
+  PortToken,
+  SchemeToken,
+  SearchParameterToken,
+  Token,
+  TokenizerState,
+};

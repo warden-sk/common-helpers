@@ -4,7 +4,7 @@
 
 import { Effect } from 'effect';
 
-import type { TokenizerState } from './state.js';
+import type { TokenizerState } from './types.js';
 
 import addToken from './addToken.js';
 import readCharacters from './readCharacters.js';
