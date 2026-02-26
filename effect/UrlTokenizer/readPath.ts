@@ -6,8 +6,8 @@ import { Effect } from 'effect';
 
 import type { TokenizerState } from './types.js';
 
-import isAllowedCharacter, { ALLOWED_CHARACTERS, ALLOWED_NUMBERS } from '../isAllowedCharacter.js';
 import addToken from './addToken.js';
+import isAllowedCharacter, { ALLOWED_CHARACTERS, ALLOWED_NUMBERS } from './isAllowedCharacter.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
