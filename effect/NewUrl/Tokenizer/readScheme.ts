@@ -4,14 +4,12 @@
 
 import { Effect } from 'effect';
 
-import type { TokenizerError } from '../types.js';
 import type { TokenizerState } from './state.js';
 
-import { InvalidSchemeError } from '../types.js';
 import addToken from './addToken.js';
 import readCharacters from './readCharacters.js';
 
-function readScheme(state: TokenizerState, schemes: readonly string[]): Effect.Effect<TokenizerState, TokenizerError> {
+function readScheme(state: TokenizerState, schemes: readonly string[]): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     let value = '';
 
@@ -23,7 +21,7 @@ function readScheme(state: TokenizerState, schemes: readonly string[]): Effect.E
     }
 
     if (!value.length) {
-      return yield* Effect.fail(new InvalidSchemeError());
+      return yield* Effect.fail(new Error('The scheme is not valid.'));
     }
 
     return addToken({

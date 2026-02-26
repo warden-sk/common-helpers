@@ -4,14 +4,13 @@
 
 import { Effect } from 'effect';
 
-import type { TokenizerError } from '../types.js';
 import type { TokenizerState } from './state.js';
 
 import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-function readSearchParameters(state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> {
+function readSearchParameters(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     if (readCharacter(state) === '?') {
       state.cursor++;

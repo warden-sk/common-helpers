@@ -4,7 +4,7 @@
 
 import { Effect } from 'effect';
 
-import type { Token, TokenizerError } from '../types.js';
+import type { Token } from '../types.js';
 import type { TokenizerState } from './state.js';
 
 import readHost from './readHost.js';
@@ -15,7 +15,7 @@ import readSearchParameters from './readSearchParameters.js';
 
 const schemes: readonly string[] = ['http://', 'https://'];
 
-function tokenize(input: string): Effect.Effect<readonly Token[], Error | TokenizerError> {
+function tokenize(input: string): Effect.Effect<readonly Token[], Error> {
   return Effect.gen(function* () {
     let state: TokenizerState = {
       cursor: 0,

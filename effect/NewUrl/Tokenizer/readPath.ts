@@ -4,16 +4,14 @@
 
 import { Effect } from 'effect';
 
-import type { TokenizerError } from '../types.js';
 import type { TokenizerState } from './state.js';
 
 import isAllowedCharacter, { ALLOWED_CHARACTERS, ALLOWED_NUMBERS } from '../isAllowedCharacter.js';
-import { InvalidCharacterError, InvalidParameterizedPathError, MissingCharacterError } from '../types.js';
 import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-function readPath(state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> {
+function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
   return Effect.gen(function* () {
     if (readCharacter(state) !== '/') {
       return state;
@@ -42,11 +40,11 @@ function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Tokenize
         }
 
         if (!parameter[0].length) {
-          return yield* Effect.fail(new InvalidParameterizedPathError());
+          return yield* Effect.fail(new Error('The parameterized path is not valid.'));
         }
 
         if (readCharacter(state) !== '}') {
-          return yield* Effect.fail(new MissingCharacterError('}'));
+          return yield* Effect.fail(new Error('The character "}" does not exist.'));
         }
 
         state.cursor++;
@@ -71,7 +69,7 @@ function readPath(state: TokenizerState): Effect.Effect<TokenizerState, Tokenize
         const character = readCharacter(state);
 
         if (!isAllowedCharacter(character, ['-', '.', ...ALLOWED_CHARACTERS, ...ALLOWED_NUMBERS])) {
-          return yield* Effect.fail(new InvalidCharacterError(character));
+          return yield* Effect.fail(new Error(`The character "${character}" is not valid.`));
         }
 
         value += character;
