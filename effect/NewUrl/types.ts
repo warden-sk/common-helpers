@@ -57,7 +57,6 @@ type TokenizerError =
   | InvalidCharacterError
   | InvalidHostError
   | InvalidParameterizedPathError
-  | InvalidPortError
   | InvalidSchemeError
   | MissingCharacterError;
 
@@ -82,14 +81,6 @@ class InvalidParameterizedPathError extends Error {
 
   constructor() {
     super('The parameterized path is not valid.');
-  }
-}
-
-class InvalidPortError extends Error {
-  readonly _tag = 'InvalidPortError';
-
-  constructor() {
-    super('The port is not valid.');
   }
 }
 
@@ -127,7 +118,6 @@ export {
   InvalidCharacterError,
   InvalidHostError,
   InvalidParameterizedPathError,
-  InvalidPortError,
   InvalidSchemeError,
   MissingCharacterError,
 };

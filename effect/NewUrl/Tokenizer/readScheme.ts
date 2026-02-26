@@ -26,7 +26,10 @@ function readScheme(state: TokenizerState, schemes: readonly string[]): Effect.E
       return yield* Effect.fail(new InvalidSchemeError());
     }
 
-    return addToken({ type: 'SCHEME', value })(state);
+    return addToken({
+      type: 'SCHEME',
+      value,
+    })(state);
   });
 }
 

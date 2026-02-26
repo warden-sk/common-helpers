@@ -13,6 +13,7 @@ import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
+// ✅
 function readHost(state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> {
   return Effect.gen(function* () {
     let value = '';
@@ -39,7 +40,10 @@ function readHost(state: TokenizerState): Effect.Effect<TokenizerState, Tokenize
       return yield* Effect.fail(new InvalidHostError());
     }
 
-    return addToken({ type: 'HOST', value })(state);
+    return addToken({
+      type: 'HOST',
+      value,
+    })(state);
   });
 }
 

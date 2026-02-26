@@ -4,9 +4,12 @@
 
 import type { Token } from '../types.js';
 
+// ✅
 type TokenizerState = {
   cursor: number;
+
   readonly input: string;
+
   readonly tokens: readonly Token[];
 };
 
