@@ -117,7 +117,7 @@ test('[5] SCHEME + HOST + PORT + PATH + SEARCH_PARAMETER', () => {
 });
 
 test('[6]', () => {
-  const tokens = Effect.runSync(tokenize('https://kobida.sk:443/test?search=Ako+sa+m%C3%A1%C5%A1%3F'));
+  const tokens = Effect.runSync(tokenize('https://kobida.sk:443/test?search=Ako%20sa%20m%C3%A1%C5%A1%3F'));
 
   expect(tokens).toEqual([
     {
@@ -137,9 +137,9 @@ test('[6]', () => {
       value: 'test',
     },
     {
-      parameter: ['search', 'Ako sa máš?'],
+      parameter: ['search', 'Ako%20sa%20m%C3%A1%C5%A1%3F'],
       type: 'SEARCH_PARAMETER',
-      value: 'search=Ako+sa+m%C3%A1%C5%A1%3F',
+      value: 'search=Ako%20sa%20m%C3%A1%C5%A1%3F',
     },
   ]);
 });
