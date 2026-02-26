@@ -15,8 +15,8 @@ import readSearchParameters from './readSearchParameters.js';
 
 const schemes: readonly string[] = ['http://', 'https://'];
 
-const tokenize = (input: string): Effect.Effect<readonly Token[], TokenizerError> =>
-  Effect.gen(function* () {
+function tokenize(input: string): Effect.Effect<readonly Token[], TokenizerError> {
+  return Effect.gen(function* () {
     let state: TokenizerState = {
       cursor: 0,
       input,
@@ -31,5 +31,6 @@ const tokenize = (input: string): Effect.Effect<readonly Token[], TokenizerError
 
     return state.tokens;
   });
+}
 
 export { tokenize };

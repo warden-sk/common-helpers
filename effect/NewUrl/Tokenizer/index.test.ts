@@ -5,7 +5,7 @@
 import { expect, test } from 'bun:test';
 import { Effect } from 'effect';
 
-import { tokenize } from '../Tokenizer/index.js';
+import { tokenize } from './index.js';
 
 test('[1] SCHEME + HOST', () => {
   const tokens = Effect.runSync(tokenize('https://kobida.sk'));

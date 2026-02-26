@@ -13,8 +13,8 @@ import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-const readHost = (state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> =>
-  Effect.gen(function* () {
+function readHost(state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> {
+  return Effect.gen(function* () {
     let value = '';
 
     while (
@@ -41,5 +41,6 @@ const readHost = (state: TokenizerState): Effect.Effect<TokenizerState, Tokenize
 
     return addToken({ type: 'HOST', value })(state);
   });
+}
 
 export default readHost;

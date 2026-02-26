@@ -13,8 +13,8 @@ import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-const readPort = (state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> =>
-  Effect.gen(function* () {
+function readPort(state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> {
+  return Effect.gen(function* () {
     if (readCharacter(state) === ':') {
       let value = '';
 
@@ -34,5 +34,6 @@ const readPort = (state: TokenizerState): Effect.Effect<TokenizerState, Tokenize
 
     return state;
   });
+}
 
 export default readPort;

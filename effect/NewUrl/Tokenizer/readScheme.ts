@@ -11,8 +11,8 @@ import { InvalidSchemeError } from '../types.js';
 import addToken from './addToken.js';
 import readCharacters from './readCharacters.js';
 
-const readScheme = (state: TokenizerState, schemes: readonly string[]): Effect.Effect<TokenizerState, TokenizerError> =>
-  Effect.gen(function* () {
+function readScheme(state: TokenizerState, schemes: readonly string[]): Effect.Effect<TokenizerState, TokenizerError> {
+  return Effect.gen(function* () {
     let value = '';
 
     for (const scheme of schemes) {
@@ -28,5 +28,6 @@ const readScheme = (state: TokenizerState, schemes: readonly string[]): Effect.E
 
     return addToken({ type: 'SCHEME', value })(state);
   });
+}
 
 export default readScheme;

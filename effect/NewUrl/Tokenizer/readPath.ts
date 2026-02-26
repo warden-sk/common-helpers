@@ -13,8 +13,8 @@ import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-const readPath = (state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> =>
-  Effect.gen(function* () {
+function readPath(state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> {
+  return Effect.gen(function* () {
     if (readCharacter(state) !== '/') {
       return state;
     }
@@ -79,5 +79,6 @@ const readPath = (state: TokenizerState): Effect.Effect<TokenizerState, Tokenize
 
     return state;
   });
+}
 
 export default readPath;

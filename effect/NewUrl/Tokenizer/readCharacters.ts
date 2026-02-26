@@ -6,7 +6,7 @@ import type { TokenizerState } from './state.js';
 
 import readCharacter from './readCharacter.js';
 
-const readCharacters = (state: TokenizerState, cursor: number, length: number): string => {
+function readCharacters(state: TokenizerState, cursor: number, length: number): string {
   let characters = '';
 
   for (let i = cursor; i < length; i++) {
@@ -15,6 +15,6 @@ const readCharacters = (state: TokenizerState, cursor: number, length: number): 
   }
 
   return characters;
-};
+}
 
 export default readCharacters;

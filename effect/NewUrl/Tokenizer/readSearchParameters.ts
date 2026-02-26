@@ -11,8 +11,8 @@ import addToken from './addToken.js';
 import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
-const readSearchParameters = (state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> =>
-  Effect.gen(function* () {
+function readSearchParameters(state: TokenizerState): Effect.Effect<TokenizerState, TokenizerError> {
+  return Effect.gen(function* () {
     if (readCharacter(state) === '?') {
       state.cursor++;
 
@@ -50,5 +50,6 @@ const readSearchParameters = (state: TokenizerState): Effect.Effect<TokenizerSta
 
     return state;
   });
+}
 
 export default readSearchParameters;

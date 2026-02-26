@@ -4,6 +4,8 @@
 
 import type { TokenizerState } from './state.js';
 
-const readCharacter = (state: TokenizerState, cursor: number = state.cursor): string => state.input[cursor]!;
+function readCharacter(state: TokenizerState, cursor: number = state.cursor): string {
+  return state.input[cursor]!;
+}
 
 export default readCharacter;
