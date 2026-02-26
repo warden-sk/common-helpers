@@ -11,7 +11,7 @@ import isNotEnd from './isNotEnd.js';
 import readCharacter from './readCharacter.js';
 
 function readSearchParameters(state: TokenizerState): Effect.Effect<TokenizerState, Error> {
-  return Effect.gen(function* () {
+  return Effect.sync(() => {
     if (readCharacter(state) === '?') {
       state.cursor++;
 
